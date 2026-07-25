@@ -6,6 +6,7 @@
 <title>FLP → FLM Converter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZCNTQ3Ii8+PHN0b3Agb2Zmc2V0PSI0NSUiIHN0b3AtY29sb3I9IiNGRjdBMDAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjQ1MDAiLz4KPC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSIjMEIwQjE2Ii8+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjEyIi8+CjxyZWN0IHg9IjEyIiB5PSIzNiIgd2lkdGg9IjciIGhlaWdodD0iMTQiIHJ4PSIyLjUiIGZpbGw9InVybCgjZykiLz4KPHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iNyIgaGVpZ2h0PSIyNiIgcng9IjIuNSIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB4PSIzNiIgeT0iMTQiIHdpZHRoPSI3IiBoZWlnaHQ9IjM2IiByeD0iMi41IiBmaWxsPSJ1cmwoI2cpIi8+CjxwYXRoIGQ9Ik00NiAyMiBDNTQgMjQgNTUgMzQgNDcgNDAgQzQzIDQzIDQzIDQ3IDQ3IDUwIiBzdHJva2U9InVybCgjZykiIHN0cm9rZS13aWR0aD0iMy40IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -316,6 +317,52 @@ footer {
 @keyframes fadeUp   { from { opacity:0; transform:translateY(14px);  } to { opacity:1; transform:none; } }
 @keyframes pulse    { 0%,100%{ opacity:1; } 50%{ opacity:0.3; } }
 
+.hero-icon { display: flex; justify-content: center; margin-bottom: 14px; }
+.hero-icon svg { filter: drop-shadow(0 4px 20px rgba(255,122,0,0.35)); }
+.hero-bar { transform-origin: bottom; animation: barBounce 2.4s ease-in-out infinite; }
+.hero-bar-1 { animation-delay: 0s; }
+.hero-bar-2 { animation-delay: 0.15s; }
+.hero-bar-3 { animation-delay: 0.3s; }
+.hero-curve { stroke-dasharray: 40; animation: curveFlow 2.4s ease-in-out infinite; }
+@keyframes barBounce { 0%, 100% { transform: scaleY(1); } 50% { transform: scaleY(0.82); } }
+@keyframes curveFlow { 0%, 100% { stroke-dashoffset: 0; } 50% { stroke-dashoffset: 14; } }
+
+.mode-tabs {
+  display: flex; gap: 8px; justify-content: center;
+  margin-bottom: 10px; animation: fadeUp 0.5s ease 0.05s both;
+}
+.mode-tab {
+  font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 700;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--muted); border-radius: 999px; padding: 9px 20px;
+  cursor: pointer; transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.mode-tab:hover { color: var(--text); }
+.mode-tab.active {
+  color: #fff; border-color: var(--accent);
+  background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+  box-shadow: 0 4px 16px rgba(255,122,0,0.25);
+}
+.mode-hint {
+  text-align: center; font-size: 0.78rem; color: var(--muted);
+  margin-bottom: 18px; min-height: 1.2em;
+}
+
+.showcase-panel { margin-top: 16px; animation: fadeUp 0.35s ease both; }
+.hex-dump {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; line-height: 1.6;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 12px 14px; overflow-x: auto;
+  color: #7070A0; white-space: pre;
+}
+.hex-dump .hex-ascii { color: var(--accent); }
+.hist-list { display: flex; flex-direction: column; gap: 6px; }
+.hist-row { display: flex; align-items: center; gap: 10px; font-size: 0.78rem; }
+.hist-label { width: 130px; flex-shrink: 0; color: var(--text); font-family: 'JetBrains Mono', monospace; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.hist-bar-wrap { flex: 1; height: 10px; background: var(--surface2); border-radius: 5px; overflow: hidden; }
+.hist-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+.hist-count { width: 42px; text-align: right; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); }
+
 .hidden { display: none !important; }
 </style>
 </head>
@@ -323,10 +370,29 @@ footer {
 <div class="container">
 
   <div class="header">
+    <div class="hero-icon">
+      <svg viewBox="0 0 64 64" width="56" height="56">
+        <defs><linearGradient id="heroGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FFB547"/><stop offset="45%" stop-color="#FF7A00"/><stop offset="100%" stop-color="#FF4500"/>
+        </linearGradient></defs>
+        <rect width="64" height="64" rx="15" fill="#0B0B16"/>
+        <rect width="64" height="64" rx="15" fill="url(#heroGrad)" opacity="0.12"/>
+        <rect x="12" y="36" width="7" height="14" rx="2.5" fill="url(#heroGrad)" class="hero-bar hero-bar-1"/>
+        <rect x="24" y="24" width="7" height="26" rx="2.5" fill="url(#heroGrad)" class="hero-bar hero-bar-2"/>
+        <rect x="36" y="14" width="7" height="36" rx="2.5" fill="url(#heroGrad)" class="hero-bar hero-bar-3"/>
+        <path d="M46 22 C54 24 55 34 47 40 C43 43 43 47 47 50" stroke="url(#heroGrad)" stroke-width="3.4" fill="none" stroke-linecap="round" class="hero-curve"/>
+      </svg>
+    </div>
     <div class="logo-badge"><div class="logo-dot"></div> BEST-EFFORT CONVERTER</div>
     <h1>FLP → FLM</h1>
     <p class="header-sub">FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction</p>
   </div>
+
+  <div class="mode-tabs" id="modeTabs">
+    <button class="mode-tab active" data-mode="convert" id="modeConvertBtn">⚙ Converter</button>
+    <button class="mode-tab" data-mode="showcase" id="modeShowcaseBtn">🔍 Showcase</button>
+  </div>
+  <p class="mode-hint" id="modeHint">Drop a file to parse it straight into channels, patterns and downloads.</p>
 
   <div class="drop-zone" id="dropZone">
     <input type="file" id="fileInput" accept=".flp">
@@ -350,6 +416,11 @@ footer {
   </div>
 
   <div class="status" id="status"></div>
+
+  <div class="panel hidden" id="showcasePanel">
+    <div class="panel-header"><div class="panel-dot"></div> RAW FLP PREVIEW</div>
+    <div class="panel-body" id="showcaseBody"></div>
+  </div>
 
   <div class="panel hidden" id="detPanel">
     <div class="panel-header"><div class="panel-dot"></div> DETECTED PROJECT DATA</div>
@@ -1221,11 +1292,32 @@ const detBody       = document.getElementById('detBody');
 const btnRow        = document.getElementById('btnRow');
 const midiBtn       = document.getElementById('midiBtn');
 const jsonBtn       = document.getElementById('jsonBtn');
+const showcasePanel = document.getElementById('showcasePanel');
+const showcaseBody  = document.getElementById('showcaseBody');
+const modeHint      = document.getElementById('modeHint');
+const modeConvertBtn  = document.getElementById('modeConvertBtn');
+const modeShowcaseBtn = document.getElementById('modeShowcaseBtn');
+
+const MODE_HINTS = {
+  convert: 'Drop a file to parse it straight into channels, patterns and downloads.',
+  showcase: 'Drop a file to preview its raw event structure first, then convert on demand.',
+};
 
 let currentProj = null;
+let currentBuf = null;
 let currentFileBase = 'project';
 let activePatternIdx = 0;
 let activeArrIdx = 0;
+let currentMode = 'convert';
+
+[modeConvertBtn, modeShowcaseBtn].forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentMode = btn.dataset.mode;
+    modeConvertBtn.classList.toggle('active', currentMode === 'convert');
+    modeShowcaseBtn.classList.toggle('active', currentMode === 'showcase');
+    modeHint.textContent = MODE_HINTS[currentMode];
+  });
+});
 
 function setStatus(type, msg) {
   statusEl.className = `status ${type}`;
@@ -1257,6 +1349,7 @@ fileInput.addEventListener('change', e => {
 function handleFile(file) {
   clearStatus();
   detPanel.classList.add('hidden');
+  showcasePanel.classList.add('hidden');
   btnRow.classList.add('hidden');
   currentFileBase = file.name.replace(/\.flp$/i, '') || 'project';
   setProgress(10, 'Reading file…');
@@ -1267,20 +1360,27 @@ function handleFile(file) {
     setProgress(55, 'Parsing FLP events…');
     setTimeout(() => {
       try {
-        const parser = new FLPParser(reader.result);
+        currentBuf = reader.result;
+        const parser = new FLPParser(currentBuf);
         const proj = parser.parse();
         currentProj = proj;
         setProgress(100, 'Done');
         setTimeout(hideProgress, 350);
         activePatternIdx = 0;
         activeArrIdx = 0;
-        renderDetection(proj);
-        if (proj.warnings.length) {
-          setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+
+        if (currentMode === 'showcase') {
+          renderShowcase(proj, currentBuf, file);
+          setStatus('info', `Previewing "${proj.title}" — hit Convert now when ready.`);
         } else {
-          setStatus('success', `Parsed "${proj.title}" successfully.`);
+          renderDetection(proj);
+          if (proj.warnings.length) {
+            setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+          } else {
+            setStatus('success', `Parsed "${proj.title}" successfully.`);
+          }
+          btnRow.classList.remove('hidden');
         }
-        btnRow.classList.remove('hidden');
       } catch (err) {
         hideProgress();
         setStatus('error', `Failed to parse: ${err.message}`);
@@ -1288,6 +1388,125 @@ function handleFile(file) {
     }, 30);
   };
   reader.readAsArrayBuffer(file);
+}
+
+function scanRawEvents(buf) {
+  const dv = new DataView(buf);
+  const stats = { total: 0, byte: 0, word: 0, dword: 0, data: 0, byId: {} };
+  let pos = 14;
+  if (pos + 8 > buf.byteLength) return stats;
+  const dlen = dv.getUint32(pos + 4, true);
+  pos += 8;
+  const end = Math.min(pos + dlen, buf.byteLength);
+  let safety = 0;
+  while (pos < end - 1 && ++safety < 4000000) {
+    const id = dv.getUint8(pos);
+    pos += 1;
+    stats.byId[id] = (stats.byId[id] || 0) + 1;
+    stats.total++;
+    if (id < 64) { stats.byte++; pos += 1; }
+    else if (id < 128) { stats.word++; pos += 2; }
+    else if (id < 192) { stats.dword++; pos += 4; }
+    else {
+      stats.data++;
+      let n = 0, shift = 0, b;
+      do {
+        if (pos >= buf.byteLength) return stats;
+        b = dv.getUint8(pos); pos += 1;
+        n |= (b & 0x7F) << shift; shift += 7;
+      } while (b & 0x80);
+      pos += (n >>> 0);
+    }
+    if (pos > end) break;
+  }
+  return stats;
+}
+
+function hexDump(buf, maxBytes) {
+  const bytes = new Uint8Array(buf, 0, Math.min(maxBytes, buf.byteLength));
+  const lines = [];
+  for (let row = 0; row < bytes.length; row += 16) {
+    const chunk = bytes.slice(row, row + 16);
+    const hex = Array.from(chunk).map(b => b.toString(16).padStart(2, '0')).join(' ').padEnd(47, ' ');
+    const ascii = Array.from(chunk).map(b => (b >= 32 && b < 127) ? String.fromCharCode(b) : '.').join('');
+    lines.push(`${row.toString(16).padStart(6, '0')}  ${hex} <span class="hex-ascii">${escapeHtml(ascii)}</span>`);
+  }
+  return lines.join('\n');
+}
+
+function renderShowcase(proj, buf, file) {
+  showcaseBody.innerHTML = '';
+  const rawStats = scanRawEvents(buf);
+
+  const grid = document.createElement('div');
+  grid.className = 'info-grid';
+  const cards = [
+    ['File size', `${(file.size / 1024).toFixed(1)}<span class="info-unit"> KB</span>`],
+    ['Format', proj.format],
+    ['PPQ', proj.ppq],
+    ['Header channels', proj.numChannelsHeader],
+    ['Total events', rawStats.total],
+    ['Byte events', rawStats.byte],
+    ['Word events', rawStats.word],
+    ['Dword events', rawStats.dword],
+    ['Var-length events', rawStats.data],
+    ['Unique event IDs', Object.keys(rawStats.byId).length],
+  ];
+  cards.forEach(([label, value]) => {
+    const card = document.createElement('div');
+    card.className = 'info-card';
+    card.innerHTML = `<div class="info-label">${label}</div><div class="info-value">${value}</div>`;
+    grid.appendChild(card);
+  });
+  showcaseBody.appendChild(grid);
+
+  const histLabel = document.createElement('div');
+  histLabel.className = 'section-label';
+  histLabel.textContent = 'Most frequent event IDs';
+  showcaseBody.appendChild(histLabel);
+
+  const histList = document.createElement('div');
+  histList.className = 'hist-list';
+  const topIds = Object.entries(rawStats.byId).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const maxCount = topIds.length ? topIds[0][1] : 1;
+  topIds.forEach(([id, count]) => {
+    const name = Object.keys(EV).find(k => EV[k] === Number(id));
+    const row = document.createElement('div');
+    row.className = 'hist-row';
+    row.innerHTML = `
+      <div class="hist-label">${name ? name : 'id ' + id}</div>
+      <div class="hist-bar-wrap"><div class="hist-bar-fill" style="width:${(count / maxCount) * 100}%"></div></div>
+      <div class="hist-count">${count}</div>`;
+    histList.appendChild(row);
+  });
+  showcaseBody.appendChild(histList);
+
+  const hexLabel = document.createElement('div');
+  hexLabel.className = 'section-label';
+  hexLabel.textContent = 'First 128 bytes';
+  showcaseBody.appendChild(hexLabel);
+
+  const hexBox = document.createElement('div');
+  hexBox.className = 'hex-dump';
+  hexBox.innerHTML = hexDump(buf, 128);
+  showcaseBody.appendChild(hexBox);
+
+  const convertRow = document.createElement('div');
+  convertRow.className = 'btn-row';
+  convertRow.innerHTML = '<button class="btn btn-primary" id="convertNowBtn">▶ Convert now</button>';
+  showcaseBody.appendChild(convertRow);
+  convertRow.querySelector('#convertNowBtn').addEventListener('click', () => {
+    showcasePanel.classList.add('hidden');
+    renderDetection(proj);
+    btnRow.classList.remove('hidden');
+    if (proj.warnings.length) {
+      setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+    } else {
+      setStatus('success', `Parsed "${proj.title}" successfully.`);
+    }
+  });
+
+  showcasePanel.classList.remove('hidden');
 }
 
 function renderDetection(proj) {
