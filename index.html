@@ -268,6 +268,43 @@ h1 {
 .btn:active { transform: scale(0.98); }
 .btn:disabled { opacity: 0.35; cursor: not-allowed; box-shadow: none; }
 
+.arr-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+.arr-tab {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 12px; font-size: 0.78rem;
+  color: #9090C0; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+}
+.arr-tab.active { border-color: var(--accent); color: var(--text); background: #160E00; }
+
+.track-list { display: flex; flex-direction: column; gap: 5px; }
+.track-row { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; }
+.track-color { width: 8px; height: 18px; border-radius: 3px; flex-shrink: 0; }
+.track-name { width: 108px; flex-shrink: 0; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track-name.off { color: var(--muted); text-decoration: line-through; }
+.track-lane { flex: 1; height: 18px; background: var(--surface2); border-radius: 4px; position: relative; overflow: hidden; }
+.track-item {
+  position: absolute; top: 2px; height: 14px; border-radius: 3px;
+  opacity: 0.85;
+}
+.track-empty-hint { font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--dim); padding: 10px 0; }
+
+.mixer-strip {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 8px 12px; font-size: 0.8rem;
+}
+.mixer-swatch { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.mixer-name { flex: 1; color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mixer-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); display: flex; gap: 8px; flex-shrink: 0; }
+.mixer-bar-wrap { width: 60px; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; flex-shrink: 0; }
+.mixer-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
+
+.marker-chip {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 5px 11px; font-size: 0.78rem; color: #9090C0;
+  display: flex; align-items: center; gap: 6px;
+}
+
 footer {
   margin-top: 48px; text-align: center;
   font-family: 'JetBrains Mono', monospace;
@@ -332,11 +369,46 @@ footer {
 
 <script>
 const EV = {
-  ENABLED: 0, VOL: 2, PAN: 3, MAIN_VOL: 12, CHAN_TYPE: 21,
-  TIMESIG_NUM: 17, TIMESIG_DEN: 18,
-  TEMPO_OLD: 66, CUR_PATTERN: 65, MAIN_PITCH: 80, CHAN_NEW: 64,
-  COLOR: 128, PAT_COLOR: 150, TEMPO_NEW: 156,
-  CHAN_NAME: 192, PAT_NAME: 193, TITLE: 194, COMMENT: 195, VERSION: 199, GENRE: 206, AUTHOR: 207, PAT_NOTES: 224,
+  ENABLED: 0, VOL: 2, PAN: 3,
+  LOOP_ACTIVE: 9, SHOW_INFO: 10, MAIN_VOL: 12, ZIPPED: 15,
+  PING_PONG: 20, CHAN_TYPE: 21, ROUTED_TO: 22, PAN_LAW: 23,
+  PAT_LOOPED: 26, PLAY_TRUNCATED: 30,
+  IS_LOCKED: 32, TM_NUMERATOR: 33, TM_DENOMINATOR: 34,
+  ARR_TSNUM: 17, ARR_TSDEN: 18, LICENSED: 28,
+
+  CHAN_NEW: 64, CUR_PATTERN: 65, TEMPO_OLD: 66, PATTERNS_CUR_SEL: 67,
+  FREQ_TILT: 69, FX_FLAGS: 70, CUTOFF: 71, VOL_WORD: 72, PAN_WORD: 73,
+  PREAMP: 74, FADE_OUT: 75, FADE_IN: 76, RESONANCE: 83, STEREO_DELAY: 85,
+  POGO: 86, TIME_SHIFT: 89, MAIN_PITCH: 80, CHAN_CHILDREN: 94,
+  INS_ICON: 95, SWING: 97, SLOT_INDEX: 98, ARR_NEW: 99, ARR_CUR: 100,
+
+  COLOR: 128, RING_MOD: 131, CUT_GROUP: 132, ROOT_NOTE: 135,
+  DELAY_MOD_XY: 138, REVERB: 139, STRETCH_TIME: 140, FINE_TUNE: 142,
+  SAMPLER_FLAGS: 143, LAYER_FLAGS: 144, GROUP_NUM: 145, CUR_GROUP_ID: 146,
+  INS_OUTPUT: 147, TM_POSITION: 148, INS_COLOR: 149, PAT_COLOR: 150,
+  ARR_LOOP_POS: 152, AU_SAMPLE_RATE: 153, INS_INPUT: 154, TEMPO_NEW: 156,
+  FL_BUILD: 159,
+
+  CHAN_NAME: 192, PAT_NAME: 193, TITLE: 194, COMMENT: 195, SAMPLE_PATH: 196,
+  URL: 197, INTERNAL_NAME: 201, DATA_PATH: 202, PLUGIN_NAME: 203,
+  INS_NAME: 204, TM_NAME: 205, GENRE: 206, ARTISTS: 207, VERSION: 199,
+  LICENSEE: 200, DISPLAY_GROUP_NAME: 231, ARR_TRACK_NAME: 239, ARR_NAME: 241,
+
+  ARR_PLSELECTION: 217, PAT_CONTROLLERS: 223, PAT_NOTES: 224,
+  MIXER_PARAMS: 225, CHAN_DELAY: 209, CHAN_PARAMETERS: 215,
+  CHAN_ENV_LFO: 218, CHAN_LEVELS: 219, CHAN_POLYPHONY: 221,
+  CHAN_TRACKING: 228, CHAN_LEVEL_ADJUSTS: 229, CHAN_AUTOMATION: 234,
+  ARR_PLAYLIST: 233, ARR_TRACK_DATA: 238, PROJECT_TIMESTAMP: 237,
+  INS_ROUTING: 235, INS_FLAGS: 236,
+};
+
+const CHAN_KIND = { 0: 'Sampler', 2: 'Native', 3: 'Layer', 4: 'Instrument', 5: 'Automation' };
+const MIXER_PARAM_ID = {
+  SLOT_ENABLED: 0, SLOT_MIX: 1, SEND_START: 64, SEND_END: 191,
+  VOLUME: 192, PAN: 193, STEREO_SEP: 194,
+  LOW_GAIN: 208, MID_GAIN: 209, HIGH_GAIN: 210,
+  LOW_FREQ: 216, MID_FREQ: 217, HIGH_FREQ: 218,
+  LOW_Q: 224, MID_Q: 225, HIGH_Q: 226,
 };
 
 const PALETTE = ['#FF7A00','#4FA3FF','#00D97E','#FF3B5C','#FFD000','#B06AFF','#00C2D9','#FF6AC2'];
@@ -365,6 +437,12 @@ function formatDuration(sec) {
   return `${m}:${String(s).padStart(2,'0')}`;
 }
 
+function delphiDateToJs(days) {
+  if (!days || !isFinite(days)) return null;
+  const epoch = Date.UTC(1899, 11, 30);
+  return new Date(epoch + days * 86400000);
+}
+
 class FLPParser {
   constructor(buf) {
     this.buf = buf;
@@ -372,12 +450,20 @@ class FLPParser {
     this.pos = 0;
     this.proj = {
       version: '', versionInt: 0, title: 'Untitled', author: '', genre: '', comment: '',
+      url: '', licensee: '', dataPath: '', createdOn: null, timeSpentHours: 0,
+      loopActive: false, panLaw: 0, flBuild: 0,
       ppq: 96, tempo: 140, timeSigNum: 4, timeSigDen: 4,
       mainVolume: 100, mainPitch: 0, format: 0, numChannelsHeader: 0,
-      channels: [], patterns: [], warnings: []
+      channels: [], patterns: [], timeMarkers: [], arrangements: [], inserts: [],
+      mixerParams: {}, warnings: []
     };
-    this.curCh  = null;
-    this.curPat = null;
+    this.curCh      = null;
+    this.curPat     = null;
+    this.curArr     = null;
+    this.curTrack   = null;
+    this.curIns     = null;
+    this.curMarker  = null;
+    this.pendingTrackName = null;
   }
 
   u8()  { const v = this.dv.getUint8(this.pos); this.pos += 1; return v; }
@@ -407,6 +493,11 @@ class FLPParser {
     return new TextDecoder('latin1').decode(bytes).replace(/\u0000+$/,'').trim();
   }
 
+  ensureArrangement() {
+    if (!this.curArr) this.switchArrangement(0);
+    return this.curArr;
+  }
+
   parse() {
     const m1 = this.magic();
     if (m1 !== 'FLhd') throw new Error(`Not a valid .flp file — header magic was "${m1}"`);
@@ -421,6 +512,7 @@ class FLPParser {
     const end  = Math.min(this.pos + dlen, this.buf.byteLength);
 
     let safety = 0;
+    this.skippedEvents = 0;
     while (this.pos < end - 1 && ++safety < 4000000) {
       const before = this.pos;
       try { this.parseEvent(end); }
@@ -430,33 +522,49 @@ class FLPParser {
       }
       if (this.pos <= before) break;
     }
+    this.flushTimeMarker();
+    this.finalizePlaylist();
+
     if (!this.proj.channels.length) this.proj.warnings.push('No channels were detected — the file may use an unsupported FLP revision.');
+    if (this.skippedEvents) this.proj.warnings.push(`${this.skippedEvents} malformed event(s) were skipped without aborting the parse.`);
     return this.proj;
   }
 
   parseEvent(end) {
     const id = this.u8();
     if (id < 64) {
-      this.onByte(id, this.u8());
+      this.safe(() => this.onByte(id, this.u8()));
     } else if (id < 128) {
-      this.onWord(id, this.u16());
+      this.safe(() => this.onWord(id, this.u16()));
     } else if (id < 192) {
-      this.onDWord(id, this.u32());
+      this.safe(() => this.onDWord(id, this.u32()));
     } else {
       const len   = this.varLen();
       const start = this.pos;
       const safe  = Math.max(0, Math.min(len, this.buf.byteLength - this.pos));
       const bytes = new Uint8Array(this.buf, this.pos, safe);
-      this.onData(id, bytes, len);
+      this.safe(() => this.onData(id, bytes, len));
       this.pos = start + len;
+    }
+  }
+
+  safe(fn) {
+    try { fn(); }
+    catch (e) {
+      this.skippedEvents++;
+      if (this.skippedEvents <= 5) this.proj.warnings.push(`Ignored a malformed event: ${e.message}`);
     }
   }
 
   onByte(id, v) {
     switch (id) {
-      case EV.MAIN_VOL:    this.proj.mainVolume = v; return;
-      case EV.TIMESIG_NUM: this.proj.timeSigNum = v || 4; return;
-      case EV.TIMESIG_DEN: this.proj.timeSigDen = v || 4; return;
+      case EV.MAIN_VOL:      this.proj.mainVolume = v; return;
+      case EV.ARR_TSNUM:     this.proj.timeSigNum = v || 4; return;
+      case EV.ARR_TSDEN:     this.proj.timeSigDen = v || 4; return;
+      case EV.LOOP_ACTIVE:   this.proj.loopActive = v !== 0; return;
+      case EV.PAN_LAW:       this.proj.panLaw = v; return;
+      case EV.TM_NUMERATOR:  this.curMarker = this.curMarker || {}; this.curMarker.numerator = v; return;
+      case EV.TM_DENOMINATOR:this.curMarker = this.curMarker || {}; this.curMarker.denominator = v; return;
     }
     const ch = this.curCh;
     if (!ch) return;
@@ -464,7 +572,7 @@ class FLPParser {
       case EV.ENABLED:   ch.enabled = v !== 0; break;
       case EV.VOL:       ch.volume  = v;       break;
       case EV.PAN:       ch.pan     = v - 64;  break;
-      case EV.CHAN_TYPE: ch.type    = v;       break;
+      case EV.CHAN_TYPE: ch.type    = v; ch.kind = CHAN_KIND[v] || 'Unknown'; break;
     }
   }
 
@@ -473,8 +581,17 @@ class FLPParser {
       case EV.TEMPO_OLD:   if (v > 0) this.proj.tempo = v; break;
       case EV.CUR_PATTERN: this.switchPattern(v); break;
       case EV.MAIN_PITCH:  this.proj.mainPitch = v > 32767 ? v - 65536 : v; break;
+      case EV.ARR_NEW:     this.switchArrangement(v); break;
+      case EV.INS_ICON:
+        if (!this.curIns || this.curIns._seenIcon) {
+          this.curIns = { index: this.proj.inserts.length, name: `Insert ${this.proj.inserts.length + 1}`, color: 0, icon: v, output: -1, input: -1, enabled: true, routing: [] };
+          this.proj.inserts.push(this.curIns);
+        }
+        this.curIns.icon = v;
+        this.curIns._seenIcon = true;
+        break;
       case EV.CHAN_NEW:
-        this.curCh = { iid: v, name: `Channel ${this.proj.channels.length + 1}`, volume: 100, pan: 0, enabled: true, muted: false, type: 0, color: 0 };
+        this.curCh = { iid: v, name: `Channel ${this.proj.channels.length + 1}`, volume: 100, pan: 0, enabled: true, muted: false, type: 0, kind: 'Sampler', color: 0 };
         this.proj.channels.push(this.curCh);
         break;
     }
@@ -491,6 +608,35 @@ class FLPParser {
       case EV.TEMPO_NEW:
         if (v > 0) this.proj.tempo = v / 1000;
         break;
+      case EV.ROOT_NOTE:
+        if (this.curCh) this.curCh.rootNote = v;
+        break;
+      case EV.FINE_TUNE:
+        if (this.curCh) this.curCh.fineTune = v > 0x7FFFFFFF ? v - 0x100000000 : v;
+        break;
+      case EV.REVERB:
+        if (this.curCh) this.curCh.reverb = v;
+        break;
+      case EV.GROUP_NUM:
+        if (this.curCh) this.curCh.groupNum = v;
+        break;
+      case EV.FL_BUILD:
+        this.proj.flBuild = v;
+        break;
+      case EV.TM_POSITION:
+        this.curMarker = this.curMarker || {};
+        this.curMarker.position = v;
+        this.flushTimeMarker();
+        break;
+      case EV.INS_OUTPUT:
+        if (this.curIns) this.curIns.output = v > 0x7FFFFFFF ? v - 0x100000000 : v;
+        break;
+      case EV.INS_INPUT:
+        if (this.curIns) this.curIns.input = v > 0x7FFFFFFF ? v - 0x100000000 : v;
+        break;
+      case EV.INS_COLOR:
+        if (this.curIns) this.curIns.color = v;
+        break;
     }
   }
 
@@ -499,7 +645,7 @@ class FLPParser {
       case EV.CHAN_NAME: {
         const name = this.decode(bytes);
         if (!this.curCh || this.curCh._namedAlready) {
-          this.curCh = { iid: null, name: name || `Channel ${this.proj.channels.length + 1}`, volume: 100, pan: 0, enabled: true, muted: false, type: 0, color: 0 };
+          this.curCh = { iid: null, name: name || `Channel ${this.proj.channels.length + 1}`, volume: 100, pan: 0, enabled: true, muted: false, type: 0, kind: 'Sampler', color: 0 };
           this.proj.channels.push(this.curCh);
         } else if (name) {
           this.curCh.name = name;
@@ -507,14 +653,20 @@ class FLPParser {
         this.curCh._namedAlready = true;
         break;
       }
+      case EV.SAMPLE_PATH:
+        if (this.curCh) this.curCh.samplePath = this.decode(bytes);
+        break;
       case EV.PAT_NAME: {
         const name = this.decode(bytes);
         if (this.curPat && name) this.curPat.name = name;
         break;
       }
-      case EV.TITLE:   { const s = this.decode(bytes); if (s) this.proj.title = s; break; }
-      case EV.COMMENT: this.proj.comment = this.decode(bytes); break;
-      case EV.AUTHOR:  this.proj.author  = this.decode(bytes); break;
+      case EV.TITLE:    { const s = this.decode(bytes); if (s) this.proj.title = s; break; }
+      case EV.COMMENT:  this.proj.comment  = this.decode(bytes); break;
+      case EV.ARTISTS:  this.proj.author   = this.decode(bytes); break;
+      case EV.URL:      this.proj.url      = this.decode(bytes); break;
+      case EV.LICENSEE: this.proj.licensee = this.decode(bytes); break;
+      case EV.DATA_PATH:this.proj.dataPath = this.decode(bytes); break;
       case EV.VERSION: {
         const s = this.decode(bytes);
         this.proj.version = s;
@@ -522,8 +674,43 @@ class FLPParser {
         this.proj.versionInt = (parts[0] || 0) * 1000 + (parts[1] || 0) * 10 + (parts[2] || 0);
         break;
       }
-      case EV.GENRE:     this.proj.genre = this.decode(bytes); break;
-      case EV.PAT_NOTES: this.parseNotes(bytes); break;
+      case EV.GENRE:        this.proj.genre = this.decode(bytes); break;
+      case EV.PAT_NOTES:    this.parseNotes(bytes); break;
+      case EV.CHAN_AUTOMATION: this.parseAutomation(bytes); break;
+      case EV.TM_NAME:
+        this.curMarker = this.curMarker || {};
+        this.curMarker.name = this.decode(bytes);
+        break;
+      case EV.ARR_NAME:
+        if (this.curArr) {
+          const name = this.decode(bytes);
+          if (name) this.curArr.name = name;
+        }
+        break;
+      case EV.ARR_TRACK_NAME:
+        this.pendingTrackName = this.decode(bytes);
+        break;
+      case EV.ARR_TRACK_DATA:
+        this.parseTrackData(bytes);
+        break;
+      case EV.ARR_PLAYLIST:
+        this.parsePlaylist(bytes);
+        break;
+      case EV.PROJECT_TIMESTAMP:
+        this.parseTimestamp(bytes);
+        break;
+      case EV.INS_NAME:
+        if (this.curIns) this.curIns.name = this.decode(bytes);
+        break;
+      case EV.INS_ROUTING:
+        if (this.curIns) this.curIns.routing = Array.from(bytes).map(b => b !== 0);
+        break;
+      case EV.INS_FLAGS:
+        this.parseInsertFlags(bytes);
+        break;
+      case EV.MIXER_PARAMS:
+        this.parseMixerParams(bytes);
+        break;
     }
   }
 
@@ -532,6 +719,27 @@ class FLPParser {
       this.proj.patterns.push({ id: this.proj.patterns.length, name: `Pattern ${this.proj.patterns.length + 1}`, color: 0, notes: [] });
     }
     this.curPat = this.proj.patterns[idx];
+  }
+
+  switchArrangement(idx) {
+    while (this.proj.arrangements.length <= idx) {
+      this.proj.arrangements.push({ id: this.proj.arrangements.length, name: `Arrangement ${this.proj.arrangements.length + 1}`, tracks: [], playlistItems: [] });
+    }
+    this.curArr = this.proj.arrangements[idx];
+    this.curTrack = null;
+    this.pendingTrackName = null;
+  }
+
+  flushTimeMarker() {
+    if (this.curMarker && (this.curMarker.name || this.curMarker.position !== undefined)) {
+      this.proj.timeMarkers.push({
+        position: this.curMarker.position ?? 0,
+        name: this.curMarker.name || '',
+        numerator: this.curMarker.numerator,
+        denominator: this.curMarker.denominator,
+      });
+    }
+    this.curMarker = null;
   }
 
   parseNotes(bytes) {
@@ -563,6 +771,148 @@ class FLPParser {
 
       this.curPat.notes.push({ position, length, key, finePitch, release, pan, velocity, group, midiChannel, channel: rackChannel });
     }
+  }
+
+  parseAutomation(bytes) {
+    if (!this.curCh || bytes.length < 21) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+    const lfoAmount = dv.getInt32(4, true);
+    const pointCountOffset = 17;
+    if (bytes.length < pointCountOffset + 4) return;
+    const pointCount = dv.getUint32(pointCountOffset, true);
+    const points = [];
+    let cursor = pointCountOffset + 4;
+    let position = 0;
+    const maxPoints = Math.min(pointCount, Math.floor((bytes.length - cursor) / 24));
+    for (let i = 0; i < maxPoints; i++) {
+      if (cursor + 24 > bytes.length) break;
+      const offset = dv.getFloat64(cursor, true);
+      const value  = dv.getFloat64(cursor + 8, true);
+      const tension = dv.getFloat32(cursor + 16, true);
+      position += offset;
+      points.push({ position, value, tension });
+      cursor += 24;
+    }
+    this.curCh.automation = { lfoAmount, points };
+  }
+
+  parseTimestamp(bytes) {
+    if (bytes.length < 16) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+    const createdOnDays = dv.getFloat64(0, true);
+    const timeSpentDays = dv.getFloat64(8, true);
+    this.proj.createdOn = delphiDateToJs(createdOnDays);
+    this.proj.timeSpentHours = timeSpentDays * 24;
+  }
+
+  parseTrackData(bytes) {
+    const arr = this.ensureArrangement();
+    if (bytes.length < 13) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+    const track = {
+      index: arr.tracks.length,
+      name: this.pendingTrackName || `Track ${arr.tracks.length + 1}`,
+      color: bytes.length >= 8 ? dv.getUint32(4, true) : 0,
+      icon: bytes.length >= 12 ? dv.getUint32(8, true) : 0,
+      enabled: bytes.length >= 13 ? dv.getUint8(12) !== 0 : true,
+      items: [],
+    };
+    arr.tracks.push(track);
+    this.pendingTrackName = null;
+  }
+
+  parsePlaylist(bytes) {
+    const arr = this.ensureArrangement();
+    const isNew = bytes.length % 60 === 0 && bytes.length % 32 !== 0;
+    const stride = isNew ? 60 : 32;
+    if (bytes.length % stride !== 0) {
+      this.proj.warnings.push(`Playlist block of ${bytes.length} bytes doesn't divide evenly by ${stride} — items in arrangement "${arr.name}" were skipped.`);
+      return;
+    }
+    const count = Math.floor(bytes.length / stride);
+    for (let i = 0; i < count; i++) {
+      const o = i * stride;
+      const dv = new DataView(bytes.buffer, bytes.byteOffset + o, stride);
+      const position    = dv.getUint32(0, true);
+      const patternBase = dv.getUint16(4, true);
+      const itemIndex   = dv.getUint16(6, true);
+      const length      = dv.getUint32(8, true);
+      const trackRvIdx  = dv.getUint16(12, true);
+      const group       = dv.getUint16(14, true);
+      const startOffset = dv.getFloat32(24, true);
+      const endOffset   = dv.getFloat32(28, true);
+      arr.playlistItems.push({ position, patternBase, itemIndex, length, trackRvIdx, group, startOffset, endOffset });
+    }
+  }
+
+  finalizePlaylist() {
+    const maxTrackIdx = this.proj.versionInt >= 12091 ? 499 : 198;
+    for (const arr of this.proj.arrangements) {
+      for (const item of arr.playlistItems) {
+        const row = maxTrackIdx - item.trackRvIdx;
+        let label = 'Unknown';
+        let kind = 'pattern';
+        if (item.itemIndex >= item.patternBase && item.patternBase > 0) {
+          const patId = item.itemIndex - item.patternBase;
+          const pat = this.proj.patterns[patId];
+          label = pat ? pat.name : `Pattern #${patId + 1}`;
+          kind = 'pattern';
+        } else {
+          const ch = this.proj.channels.find(c => c.iid === item.itemIndex);
+          label = ch ? ch.name : `Channel #${item.itemIndex}`;
+          kind = 'channel';
+        }
+        let track = arr.tracks.find(t => t._row === row);
+        if (!track) {
+          track = arr.tracks.find(t => t._row === undefined && !t._rowAssigned);
+          if (track) { track._row = row; track._rowAssigned = true; }
+        }
+        if (!track) {
+          track = { index: arr.tracks.length, name: `Row ${row}`, color: 0, icon: 0, enabled: true, items: [], _row: row, _rowAssigned: true };
+          arr.tracks.push(track);
+        }
+        track.items.push({ position: item.position, length: item.length, label, kind, group: item.group });
+      }
+    }
+  }
+
+  parseInsertFlags(bytes) {
+    if (!this.curIns || bytes.length < 8) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+    const flags = dv.getUint32(4, true);
+    this.curIns.enabled = (flags & (1 << 3)) !== 0;
+    this.curIns.solo = (flags & (1 << 12)) !== 0;
+    this.curIns.locked = (flags & (1 << 11)) !== 0;
+  }
+
+  parseMixerParams(bytes) {
+    if (bytes.length < 12) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+    const count = Math.floor(bytes.length / 12);
+    const params = {};
+    for (let i = 0; i < count; i++) {
+      const o = i * 12;
+      const paramId    = dv.getUint8(o + 4);
+      const channelData = dv.getUint16(o + 6, true);
+      const msg        = dv.getInt32(o + 8, true);
+      const insertIdx  = (channelData >> 6) & 0x7F;
+      const slotIdx    = channelData & 0x3F;
+      if (!params[insertIdx]) params[insertIdx] = { slots: {}, sends: {} };
+      const bucket = params[insertIdx];
+      if (paramId === MIXER_PARAM_ID.SLOT_ENABLED || paramId === MIXER_PARAM_ID.SLOT_MIX) {
+        if (!bucket.slots[slotIdx]) bucket.slots[slotIdx] = {};
+        bucket.slots[slotIdx][paramId === MIXER_PARAM_ID.SLOT_ENABLED ? 'enabled' : 'mix'] = msg;
+      } else if (paramId >= MIXER_PARAM_ID.SEND_START && paramId <= MIXER_PARAM_ID.SEND_END) {
+        bucket.sends[paramId - MIXER_PARAM_ID.SEND_START] = msg;
+      } else if (paramId === MIXER_PARAM_ID.VOLUME) {
+        bucket.volume = msg;
+      } else if (paramId === MIXER_PARAM_ID.PAN) {
+        bucket.pan = msg;
+      } else if (paramId === MIXER_PARAM_ID.STEREO_SEP) {
+        bucket.stereoSep = msg;
+      }
+    }
+    this.proj.mixerParams = params;
   }
 }
 
@@ -608,16 +958,18 @@ class FLMWriter {
     const p = this.proj;
 
     this.text(EV.TITLE, p.title || 'Untitled');
-    this.text(EV.AUTHOR, p.author || '');
+    this.text(EV.ARTISTS, p.author || '');
     this.text(EV.GENRE, p.genre || '');
     this.text(EV.COMMENT, p.comment || '');
     this.text(EV.VERSION, p.version || '20.9.2');
 
     this.dwordEv(EV.TEMPO_NEW, Math.round((p.tempo || 140) * 1000));
-    this.byteEv(EV.TIMESIG_NUM, p.timeSigNum || 4);
-    this.byteEv(EV.TIMESIG_DEN, p.timeSigDen || 4);
+    this.byteEv(EV.ARR_TSNUM, p.timeSigNum || 4);
+    this.byteEv(EV.ARR_TSDEN, p.timeSigDen || 4);
     this.byteEv(EV.MAIN_VOL, Math.max(0, Math.min(255, p.mainVolume ?? 100)));
     this.wordEv(EV.MAIN_PITCH, ((p.mainPitch ?? 0) + 65536) & 0xFFFF);
+    this.byteEv(EV.LOOP_ACTIVE, p.loopActive ? 1 : 0);
+    this.byteEv(EV.PAN_LAW, p.panLaw || 0);
 
     p.channels.forEach((ch, i) => {
       this.wordEv(EV.CHAN_NEW, ch.iid ?? i);
@@ -657,6 +1009,56 @@ class FLMWriter {
         this.u8(EV.PAT_NOTES);
         this.varLen(noteBytes.length);
         for (const b of noteBytes) this.u8(b);
+      }
+    });
+
+    p.timeMarkers.forEach(tm => {
+      if (tm.numerator !== undefined) this.byteEv(EV.TM_NUMERATOR, tm.numerator);
+      if (tm.denominator !== undefined) this.byteEv(EV.TM_DENOMINATOR, tm.denominator);
+      if (tm.name) this.text(EV.TM_NAME, tm.name);
+      this.dwordEv(EV.TM_POSITION, tm.position >>> 0);
+    });
+
+    p.inserts.forEach((ins, i) => {
+      this.wordEv(EV.INS_ICON, ins.icon || 0);
+      this.text(EV.INS_NAME, ins.name || `Insert ${i + 1}`);
+      this.dwordEv(EV.INS_COLOR, ins.color || 0);
+      this.dwordEv(EV.INS_OUTPUT, (ins.output ?? -1) >>> 0);
+      this.dwordEv(EV.INS_INPUT, (ins.input ?? -1) >>> 0);
+    });
+
+    p.arrangements.forEach((arr, ai) => {
+      this.wordEv(EV.ARR_NEW, ai);
+      this.text(EV.ARR_NAME, arr.name || `Arrangement ${ai + 1}`);
+      arr.tracks.forEach(track => {
+        this.text(EV.ARR_TRACK_NAME, track.name || `Track ${track.index + 1}`);
+        const trackBytes = new Uint8Array(13);
+        const dv = new DataView(trackBytes.buffer);
+        dv.setUint32(4, track.color >>> 0, true);
+        dv.setUint32(8, track.icon >>> 0, true);
+        dv.setUint8(12, track.enabled === false ? 0 : 1);
+        this.u8(EV.ARR_TRACK_DATA);
+        this.varLen(trackBytes.length);
+        for (const b of trackBytes) this.u8(b);
+      });
+      const allItems = arr.tracks.flatMap(t => t.items.map(it => ({ ...it, row: t._row ?? t.index })));
+      if (allItems.length) {
+        const itemBytes = new Uint8Array(allItems.length * 32);
+        allItems.forEach((it, i) => {
+          const o = i * 32;
+          const dv = new DataView(itemBytes.buffer, o, 32);
+          dv.setUint32(0, it.position >>> 0, true);
+          dv.setUint16(4, 20480, true);
+          dv.setUint16(6, 0, true);
+          dv.setUint32(8, it.length >>> 0, true);
+          dv.setUint16(12, (499 - (it.row || 0)) & 0xFFFF, true);
+          dv.setUint16(14, it.group || 0, true);
+          dv.setFloat32(24, 0, true);
+          dv.setFloat32(28, 0, true);
+        });
+        this.u8(EV.ARR_PLAYLIST);
+        this.varLen(itemBytes.length);
+        for (const b of itemBytes) this.u8(b);
       }
     });
 
@@ -730,6 +1132,12 @@ class MidiWriter {
     const titleBytes = MidiWriter.textBytes(titleSrc);
     events.push({ tick: 0, priority: -3, bytes: [0xFF,0x03, ...MidiWriter.vlq(titleBytes.length), ...titleBytes] });
 
+    p.timeMarkers.forEach(tm => {
+      if (!tm.name) return;
+      const nameBytes = MidiWriter.textBytes(tm.name);
+      events.push({ tick: tm.position || 0, priority: -4, bytes: [0xFF,0x06, ...MidiWriter.vlq(nameBytes.length), ...nameBytes] });
+    });
+
     let patternOffset = 0;
     const patternOffsets = p.patterns.map(pat => {
       const start = patternOffset;
@@ -766,12 +1174,29 @@ class FLMWriterJSON {
     const p = this.proj;
     const payload = {
       title: p.title, author: p.author, genre: p.genre, comment: p.comment,
+      url: p.url, licensee: p.licensee, dataPath: p.dataPath,
+      createdOn: p.createdOn ? p.createdOn.toISOString() : null, timeSpentHours: p.timeSpentHours,
       tempo: p.tempo, ppq: p.ppq, timeSigNum: p.timeSigNum, timeSigDen: p.timeSigDen,
-      mainVolume: p.mainVolume, mainPitch: p.mainPitch,
-      channels: p.channels.map(c => ({ name: c.name, volume: c.volume, pan: c.pan, color: c.color, muted: !!c.muted, enabled: c.enabled !== false })),
+      mainVolume: p.mainVolume, mainPitch: p.mainPitch, loopActive: p.loopActive, panLaw: p.panLaw,
+      channels: p.channels.map(c => ({
+        name: c.name, volume: c.volume, pan: c.pan, color: c.color, kind: c.kind,
+        muted: !!c.muted, enabled: c.enabled !== false, rootNote: c.rootNote,
+        fineTune: c.fineTune, reverb: c.reverb, groupNum: c.groupNum, samplePath: c.samplePath,
+        automation: c.automation || null,
+      })),
       patterns: p.patterns.map(pat => ({
         name: pat.name, color: pat.color,
         notes: pat.notes.map(n => ({ position: n.position, length: n.length, key: n.key, velocity: n.velocity, pan: n.pan, channel: n.channel }))
+      })),
+      timeMarkers: p.timeMarkers,
+      inserts: p.inserts.map(i => ({ name: i.name, color: i.color, output: i.output, input: i.input, enabled: i.enabled, solo: i.solo, routing: i.routing })),
+      mixerParams: p.mixerParams,
+      arrangements: p.arrangements.map(a => ({
+        name: a.name,
+        tracks: a.tracks.map(t => ({
+          name: t.name, color: t.color, enabled: t.enabled,
+          items: t.items.map(it => ({ position: it.position, length: it.length, label: it.label, kind: it.kind }))
+        }))
       })),
     };
     const json = JSON.stringify(payload);
@@ -800,6 +1225,7 @@ const jsonBtn       = document.getElementById('jsonBtn');
 let currentProj = null;
 let currentFileBase = 'project';
 let activePatternIdx = 0;
+let activeArrIdx = 0;
 
 function setStatus(type, msg) {
   statusEl.className = `status ${type}`;
@@ -846,6 +1272,8 @@ function handleFile(file) {
         currentProj = proj;
         setProgress(100, 'Done');
         setTimeout(hideProgress, 350);
+        activePatternIdx = 0;
+        activeArrIdx = 0;
         renderDetection(proj);
         if (proj.warnings.length) {
           setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
@@ -881,6 +1309,9 @@ function renderDetection(proj) {
     ['Channels', proj.channels.length],
     ['Patterns', proj.patterns.length],
     ['Notes', totalNotes],
+    ['Arrangements', proj.arrangements.length],
+    ['Inserts', proj.inserts.length],
+    ['Markers', proj.timeMarkers.length],
     ['Est. length', formatDuration(durationSec)],
   ];
   cards.forEach(([label, value]) => {
@@ -897,6 +1328,8 @@ function renderDetection(proj) {
     if (proj.author)  meta.innerHTML += `<div class="stat"><strong>Author:</strong> ${escapeHtml(proj.author)}</div>`;
     if (proj.genre)   meta.innerHTML += `<div class="stat"><strong>Genre:</strong> ${escapeHtml(proj.genre)}</div>`;
     if (proj.version) meta.innerHTML += `<div class="stat"><strong>FL version:</strong> ${escapeHtml(proj.version)}</div>`;
+    if (proj.createdOn) meta.innerHTML += `<div class="stat"><strong>Created:</strong> ${proj.createdOn.toISOString().slice(0,10)}</div>`;
+    if (proj.timeSpentHours) meta.innerHTML += `<div class="stat"><strong>Time spent:</strong> ${proj.timeSpentHours.toFixed(1)}h</div>`;
     detBody.appendChild(meta);
   }
 
@@ -915,6 +1348,7 @@ function renderDetection(proj) {
       <div class="channel-swatch" style="background:${swatchColor}"></div>
       <div class="channel-name">${escapeHtml(ch.name)}</div>
       <div class="channel-meta">
+        <span>${escapeHtml(ch.kind || 'Sampler')}</span>
         <span>vol ${ch.volume}</span>
         <span>pan ${ch.pan}</span>
         ${ch.muted ? '<span class="off">muted</span>' : ''}
@@ -967,6 +1401,80 @@ function renderDetection(proj) {
     rollWrap.innerHTML = '<div class="empty-hint">no patterns detected</div>';
   }
 
+  if (proj.timeMarkers.length) {
+    const tmLabel = document.createElement('div');
+    tmLabel.className = 'section-label';
+    tmLabel.textContent = `Time markers (${proj.timeMarkers.length})`;
+    detBody.appendChild(tmLabel);
+    const tmList = document.createElement('div');
+    tmList.className = 'tag-list';
+    proj.timeMarkers.forEach(tm => {
+      const chip = document.createElement('div');
+      chip.className = 'marker-chip';
+      const sig = tm.numerator !== undefined ? ` ${tm.numerator}/${tm.denominator}` : '';
+      chip.textContent = `${tm.name || 'Marker'} @ ${tm.position}${sig}`;
+      tmList.appendChild(chip);
+    });
+    detBody.appendChild(tmList);
+  }
+
+  if (proj.arrangements.length) {
+    const arrLabel = document.createElement('div');
+    arrLabel.className = 'section-label';
+    arrLabel.textContent = `Arrangement / playlist`;
+    detBody.appendChild(arrLabel);
+
+    if (proj.arrangements.length > 1) {
+      const tabs = document.createElement('div');
+      tabs.className = 'arr-tabs';
+      proj.arrangements.forEach((arr, i) => {
+        const tab = document.createElement('div');
+        tab.className = 'arr-tab' + (i === activeArrIdx ? ' active' : '');
+        tab.textContent = arr.name;
+        tab.addEventListener('click', () => {
+          activeArrIdx = i;
+          tabs.querySelectorAll('.arr-tab').forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+          drawTracks(proj.arrangements[i]);
+        });
+        tabs.appendChild(tab);
+      });
+      detBody.appendChild(tabs);
+    }
+
+    const trackWrap = document.createElement('div');
+    trackWrap.id = 'trackWrap';
+    detBody.appendChild(trackWrap);
+    drawTracks(proj.arrangements[activeArrIdx]);
+  }
+
+  if (proj.inserts.length) {
+    const mixLabel = document.createElement('div');
+    mixLabel.className = 'section-label';
+    mixLabel.textContent = `Mixer (${proj.inserts.length} inserts)`;
+    detBody.appendChild(mixLabel);
+    const mixList = document.createElement('div');
+    mixList.className = 'channel-list';
+    proj.inserts.forEach((ins, i) => {
+      const params = proj.mixerParams[i] || {};
+      const volPct = params.volume !== undefined ? Math.round((params.volume / 12800) * 100) : null;
+      const row = document.createElement('div');
+      row.className = 'mixer-strip';
+      const swatchColor = rgbFromFlpColor(ins.color) || colorForIndex(i);
+      row.innerHTML = `
+        <div class="mixer-swatch" style="background:${swatchColor}"></div>
+        <div class="mixer-name">${escapeHtml(ins.name)}</div>
+        ${volPct !== null ? `<div class="mixer-bar-wrap"><div class="mixer-bar-fill" style="width:${Math.max(0,Math.min(100,volPct))}%"></div></div>` : ''}
+        <div class="mixer-meta">
+          ${volPct !== null ? `<span>${volPct}%</span>` : ''}
+          ${ins.enabled === false ? '<span class="off">off</span>' : ''}
+          ${ins.solo ? '<span>solo</span>' : ''}
+        </div>`;
+      mixList.appendChild(row);
+    });
+    detBody.appendChild(mixList);
+  }
+
   if (proj.warnings.length) {
     const box = document.createElement('div');
     box.className = 'warning-box';
@@ -976,7 +1484,7 @@ function renderDetection(proj) {
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Image-Line rewrote FL Studio Mobile from scratch in 2016 (versions 3+), replacing the old Artua-built app — so there may be two unrelated .flm formats across versions, and neither is publicly documented. The lab below has two structurally different guesses to try.';
+  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Image-Line rewrote FL Studio Mobile from scratch in 2016 (versions 3+), replacing the old Artua-built app — so there may be two unrelated .flm formats across versions, and neither is publicly documented. The lab below has two structurally different guesses to try. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.';
   detBody.appendChild(note);
 
   const labLabel = document.createElement('div');
@@ -989,7 +1497,7 @@ function renderDetection(proj) {
   labRow.innerHTML = `
     <div class="lab-btn" id="labA">
       <div class="lab-title">Variant A — FLP container</div>
-      <div class="lab-sub">Reuses FL Studio's own FLhd/FLdt event-chunk format with a .flm extension.</div>
+      <div class="lab-sub">Reuses FL Studio's own FLhd/FLdt event-chunk format with a .flm extension, now including tracks/playlist/inserts/markers.</div>
     </div>
     <div class="lab-btn" id="labB">
       <div class="lab-title">Variant B — JSON envelope</div>
@@ -1008,6 +1516,44 @@ function renderDetection(proj) {
   });
 
   detPanel.classList.remove('hidden');
+}
+
+function drawTracks(arr) {
+  const wrap = document.getElementById('trackWrap');
+  if (!wrap) return;
+  wrap.innerHTML = '';
+  if (!arr || !arr.tracks.length) {
+    wrap.innerHTML = '<div class="track-empty-hint">no tracks/playlist items detected in this arrangement</div>';
+    return;
+  }
+
+  let maxEnd = 1;
+  arr.tracks.forEach(t => t.items.forEach(it => { maxEnd = Math.max(maxEnd, it.position + it.length); }));
+
+  const list = document.createElement('div');
+  list.className = 'track-list';
+  const sortedTracks = [...arr.tracks].sort((a, b) => (a._row ?? a.index) - (b._row ?? b.index));
+  sortedTracks.forEach((track, ti) => {
+    const row = document.createElement('div');
+    row.className = 'track-row';
+    const swatchColor = rgbFromFlpColor(track.color) || colorForIndex(ti);
+    row.innerHTML = `
+      <div class="track-color" style="background:${swatchColor}"></div>
+      <div class="track-name${track.enabled === false ? ' off' : ''}">${escapeHtml(track.name)}</div>
+      <div class="track-lane"></div>`;
+    const lane = row.querySelector('.track-lane');
+    track.items.forEach(it => {
+      const bar = document.createElement('div');
+      bar.className = 'track-item';
+      bar.title = it.label;
+      bar.style.left = `${(it.position / maxEnd) * 100}%`;
+      bar.style.width = `${Math.max(0.6, (it.length / maxEnd) * 100)}%`;
+      bar.style.background = it.kind === 'pattern' ? swatchColor : '#9090C0';
+      lane.appendChild(bar);
+    });
+    list.appendChild(row);
+  });
+  wrap.appendChild(list);
 }
 
 function drawPianoRoll(pattern) {
