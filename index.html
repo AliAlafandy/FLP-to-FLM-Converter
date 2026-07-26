@@ -12,6 +12,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZCNTQ3Ii8+PHN0b3Agb2Zmc2V0PSI0NSUiIHN0b3AtY29sb3I9IiNGRjdBMDAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjQ1MDAiLz4KPC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSIjMEIwQjE2Ii8+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjEyIi8+CjxyZWN0IHg9IjEyIiB5PSIzNiIgd2lkdGg9IjciIGhlaWdodD0iMTQiIHJ4PSIyLjUiIGZpbGw9InVybCgjZykiLz4KPHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iNyIgaGVpZ2h0PSIyNiIgcng9IjIuNSIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB4PSIzNiIgeT0iMTQiIHdpZHRoPSI3IiBoZWlnaHQ9IjM2IiByeD0iMi41IiBmaWxsPSJ1cmwoI2cpIi8+CjxwYXRoIGQ9Ik00NiAyMiBDNTQgMjQgNTUgMzQgNDcgNDAgQzQzIDQzIDQzIDQ3IDQ3IDUwIiBzdHJva2U9InVybCgjZykiIHN0cm9rZS13aWR0aD0iMy40IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
 <link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSIjMEIwQjE2Ii8+CjxyZWN0IHg9IjEyIiB5PSIzNiIgd2lkdGg9IjciIGhlaWdodD0iMTQiIHJ4PSIyLjUiIGZpbGw9IiNGRjdBMDAiLz4KPHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iNyIgaGVpZ2h0PSIyNiIgcng9IjIuNSIgZmlsbD0iI0ZGN0EwMCIvPgo8cmVjdCB4PSIzNiIgeT0iMTQiIHdpZHRoPSI3IiBoZWlnaHQ9IjM2IiByeD0iMi41IiBmaWxsPSIjRkY3QTAwIi8+Cjwvc3ZnPg==">
+<link rel="manifest" href="manifest.json">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
@@ -544,6 +545,7 @@ body.theme-light .note-box       { background: #EAF4FF; }
   <div class="toolbar">
     <button class="toolbar-btn" id="settingsToggleBtn">⚙ Settings</button>
     <button class="toolbar-btn" id="historyToggleBtn">🕘 History <span class="toolbar-count hidden" id="historyCount">0</span></button>
+    <button class="toolbar-btn hidden" id="installBtn">📲 Install app</button>
   </div>
 
   <div class="panel hidden" id="settingsPanel">
@@ -2313,7 +2315,4 @@ function renderDetection(proj) {
   labRow.querySelector('#labA').addEventListener('click', () => {
     const bytes = new FLMWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: proj.arrangements.length ? activeArrIdx : null });
     downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.variantA.flm`);
-    setStatus('info', `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
-  });
-  labRow.querySelector('#labB').addEventListener('click', () => {
-    const bytes = new FLMWriterJSON(getExport
+    setStatus('info', `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens
