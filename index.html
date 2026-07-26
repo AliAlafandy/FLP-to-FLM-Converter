@@ -458,6 +458,24 @@ body.theme-light .status.info    { background: #EAF4FF; }
 body.theme-light .warning-box    { background: #FFF6E6; }
 body.theme-light .note-box       { background: #EAF4FF; }
 
+.search-input {
+  width: 100%; margin-bottom: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 12px; outline: none;
+}
+.search-input:focus { border-color: var(--accent); }
+.search-input::placeholder { color: var(--muted); }
+
+.play-row { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.play-btn {
+  font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
+  background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%);
+  color: #fff; border: none; border-radius: 8px; padding: 8px 16px; cursor: pointer;
+}
+.play-btn:hover { opacity: 0.92; }
+.play-status { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
+
 .hidden { display: none !important; }
 </style>
 </head>
@@ -956,11 +974,13 @@ class FLPParser {
     }
 
     const count = Math.floor(bytes.length / 24);
+    let slideCount = 0;
     for (let i = 0; i < count; i++) {
       const o = i * 24;
       const dv = new DataView(bytes.buffer, bytes.byteOffset + o, 24);
 
       const position    = dv.getUint32(0, true);
+      const flags       = dv.getUint16(4, true);
       const rackChannel = dv.getUint16(6, true);
       const length      = dv.getUint32(8, true);
       const key         = dv.getUint16(12, true);
@@ -970,12 +990,17 @@ class FLPParser {
       const midiChannel = dv.getUint8(19);
       const pan         = dv.getUint8(20);
       const velocity    = dv.getUint8(21);
+      const modX        = dv.getUint8(22);
+      const modY        = dv.getUint8(23);
+      const slide       = (flags & 0x0008) !== 0;
 
       if (length <= 0 || length > this.proj.ppq * 256) continue;
       if (key > 131) continue;
+      if (slide) slideCount++;
 
-      this.curPat.notes.push({ position, length, key, finePitch, release, pan, velocity, group, midiChannel, channel: rackChannel });
+      this.curPat.notes.push({ position, length, key, finePitch, release, pan, velocity, group, midiChannel, channel: rackChannel, flags, slide, modX, modY });
     }
+    if (slideCount) this.curPat.slideCount = (this.curPat.slideCount || 0) + slideCount;
   }
 
   parseAutomation(bytes) {
@@ -1200,7 +1225,7 @@ class FLMWriter {
           const o = i * 24;
           const dv = new DataView(noteBytes.buffer, o, 24);
           dv.setUint32(0, n.position >>> 0, true);
-          dv.setUint16(4, 0, true);
+          dv.setUint16(4, n.flags ?? (n.slide ? 0x0008 : 0), true);
           dv.setUint16(6, n.channel || 0, true);
           dv.setUint32(8, n.length >>> 0, true);
           dv.setUint16(12, n.key ?? 60, true);
@@ -1211,8 +1236,8 @@ class FLMWriter {
           dv.setUint8(19, n.midiChannel ?? 0);
           dv.setUint8(20, n.pan ?? 64);
           dv.setUint8(21, n.velocity ?? 100);
-          dv.setUint8(22, 128);
-          dv.setUint8(23, 128);
+          dv.setUint8(22, n.modX ?? 128);
+          dv.setUint8(23, n.modY ?? 128);
         });
         this.u8(EV.PAT_NOTES);
         this.varLen(noteBytes.length);
@@ -1402,7 +1427,7 @@ class FLMWriterJSON {
       })),
       patterns: patterns.map(pat => ({
         name: pat.name, color: pat.color,
-        notes: pat.notes.map(n => ({ position: n.position, length: n.length, key: n.key, velocity: n.velocity, pan: n.pan, channel: n.channel }))
+        notes: pat.notes.map(n => ({ position: n.position, length: n.length, key: n.key, velocity: n.velocity, pan: n.pan, channel: n.channel, slide: !!n.slide }))
       })),
       timeMarkers: p.timeMarkers,
       inserts: p.inserts.map(i => ({ name: i.name, color: i.color, output: i.output, input: i.input, enabled: i.enabled, solo: i.solo, routing: i.routing })),
@@ -1946,6 +1971,7 @@ function renderShowcase(proj, buf, file) {
 
 function renderDetection(proj) {
   const totalNotes = proj.patterns.reduce((s, p) => s + p.notes.length, 0);
+  const totalSlides = proj.patterns.reduce((s, p) => s + p.notes.filter(n => n.slide).length, 0);
   let lastTick = 0;
   proj.patterns.forEach(p => p.notes.forEach(n => { lastTick = Math.max(lastTick, n.position + n.length); }));
   const secondsPerTick = 60 / (proj.tempo || 140) / (proj.ppq || 96);
@@ -1963,6 +1989,7 @@ function renderDetection(proj) {
     ['Channels', proj.channels.length],
     ['Patterns', proj.patterns.length],
     ['Notes', totalNotes],
+    ['Slides', totalSlides],
     ['Arrangements', proj.arrangements.length],
     ['Inserts', proj.inserts.length],
     ['Markers', proj.timeMarkers.length],
@@ -1998,6 +2025,12 @@ function renderDetection(proj) {
   chSelectRow.className = 'select-row';
   chSelectRow.innerHTML = '<button class="select-link" id="chSelectAll">select all</button><button class="select-link" id="chSelectNone">select none</button>';
   detBody.appendChild(chSelectRow);
+
+  const chSearch = document.createElement('input');
+  chSearch.type = 'text';
+  chSearch.className = 'search-input';
+  chSearch.placeholder = '🔎 filter channels by name…';
+  detBody.appendChild(chSearch);
 
   const chList = document.createElement('div');
   chList.className = 'channel-list';
@@ -2038,6 +2071,13 @@ function renderDetection(proj) {
     selectedChannels = new Set();
     chList.querySelectorAll('.item-check').forEach(cb => cb.checked = false);
   });
+  chSearch.addEventListener('input', () => {
+    const q = chSearch.value.trim().toLowerCase();
+    Array.from(chList.children).forEach((row, i) => {
+      const match = !q || proj.channels[i].name.toLowerCase().includes(q);
+      row.classList.toggle('hidden', !match);
+    });
+  });
 
   selectedPatterns = new Set(proj.patterns.map((p, i) => i));
 
@@ -2050,6 +2090,12 @@ function renderDetection(proj) {
   patSelectRow.className = 'select-row';
   patSelectRow.innerHTML = '<button class="select-link" id="patSelectAll">select all</button><button class="select-link" id="patSelectNone">select none</button>';
   detBody.appendChild(patSelectRow);
+
+  const patSearch = document.createElement('input');
+  patSearch.type = 'text';
+  patSearch.className = 'search-input';
+  patSearch.placeholder = '🔎 filter patterns by name…';
+  detBody.appendChild(patSearch);
 
   const tagList = document.createElement('div');
   tagList.className = 'tag-list';
@@ -2070,6 +2116,11 @@ function renderDetection(proj) {
       tagList.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
       tag.classList.add('active');
       drawPianoRoll(proj.patterns[i]);
+      stopPlayback();
+      const btn = document.getElementById('playPatternBtn');
+      const st = document.getElementById('playStatus');
+      if (btn) btn.textContent = '▶ Play pattern';
+      if (st) st.textContent = '';
     });
     tagList.appendChild(tag);
   });
@@ -2082,11 +2133,39 @@ function renderDetection(proj) {
     selectedPatterns = new Set();
     tagList.querySelectorAll('.item-check').forEach(cb => cb.checked = false);
   });
+  patSearch.addEventListener('input', () => {
+    const q = patSearch.value.trim().toLowerCase();
+    Array.from(tagList.children).forEach((tag, i) => {
+      const match = !q || proj.patterns[i].name.toLowerCase().includes(q);
+      tag.classList.toggle('hidden', !match);
+    });
+  });
 
   const rollWrap = document.createElement('div');
   rollWrap.className = 'piano-roll';
   rollWrap.innerHTML = '<canvas id="rollCanvas"></canvas>';
   detBody.appendChild(rollWrap);
+
+  const playRow = document.createElement('div');
+  playRow.className = 'play-row';
+  playRow.innerHTML = '<button class="play-btn" id="playPatternBtn">▶ Play pattern</button><span class="play-status" id="playStatus"></span>';
+  detBody.appendChild(playRow);
+  const playBtn = playRow.querySelector('#playPatternBtn');
+  const playStatus = playRow.querySelector('#playStatus');
+  playBtn.addEventListener('click', () => {
+    if (isPlaying()) {
+      stopPlayback();
+      playBtn.textContent = '▶ Play pattern';
+      playStatus.textContent = '';
+    } else {
+      const pat = proj.patterns[activePatternIdx];
+      if (!pat || !pat.notes.length) { playStatus.textContent = 'no notes in this pattern'; return; }
+      playPattern(pat, proj, () => { playBtn.textContent = '▶ Play pattern'; playStatus.textContent = ''; });
+      playBtn.textContent = '■ Stop';
+      playStatus.textContent = `playing "${pat.name}"…`;
+    }
+  });
+
   if (proj.patterns.length) {
     requestAnimationFrame(() => drawPianoRoll(proj.patterns[activePatternIdx]));
   } else {
@@ -2176,7 +2255,7 @@ function renderDetection(proj) {
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Image-Line rewrote FL Studio Mobile from scratch in 2016 (versions 3+), replacing the old Artua-built app — so there may be two unrelated .flm formats across versions, and neither is publicly documented. The lab below has two structurally different guesses to try. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.';
+  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br>Image-Line rewrote FL Studio Mobile from scratch in 2016 (versions 3+), replacing the old Artua-built app — so there may be two unrelated .flm formats across versions, and neither is publicly documented. The lab below has two structurally different guesses to try. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.';
   detBody.appendChild(note);
 
   const labLabel = document.createElement('div');
@@ -2248,74 +2327,7 @@ function drawTracks(arr) {
   wrap.appendChild(list);
 }
 
-function drawPianoRoll(pattern) {
+function drawPianoRoll(pattern, playheadFrac) {
   const canvas = document.getElementById('rollCanvas');
   if (!canvas) return;
-  const dpr = window.devicePixelRatio || 1;
-  const w = canvas.clientWidth || 600, h = canvas.clientHeight || 130;
-  canvas.width = w * dpr; canvas.height = h * dpr;
-  const ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, w, h);
-
-  if (!pattern || !pattern.notes.length) return;
-
-  let minKey = 127, maxKey = 0, minPos = Infinity, maxPos = 0;
-  pattern.notes.forEach(n => {
-    minKey = Math.min(minKey, n.key);
-    maxKey = Math.max(maxKey, n.key);
-    minPos = Math.min(minPos, n.position);
-    maxPos = Math.max(maxPos, n.position + n.length);
-  });
-  const keyRange = Math.max(1, maxKey - minKey + 2);
-  const posRange = Math.max(1, maxPos - minPos);
-  const rowH = h / keyRange;
-
-  pattern.notes.forEach(n => {
-    const x = ((n.position - minPos) / posRange) * (w - 4) + 2;
-    const nw = Math.max(2, (n.length / posRange) * (w - 4));
-    const y = h - ((n.key - minKey + 1) / keyRange) * h;
-    ctx.fillStyle = colorForIndex(n.channel || 0);
-    ctx.globalAlpha = 0.55 + (n.velocity || 100) / 127 * 0.45;
-    ctx.fillRect(x, y, nw, Math.max(2, rowH - 1));
-  });
-  ctx.globalAlpha = 1;
-}
-
-midiBtn.addEventListener('click', () => {
-  if (!currentProj) return;
-  try {
-    const writer = new MidiWriter(getExportProj());
-    const bytes = writer.build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
-    const blob = new Blob([bytes], { type: 'audio/midi' });
-    downloadBlob(blob, `${currentFileBase}.mid`);
-    setStatus('success', `Generated ${currentFileBase}.mid (${(bytes.length / 1024).toFixed(1)} KB) from the selected channels/patterns, combined on separate MIDI channels. For the documented Channel Menu → Import MIDI Tracks flow, prefer the per-channel ↓ .mid buttons below instead.`);
-  } catch (err) {
-    setStatus('error', `Could not build the .mid file: ${err.message}`);
-  }
-});
-
-jsonBtn.addEventListener('click', () => {
-  if (!currentProj) return;
-  const exportProj = getExportProj();
-  const filtered = {
-    ...exportProj,
-    channels: exportProj.channels.filter((c, i) => selectedChannels.has(i)),
-    patterns: exportProj.patterns.filter((p, i) => selectedPatterns.has(i)),
-  };
-  const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: 'application/json' });
-  downloadBlob(blob, `${currentFileBase}.analysis.json`);
-});
-
-function downloadBlob(blob, filename) {
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = filename;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 4000);
-}
-</script>
-</body>
-</html>
+  const dpr = window.devicePixelR
