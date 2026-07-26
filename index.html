@@ -2,13 +2,18 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#04040A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>FLP → FLM Converter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZCNTQ3Ii8+PHN0b3Agb2Zmc2V0PSI0NSUiIHN0b3AtY29sb3I9IiNGRjdBMDAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjQ1MDAiLz4KPC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSIjMEIwQjE2Ii8+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjEyIi8+CjxyZWN0IHg9IjEyIiB5PSIzNiIgd2lkdGg9IjciIGhlaWdodD0iMTQiIHJ4PSIyLjUiIGZpbGw9InVybCgjZykiLz4KPHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iNyIgaGVpZ2h0PSIyNiIgcng9IjIuNSIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB4PSIzNiIgeT0iMTQiIHdpZHRoPSI3IiBoZWlnaHQ9IjM2IiByeD0iMi41IiBmaWxsPSJ1cmwoI2cpIi8+CjxwYXRoIGQ9Ik00NiAyMiBDNTQgMjQgNTUgMzQgNDcgNDAgQzQzIDQzIDQzIDQ3IDQ3IDUwIiBzdHJva2U9InVybCgjZykiIHN0cm9rZS13aWR0aD0iMy40IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSIjMEIwQjE2Ii8+CjxyZWN0IHg9IjEyIiB5PSIzNiIgd2lkdGg9IjciIGhlaWdodD0iMTQiIHJ4PSIyLjUiIGZpbGw9IiNGRjdBMDAiLz4KPHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iNyIgaGVpZ2h0PSIyNiIgcng9IjIuNSIgZmlsbD0iI0ZGN0EwMCIvPgo8cmVjdCB4PSIzNiIgeT0iMTQiIHdpZHRoPSI3IiBoZWlnaHQ9IjM2IiByeD0iMi41IiBmaWxsPSIjRkY3QTAwIi8+Cjwvc3ZnPg==">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
 
 :root {
   --bg:       #04040A;
@@ -476,6 +481,35 @@ body.theme-light .note-box       { background: #EAF4FF; }
 .play-btn:hover { opacity: 0.92; }
 .play-status { font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; color: var(--muted); }
 
+@media (hover: none) {
+  .toolbar-btn:hover, .mode-tab:hover, .seg-btn:hover, .lab-btn:hover,
+  .channel-midi-btn:hover, .batch-mini-btn:hover, .history-item:hover,
+  .tag:hover, .btn-secondary:hover, .info-card:hover { border-color: inherit; color: inherit; }
+}
+.toolbar-btn:active, .mode-tab:active, .seg-btn:active, .lab-btn:active,
+.channel-midi-btn:active, .batch-mini-btn:active, .history-item:active,
+.tag:active, .arr-tab:active, .select-link:active, .track-row:active {
+  transform: scale(0.96); opacity: 0.85;
+}
+.toolbar-btn, .mode-tab, .seg-btn, .lab-btn, .channel-midi-btn, .batch-mini-btn,
+.history-item, .tag, .arr-tab, .select-link, .btn, .item-check, .drop-zone,
+.play-btn, .theme-toggle, input[type=checkbox] {
+  touch-action: manipulation;
+}
+.item-check { width: 19px; height: 19px; }
+.select-link { padding: 6px 4px; }
+.channel-midi-btn, .batch-mini-btn { padding: 7px 11px; }
+.field-label input, .field-label select, .search-input { font-size: 1rem; }
+.channel-item, .mixer-strip, .history-item { min-height: 44px; }
+
+@media (max-width: 400px) {
+  body { padding: 24px 12px 48px; }
+  .track-name { width: 72px; }
+  .channel-meta { flex-wrap: wrap; justify-content: flex-end; row-gap: 2px; }
+  .field-row { flex-direction: column; }
+  .toolbar { flex-wrap: wrap; }
+}
+
 .hidden { display: none !important; }
 </style>
 </head>
@@ -582,6 +616,7 @@ body.theme-light .note-box       { background: #EAF4FF; }
   <div class="btn-row hidden" id="btnRow">
     <button class="btn btn-primary" id="midiBtn">⬇ Download .mid (all)</button>
     <button class="btn btn-secondary" id="jsonBtn">⬇ .json</button>
+    <button class="btn btn-secondary hidden" id="shareBtn">📤 Share .mid</button>
   </div>
 
   <footer>
@@ -2281,53 +2316,4 @@ function renderDetection(proj) {
     setStatus('info', `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
   });
   labRow.querySelector('#labB').addEventListener('click', () => {
-    const bytes = new FLMWriterJSON(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: proj.arrangements.length ? activeArrIdx : null });
-    downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.variantB.flm`);
-    setStatus('info', `Generated Variant B (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
-  });
-
-  detPanel.classList.remove('hidden');
-}
-
-function drawTracks(arr) {
-  const wrap = document.getElementById('trackWrap');
-  if (!wrap) return;
-  wrap.innerHTML = '';
-  if (!arr || !arr.tracks.length) {
-    wrap.innerHTML = '<div class="track-empty-hint">no tracks/playlist items detected in this arrangement</div>';
-    return;
-  }
-
-  let maxEnd = 1;
-  arr.tracks.forEach(t => t.items.forEach(it => { maxEnd = Math.max(maxEnd, it.position + it.length); }));
-
-  const list = document.createElement('div');
-  list.className = 'track-list';
-  const sortedTracks = [...arr.tracks].sort((a, b) => (a._row ?? a.index) - (b._row ?? b.index));
-  sortedTracks.forEach((track, ti) => {
-    const row = document.createElement('div');
-    row.className = 'track-row';
-    const swatchColor = rgbFromFlpColor(track.color) || colorForIndex(ti);
-    row.innerHTML = `
-      <div class="track-color" style="background:${swatchColor}"></div>
-      <div class="track-name${track.enabled === false ? ' off' : ''}">${escapeHtml(track.name)}</div>
-      <div class="track-lane"></div>`;
-    const lane = row.querySelector('.track-lane');
-    track.items.forEach(it => {
-      const bar = document.createElement('div');
-      bar.className = 'track-item';
-      bar.title = it.label;
-      bar.style.left = `${(it.position / maxEnd) * 100}%`;
-      bar.style.width = `${Math.max(0.6, (it.length / maxEnd) * 100)}%`;
-      bar.style.background = it.kind === 'pattern' ? swatchColor : '#9090C0';
-      lane.appendChild(bar);
-    });
-    list.appendChild(row);
-  });
-  wrap.appendChild(list);
-}
-
-function drawPianoRoll(pattern, playheadFrac) {
-  const canvas = document.getElementById('rollCanvas');
-  if (!canvas) return;
-  const dpr = window.devicePixelR
+    const bytes = new FLMWriterJSON(getExport
