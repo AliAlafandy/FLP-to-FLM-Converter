@@ -587,15 +587,16 @@ body.theme-light .note-box       { background: #EAF4FF; }
   </div>
 
   <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept=".flp,application/octet-stream" multiple>
+    <input type="file" id="fileInput" accept=".flp,.flm,application/octet-stream" multiple>
     <span class="drop-icon">🎹</span>
-    <div class="drop-title">Drop your .flp file(s) here</div>
+    <div class="drop-title">Drop your .flp or .flm file(s) here</div>
     <div class="drop-sub">or click to browse files · multiple files run in batch mode</div>
     <div class="drop-formats">
       <span class="fmt-tag">FL Studio 11</span>
       <span class="fmt-tag">FL Studio 12</span>
       <span class="fmt-tag">FL Studio 20</span>
       <span class="fmt-tag">FL Studio 21+</span>
+      <span class="fmt-tag">FL Studio Mobile</span>
     </div>
   </div>
 
@@ -1192,6 +1193,160 @@ class FLPParser {
   }
 }
 
+class FLMParser {
+  constructor(buf) {
+    this.buf = buf;
+    this.bytes = new Uint8Array(buf);
+    this.dv = new DataView(buf);
+    this.proj = {
+      version: '', versionInt: 0, title: 'Untitled', author: '', genre: '', comment: '',
+      url: '', licensee: '', dataPath: '', createdOn: null, timeSpentHours: 0,
+      loopActive: false, panLaw: 0, flBuild: 0,
+      ppq: 96, tempo: 140, timeSigNum: 4, timeSigDen: 4,
+      mainVolume: 100, mainPitch: 0, format: 0, numChannelsHeader: 0,
+      channels: [], patterns: [], timeMarkers: [], arrangements: [], inserts: [],
+      mixerParams: {}, warnings: []
+    };
+  }
+
+  decodeAscii(bytes) {
+    let end = bytes.indexOf(0);
+    if (end < 0) end = bytes.length;
+    return new TextDecoder('ascii').decode(bytes.subarray(0, end));
+  }
+
+  isUpperTag(off) {
+    if (off + 4 > this.bytes.length) return false;
+    for (let i = 0; i < 4; i++) {
+      const c = this.bytes[off + i];
+      const isUpper = c >= 65 && c <= 90;
+      const isDigit = c >= 48 && c <= 57;
+      if (!isUpper && !isDigit) return false;
+    }
+    return true;
+  }
+
+  parse() {
+    const magic = this.decodeAscii(this.bytes.subarray(0, 8));
+    if (magic !== '10LFHEAD') {
+      throw new Error(`Not a recognized FLM file — header magic was "${magic}" (expected "10LFHEAD")`);
+    }
+    this.proj.title = this.decodeAscii(this.bytes.subarray(20, 20 + 256)) || 'Untitled';
+
+    const tempoOffset = 276;
+    if (tempoOffset + 8 <= this.bytes.length) {
+      const t = this.dv.getFloat64(tempoOffset, true);
+      if (t > 20 && t < 999) this.proj.tempo = t;
+    }
+
+    let scanStart = tempoOffset + 8;
+    let chunkStart = -1;
+    for (let i = scanStart; i < this.bytes.length - 4; i++) {
+      if (this.isUpperTag(i)) { chunkStart = i; break; }
+    }
+
+    this.proj.warnings.push('This project was reconstructed from a reverse-engineered, unofficial reading of the real FLM format — some data (effects, mixer levels, automation) is not decoded yet.');
+
+    if (chunkStart < 0) {
+      this.proj.warnings.push('Could not locate the chunk section of this file — only title/tempo were recovered.');
+      return this.proj;
+    }
+
+    const ctx = { channel: null, pattern: null };
+    this.walkChunks(chunkStart, this.bytes.length, ctx, 0);
+
+    if (!this.proj.channels.length) this.proj.warnings.push('No channels were decoded — this FLM revision may differ from the one this parser was built from.');
+    return this.proj;
+  }
+
+  walkChunks(offset, end, ctx, depth) {
+    if (depth > 12) return;
+    let safety = 0;
+    while (offset + 8 <= end && ++safety < 200000) {
+      if (!this.isUpperTag(offset)) { offset++; continue; }
+      const tag = this.decodeAscii(this.bytes.subarray(offset, offset + 4));
+      let length;
+      try { length = this.dv.getUint32(offset + 4, true); } catch (e) { offset++; continue; }
+      const payloadStart = offset + 8;
+      const payloadEnd = payloadStart + length;
+      if (length < 0 || payloadEnd > end || payloadEnd > this.bytes.length || payloadEnd <= payloadStart) {
+        offset++;
+        continue;
+      }
+
+      this.handleChunk(tag, payloadStart, payloadEnd, ctx);
+
+      if (tag === 'CHNL' || tag === 'CLIP' || tag === 'RACK' || tag === 'TRKH') {
+        const childCtx = tag === 'CHNL' ? { channel: ctx.channel, pattern: null }
+          : tag === 'CLIP' ? { channel: ctx.channel, pattern: ctx.pattern }
+          : ctx;
+        this.walkChunks(payloadStart, payloadEnd, childCtx, depth + 1);
+      }
+
+      offset = payloadEnd;
+    }
+  }
+
+  handleChunk(tag, start, end, ctx) {
+    const bytes = this.bytes.subarray(start, end);
+    switch (tag) {
+      case 'CHNL': {
+        let name = `Channel ${this.proj.channels.length + 1}`;
+        if (bytes.length > 17) {
+          const decoded = this.decodeAscii(bytes.subarray(16, Math.min(bytes.length, 16 + 128)));
+          if (decoded && /^[\x20-\x7E]+$/.test(decoded)) name = decoded;
+        }
+        const ch = { iid: this.proj.channels.length, name, volume: 100, pan: 0, enabled: true, muted: false, type: 0, kind: 'FLM', color: 0 };
+        this.proj.channels.push(ch);
+        ctx.channel = ch;
+        break;
+      }
+      case 'CLIP': {
+        const idx = this.proj.patterns.length;
+        const chName = ctx.channel ? ctx.channel.name : 'Clip';
+        const pat = { id: idx, name: `${chName} #${idx + 1}`, color: 0, notes: [] };
+        this.proj.patterns.push(pat);
+        ctx.pattern = pat;
+        break;
+      }
+      case 'EVN2': {
+        if (!ctx.pattern) break;
+        this.parseEvn2(bytes, ctx.pattern, ctx.channel ? ctx.channel.iid : 0);
+        break;
+      }
+    }
+  }
+
+  parseEvn2(bytes, pattern, channelIid) {
+    if (bytes.length < 4) return;
+    const dv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+    const recordSize = dv.getUint32(0, true);
+    if (recordSize <= 0 || recordSize > 64) return;
+    const notesBytes = bytes.subarray(4);
+    const count = Math.floor(notesBytes.length / recordSize);
+    for (let i = 0; i < count; i++) {
+      const o = i * recordSize;
+      if (o + 20 > notesBytes.length) break;
+      const rdv = new DataView(notesBytes.buffer, notesBytes.byteOffset + o, 20);
+      const lengthBeats = rdv.getFloat32(6, true);
+      const key = notesBytes[o + 10];
+      const velocityRaw = rdv.getUint16(12, true);
+      const releaseRaw = rdv.getUint16(14, true);
+      const posRaw = notesBytes[o + 17] | (notesBytes[o + 18] << 8) | (notesBytes[o + 19] << 16);
+      const positionBeats = posRaw / 16384;
+
+      if (!(lengthBeats > 0) || lengthBeats > 256 || key > 131) continue;
+
+      const position = Math.round(positionBeats * this.proj.ppq);
+      const length = Math.max(1, Math.round(lengthBeats * this.proj.ppq));
+      const velocity = Math.max(1, Math.min(127, Math.round((velocityRaw / 32767) * 127)));
+      const release = Math.max(0, Math.min(127, Math.round((releaseRaw / 32767) * 127)));
+
+      pattern.notes.push({ position, length, key, finePitch: 120, release, pan: 64, velocity, group: 0, midiChannel: 0, channel: channelIid });
+    }
+  }
+}
+
 class FLMWriter {
   constructor(proj) {
     this.proj = proj;
@@ -1655,7 +1810,8 @@ function renderHistoryList() {
     row.addEventListener('click', () => {
       try {
         const buf = base64ToArrayBuffer(entry.data);
-        const parser = new FLPParser(buf);
+        const ParserClass = pickParserClass(entry.name);
+        const parser = new ParserClass(buf);
         const proj = parser.parse();
         currentBuf = buf;
         currentProj = proj;
@@ -1754,7 +1910,7 @@ function readFileAsArrayBuffer(file) {
 }
 
 function handleFiles(fileList) {
-  const files = Array.from(fileList).filter(f => /\.flp$/i.test(f.name) || f.name.indexOf('.') === -1);
+  const files = Array.from(fileList).filter(f => /\.(flp|flm)$/i.test(f.name) || f.name.indexOf('.') === -1);
   if (!files.length) return;
   clearStatus();
   detPanel.classList.add('hidden');
@@ -1769,15 +1925,21 @@ function handleFiles(fileList) {
   }
 }
 
+function pickParserClass(filename) {
+  return /\.flm$/i.test(filename) ? FLMParser : FLPParser;
+}
+
 function handleSingleFile(file) {
-  currentFileBase = file.name.replace(/\.flp$/i, '') || 'project';
+  currentFileBase = file.name.replace(/\.(flp|flm)$/i, '') || 'project';
+  const isFlm = /\.flm$/i.test(file.name);
   setProgress(10, 'Reading file…');
   readFileAsArrayBuffer(file).then(buf => {
-    setProgress(55, 'Parsing FLP events…');
+    setProgress(55, isFlm ? 'Parsing FLM chunks…' : 'Parsing FLP events…');
     setTimeout(() => {
       try {
         currentBuf = buf;
-        const parser = new FLPParser(currentBuf);
+        const ParserClass = pickParserClass(file.name);
+        const parser = new ParserClass(currentBuf);
         const proj = parser.parse();
         currentProj = proj;
         setProgress(100, 'Done');
@@ -1786,7 +1948,7 @@ function handleSingleFile(file) {
         activeArrIdx = 0;
         pushHistory(file, buf, proj);
 
-        if (currentMode === 'showcase') {
+        if (currentMode === 'showcase' && !isFlm) {
           renderShowcase(proj, currentBuf, file);
           setStatus('info', `Previewing "${proj.title}" — hit Convert now when ready.`);
         } else {
@@ -1821,10 +1983,11 @@ function handleBatchFiles(files) {
     const file = files[done];
     readFileAsArrayBuffer(file).then(buf => {
       try {
-        const parser = new FLPParser(buf);
+        const ParserClass = pickParserClass(file.name);
+        const parser = new ParserClass(buf);
         const proj = parser.parse();
         pushHistory(file, buf, proj);
-        results.push({ file, buf, proj, base: file.name.replace(/\.flp$/i, '') || 'project' });
+        results.push({ file, buf, proj, base: file.name.replace(/\.(flp|flm)$/i, '') || 'project' });
       } catch (err) {
         results.push({ file, error: err.message });
       }
@@ -2301,7 +2464,7 @@ function renderDetection(proj) {
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br>Image-Line rewrote FL Studio Mobile from scratch in 2016 (versions 3+), replacing the old Artua-built app — so there may be two unrelated .flm formats across versions, and neither is publicly documented. The lab below has two structurally different guesses to try. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.';
+  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br><strong>Reading real .flm files now works</strong> — this tool can open actual FL Studio Mobile projects (not just .flp), based on reverse-engineering a real sample file: the "10LFHEAD" header, its chunk-based container, and the exact note-event byte layout inside each clip. <strong>Writing</strong> a valid .flm is a separate, much bigger problem — the two guesses in the lab below still don\'t use the real format and are unlikely to open in the app. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.';
   detBody.appendChild(note);
 
   const labLabel = document.createElement('div');
