@@ -71,6 +71,19 @@ The parser targets the common event layout used from **FL Studio 11 through 21+*
 
 No server, no network request, no account. The file never leaves your device.
 
+## Installing as an app
+
+This is a full [PWA](https://web.dev/progressive-web-apps/) — you can install it like a native app instead of just bookmarking it.
+
+- **Android / desktop Chrome, Edge:** an **📲 Install app** button appears automatically once the browser decides it's installable. Tap it, confirm, and it launches full-screen from your home screen / app list — no browser chrome, works offline after the first load.
+- **iOS Safari:** doesn't support one-tap install, so the button instead reminds you to use Share → **Add to Home Screen**.
+- **Offline:** a service worker (`sw.js`) caches the app shell on first visit, so it keeps working with no connection after that.
+
+To deploy it yourself (e.g. GitHub Pages):
+1. Rename `FLP-to-FLM-Converter.html` to `index.html` at the repo root (the manifest's `start_url` expects that).
+2. Keep `manifest.json`, `sw.js`, and the `icons/` folder alongside it at the same level.
+3. Serve over HTTPS — service workers and install prompts require it (GitHub Pages does this automatically).
+
 ## Technical notes
 
 - Written in vanilla HTML/CSS/JS — no build step, no dependencies.
