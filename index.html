@@ -363,6 +363,101 @@ footer {
 .hist-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent2), var(--accent)); }
 .hist-count { width: 42px; text-align: right; flex-shrink: 0; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--muted); }
 
+.toolbar { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; }
+.toolbar-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  background: var(--surface2); border: 1px solid var(--border);
+  color: var(--muted); border-radius: 8px; padding: 7px 14px;
+  cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  display: flex; align-items: center; gap: 6px;
+}
+.toolbar-btn:hover { border-color: var(--border2); color: var(--text); }
+.toolbar-btn.active { border-color: var(--accent); color: var(--text); }
+.toolbar-count {
+  background: var(--accent); color: #fff; border-radius: 999px;
+  padding: 1px 6px; font-size: 0.65rem; font-weight: 600;
+}
+
+.seg-row { display: flex; gap: 6px; margin-bottom: 4px; }
+.seg-btn {
+  flex: 1; font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 700;
+  background: var(--surface2); border: 1px solid var(--border2);
+  color: var(--muted); border-radius: 8px; padding: 8px 10px; cursor: pointer;
+  transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.seg-btn.active { color: #fff; border-color: var(--accent); background: linear-gradient(135deg, var(--accent2) 0%, var(--accent) 100%); }
+
+.field-row { display: flex; gap: 10px; margin-bottom: 6px; flex-wrap: wrap; }
+.field-label {
+  flex: 1; min-width: 130px; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.field-label input, .field-label select {
+  font-family: 'DM Sans', sans-serif; font-size: 0.88rem; color: var(--text);
+  background: var(--surface2); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 10px; outline: none;
+}
+.field-label input:focus, .field-label select:focus { border-color: var(--accent); }
+.field-hint { font-size: 0.72rem; color: var(--muted); line-height: 1.4; margin-top: 4px; }
+
+.select-row { display: flex; gap: 8px; margin: 6px 0 10px; }
+.select-link {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent);
+  cursor: pointer; background: none; border: none; padding: 0;
+}
+.select-link:hover { text-decoration: underline; }
+.item-check { width: 15px; height: 15px; flex-shrink: 0; accent-color: var(--accent); cursor: pointer; }
+
+.batch-list { display: flex; flex-direction: column; gap: 6px; }
+.batch-item {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 10px 14px;
+}
+.batch-item-head { display: flex; align-items: center; gap: 10px; cursor: pointer; }
+.batch-item-title { flex: 1; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.86rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.batch-item-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); flex-shrink: 0; }
+.batch-item-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
+.batch-mini-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.65rem;
+  color: var(--accent); background: var(--surface3); border: 1px solid var(--border);
+  border-radius: 6px; padding: 5px 9px; cursor: pointer;
+}
+.batch-mini-btn:hover { border-color: var(--accent); }
+.batch-error { color: var(--error); font-size: 0.78rem; }
+
+.history-list { display: flex; flex-direction: column; gap: 6px; }
+.history-item {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 9px 13px; cursor: pointer;
+  transition: border-color 0.15s;
+}
+.history-item:hover { border-color: var(--border2); }
+.history-item-title { flex: 1; font-size: 0.84rem; color: var(--text); font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.history-item-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.66rem; color: var(--muted); flex-shrink: 0; }
+.history-empty { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--dim); padding: 8px 0; }
+.history-clear { margin-top: 10px; }
+
+body.theme-light {
+  --bg:       #F5F4FB;
+  --surface:  #FFFFFF;
+  --surface2: #F2F0FA;
+  --surface3: #EAE7F6;
+  --border:   #E1DEF0;
+  --border2:  #D1CDE8;
+  --text:     #16162A;
+  --muted:    #75758F;
+  --dim:      #B4B1CE;
+}
+body.theme-light::after { opacity: 0.25; }
+body.theme-light .drop-zone:hover, body.theme-light .drop-zone.over { background: #FFF4E8; }
+body.theme-light .status.success { background: #E9FBF3; }
+body.theme-light .status.error   { background: #FDECEF; }
+body.theme-light .status.info    { background: #EAF4FF; }
+body.theme-light .warning-box    { background: #FFF6E6; }
+body.theme-light .note-box       { background: #EAF4FF; }
+
 .hidden { display: none !important; }
 </style>
 </head>
@@ -394,11 +489,45 @@ footer {
   </div>
   <p class="mode-hint" id="modeHint">Drop a file to parse it straight into channels, patterns and downloads.</p>
 
+  <div class="toolbar">
+    <button class="toolbar-btn" id="settingsToggleBtn">⚙ Settings</button>
+    <button class="toolbar-btn" id="historyToggleBtn">🕘 History <span class="toolbar-count hidden" id="historyCount">0</span></button>
+  </div>
+
+  <div class="panel hidden" id="settingsPanel">
+    <div class="panel-header"><div class="panel-dot"></div> SETTINGS</div>
+    <div class="panel-body">
+      <div class="section-label" style="margin-top:0">Theme</div>
+      <div class="seg-row">
+        <button class="seg-btn active" data-theme="dark" id="themeDarkBtn">🌙 Dark</button>
+        <button class="seg-btn" data-theme="light" id="themeLightBtn">☀ Light</button>
+      </div>
+
+      <div class="section-label">Export overrides</div>
+      <div class="field-row">
+        <label class="field-label">Tempo (BPM)<input type="number" id="tempoOverrideInput" placeholder="detected" min="1" max="999"></label>
+        <label class="field-label">PPQ<input type="number" id="ppqOverrideInput" placeholder="detected" min="24" max="1920"></label>
+      </div>
+      <div class="field-hint">Leave blank to use the values detected from the file. PPQ changes rescale note positions/lengths accordingly.</div>
+
+      <div class="section-label">Time units</div>
+      <div class="seg-row">
+        <button class="seg-btn active" data-units="beats" id="unitsBeatsBtn">Beats</button>
+        <button class="seg-btn" data-units="seconds" id="unitsSecondsBtn">Seconds</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="historyPanel">
+    <div class="panel-header"><div class="panel-dot"></div> RECENT CONVERSIONS</div>
+    <div class="panel-body" id="historyBody"></div>
+  </div>
+
   <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept=".flp">
+    <input type="file" id="fileInput" accept=".flp" multiple>
     <span class="drop-icon">🎹</span>
-    <div class="drop-title">Drop your .flp file here</div>
-    <div class="drop-sub">or click to browse files</div>
+    <div class="drop-title">Drop your .flp file(s) here</div>
+    <div class="drop-sub">or click to browse files · multiple files run in batch mode</div>
     <div class="drop-formats">
       <span class="fmt-tag">FL Studio 11</span>
       <span class="fmt-tag">FL Studio 12</span>
@@ -416,6 +545,11 @@ footer {
   </div>
 
   <div class="status" id="status"></div>
+
+  <div class="panel hidden" id="batchPanel">
+    <div class="panel-header"><div class="panel-dot"></div> BATCH RESULTS</div>
+    <div class="panel-body" id="batchBody"></div>
+  </div>
 
   <div class="panel hidden" id="showcasePanel">
     <div class="panel-header"><div class="panel-dot"></div> RAW FLP PREVIEW</div>
@@ -1025,7 +1159,8 @@ class FLMWriter {
   wordEv(id, v)  { this.u8(id); this.u16(v); }
   dwordEv(id, v) { this.u8(id); this.u32(v); }
 
-  build() {
+  build(options = {}) {
+    const { channelFilter = null, patternFilter = null, arrangementIndex = null } = options;
     const p = this.proj;
 
     this.text(EV.TITLE, p.title || 'Untitled');
@@ -1043,6 +1178,7 @@ class FLMWriter {
     this.byteEv(EV.PAN_LAW, p.panLaw || 0);
 
     p.channels.forEach((ch, i) => {
+      if (channelFilter && !channelFilter.has(i)) return;
       this.wordEv(EV.CHAN_NEW, ch.iid ?? i);
       this.text(EV.CHAN_NAME, ch.name || `Channel ${i + 1}`);
       this.byteEv(EV.ENABLED, ch.enabled === false ? 0 : 1);
@@ -1053,6 +1189,7 @@ class FLMWriter {
     });
 
     p.patterns.forEach((pat, idx) => {
+      if (patternFilter && !patternFilter.has(idx)) return;
       this.wordEv(EV.CUR_PATTERN, idx);
       this.text(EV.PAT_NAME, pat.name || `Pattern ${idx + 1}`);
       this.dwordEv(EV.PAT_COLOR, pat.color || 0);
@@ -1098,7 +1235,8 @@ class FLMWriter {
       this.dwordEv(EV.INS_INPUT, (ins.input ?? -1) >>> 0);
     });
 
-    p.arrangements.forEach((arr, ai) => {
+    const arrangementsToWrite = arrangementIndex === null ? p.arrangements : p.arrangements.filter((a, i) => i === arrangementIndex);
+    arrangementsToWrite.forEach((arr, ai) => {
       this.wordEv(EV.ARR_NEW, ai);
       this.text(EV.ARR_NAME, arr.name || `Arrangement ${ai + 1}`);
       arr.tracks.forEach(track => {
@@ -1188,7 +1326,8 @@ class MidiWriter {
     return out;
   }
 
-  build(onlyChannelIndex = null) {
+  build(options = {}) {
+    const { onlyChannelIndex = null, channelFilter = null, patternFilter = null } = options;
     const p = this.proj;
     const ppq = p.ppq || 96;
 
@@ -1219,9 +1358,11 @@ class MidiWriter {
     });
 
     p.patterns.forEach((pat, pi) => {
+      if (patternFilter && !patternFilter.has(pi)) return;
       pat.notes.forEach(n => {
         const idx = resolveChannelIndex(p.channels, n.channel ?? 0);
         if (onlyChannelIndex !== null && idx !== onlyChannelIndex) return;
+        if (channelFilter && !channelFilter.has(idx)) return;
         const midiCh = onlyChannelIndex !== null ? 0 : idx % 16;
         const tick = patternOffsets[pi] + n.position;
         const length = Math.max(1, n.length);
@@ -1241,28 +1382,32 @@ class MidiWriter {
 class FLMWriterJSON {
   constructor(proj) { this.proj = proj; }
 
-  build() {
+  build(options = {}) {
+    const { channelFilter = null, patternFilter = null, arrangementIndex = null } = options;
     const p = this.proj;
+    const channels = p.channels.filter((c, i) => !channelFilter || channelFilter.has(i));
+    const patterns = p.patterns.filter((pat, i) => !patternFilter || patternFilter.has(i));
+    const arrangements = arrangementIndex === null ? p.arrangements : p.arrangements.filter((a, i) => i === arrangementIndex);
     const payload = {
       title: p.title, author: p.author, genre: p.genre, comment: p.comment,
       url: p.url, licensee: p.licensee, dataPath: p.dataPath,
       createdOn: p.createdOn ? p.createdOn.toISOString() : null, timeSpentHours: p.timeSpentHours,
       tempo: p.tempo, ppq: p.ppq, timeSigNum: p.timeSigNum, timeSigDen: p.timeSigDen,
       mainVolume: p.mainVolume, mainPitch: p.mainPitch, loopActive: p.loopActive, panLaw: p.panLaw,
-      channels: p.channels.map(c => ({
+      channels: channels.map(c => ({
         name: c.name, volume: c.volume, pan: c.pan, color: c.color, kind: c.kind,
         muted: !!c.muted, enabled: c.enabled !== false, rootNote: c.rootNote,
         fineTune: c.fineTune, reverb: c.reverb, groupNum: c.groupNum, samplePath: c.samplePath,
         automation: c.automation || null,
       })),
-      patterns: p.patterns.map(pat => ({
+      patterns: patterns.map(pat => ({
         name: pat.name, color: pat.color,
         notes: pat.notes.map(n => ({ position: n.position, length: n.length, key: n.key, velocity: n.velocity, pan: n.pan, channel: n.channel }))
       })),
       timeMarkers: p.timeMarkers,
       inserts: p.inserts.map(i => ({ name: i.name, color: i.color, output: i.output, input: i.input, enabled: i.enabled, solo: i.solo, routing: i.routing })),
       mixerParams: p.mixerParams,
-      arrangements: p.arrangements.map(a => ({
+      arrangements: arrangements.map(a => ({
         name: a.name,
         tracks: a.tracks.map(t => ({
           name: t.name, color: t.color, enabled: t.enabled,
@@ -1294,14 +1439,83 @@ const midiBtn       = document.getElementById('midiBtn');
 const jsonBtn       = document.getElementById('jsonBtn');
 const showcasePanel = document.getElementById('showcasePanel');
 const showcaseBody  = document.getElementById('showcaseBody');
+const batchPanel    = document.getElementById('batchPanel');
+const batchBody     = document.getElementById('batchBody');
 const modeHint      = document.getElementById('modeHint');
 const modeConvertBtn  = document.getElementById('modeConvertBtn');
 const modeShowcaseBtn = document.getElementById('modeShowcaseBtn');
+const settingsToggleBtn = document.getElementById('settingsToggleBtn');
+const historyToggleBtn  = document.getElementById('historyToggleBtn');
+const settingsPanel = document.getElementById('settingsPanel');
+const historyPanel  = document.getElementById('historyPanel');
+const historyBody   = document.getElementById('historyBody');
+const historyCount  = document.getElementById('historyCount');
+const themeDarkBtn   = document.getElementById('themeDarkBtn');
+const themeLightBtn  = document.getElementById('themeLightBtn');
+const unitsBeatsBtn   = document.getElementById('unitsBeatsBtn');
+const unitsSecondsBtn = document.getElementById('unitsSecondsBtn');
+const tempoOverrideInput = document.getElementById('tempoOverrideInput');
+const ppqOverrideInput   = document.getElementById('ppqOverrideInput');
 
 const MODE_HINTS = {
   convert: 'Drop a file to parse it straight into channels, patterns and downloads.',
   showcase: 'Drop a file to preview its raw event structure first, then convert on demand.',
 };
+
+const SETTINGS_KEY = 'flpflm_settings_v1';
+const HISTORY_KEY  = 'flpflm_history_v1';
+const HISTORY_MAX  = 6;
+const HISTORY_MAX_FILE_BYTES = 1500000;
+
+function loadSettings() {
+  const defaults = { theme: 'dark', tempoOverride: '', ppqOverride: '', timeUnits: 'beats' };
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (raw) return Object.assign(defaults, JSON.parse(raw));
+  } catch (e) {}
+  return defaults;
+}
+function saveSettings() {
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings)); } catch (e) {}
+}
+function loadHistory() {
+  try {
+    const raw = localStorage.getItem(HISTORY_KEY);
+    if (raw) return JSON.parse(raw);
+  } catch (e) {}
+  return [];
+}
+function saveHistory() {
+  try { localStorage.setItem(HISTORY_KEY, JSON.stringify(historyEntries)); } catch (e) {}
+}
+function arrayBufferToBase64(buf) {
+  const bytes = new Uint8Array(buf);
+  let binary = '';
+  const chunkSize = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
+}
+function base64ToArrayBuffer(b64) {
+  const binary = atob(b64);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return bytes.buffer;
+}
+function pushHistory(file, buf, proj) {
+  if (file.size > HISTORY_MAX_FILE_BYTES) return;
+  const entry = {
+    name: file.name, base: file.name.replace(/\.flp$/i, '') || 'project',
+    title: proj.title, size: file.size, ts: Date.now(),
+    data: arrayBufferToBase64(buf),
+  };
+  historyEntries = historyEntries.filter(h => !(h.name === entry.name && h.size === entry.size));
+  historyEntries.unshift(entry);
+  historyEntries = historyEntries.slice(0, HISTORY_MAX);
+  saveHistory();
+  renderHistoryList();
+}
 
 let currentProj = null;
 let currentBuf = null;
@@ -1309,6 +1523,118 @@ let currentFileBase = 'project';
 let activePatternIdx = 0;
 let activeArrIdx = 0;
 let currentMode = 'convert';
+let selectedChannels = new Set();
+let selectedPatterns = new Set();
+let settings = loadSettings();
+let historyEntries = loadHistory();
+
+function applyTheme() {
+  document.body.classList.toggle('theme-light', settings.theme === 'light');
+  themeDarkBtn.classList.toggle('active', settings.theme !== 'light');
+  themeLightBtn.classList.toggle('active', settings.theme === 'light');
+}
+function applyUnitsButtons() {
+  unitsBeatsBtn.classList.toggle('active', settings.timeUnits !== 'seconds');
+  unitsSecondsBtn.classList.toggle('active', settings.timeUnits === 'seconds');
+}
+
+applyTheme();
+applyUnitsButtons();
+tempoOverrideInput.value = settings.tempoOverride || '';
+ppqOverrideInput.value = settings.ppqOverride || '';
+
+themeDarkBtn.addEventListener('click', () => { settings.theme = 'dark'; applyTheme(); saveSettings(); });
+themeLightBtn.addEventListener('click', () => { settings.theme = 'light'; applyTheme(); saveSettings(); });
+unitsBeatsBtn.addEventListener('click', () => { settings.timeUnits = 'beats'; applyUnitsButtons(); saveSettings(); if (currentProj) renderDetection(currentProj); });
+unitsSecondsBtn.addEventListener('click', () => { settings.timeUnits = 'seconds'; applyUnitsButtons(); saveSettings(); if (currentProj) renderDetection(currentProj); });
+tempoOverrideInput.addEventListener('change', () => { settings.tempoOverride = tempoOverrideInput.value; saveSettings(); });
+ppqOverrideInput.addEventListener('change', () => { settings.ppqOverride = ppqOverrideInput.value; saveSettings(); });
+
+settingsToggleBtn.addEventListener('click', () => {
+  historyPanel.classList.add('hidden');
+  historyToggleBtn.classList.remove('active');
+  settingsPanel.classList.toggle('hidden');
+  settingsToggleBtn.classList.toggle('active', !settingsPanel.classList.contains('hidden'));
+});
+historyToggleBtn.addEventListener('click', () => {
+  settingsPanel.classList.add('hidden');
+  settingsToggleBtn.classList.remove('active');
+  historyPanel.classList.toggle('hidden');
+  historyToggleBtn.classList.toggle('active', !historyPanel.classList.contains('hidden'));
+  if (!historyPanel.classList.contains('hidden')) renderHistoryList();
+});
+
+function renderHistoryList() {
+  historyCount.textContent = String(historyEntries.length);
+  historyCount.classList.toggle('hidden', historyEntries.length === 0);
+  historyBody.innerHTML = '';
+  if (!historyEntries.length) {
+    historyBody.innerHTML = '<div class="history-empty">no recent conversions yet</div>';
+    return;
+  }
+  const list = document.createElement('div');
+  list.className = 'history-list';
+  historyEntries.forEach(entry => {
+    const row = document.createElement('div');
+    row.className = 'history-item';
+    const date = new Date(entry.ts);
+    row.innerHTML = `
+      <div class="history-item-title">${escapeHtml(entry.title || entry.name)}</div>
+      <div class="history-item-meta">${(entry.size / 1024).toFixed(0)} KB · ${date.toLocaleDateString()}</div>`;
+    row.addEventListener('click', () => {
+      try {
+        const buf = base64ToArrayBuffer(entry.data);
+        const parser = new FLPParser(buf);
+        const proj = parser.parse();
+        currentBuf = buf;
+        currentProj = proj;
+        currentFileBase = entry.base;
+        activePatternIdx = 0;
+        activeArrIdx = 0;
+        historyPanel.classList.add('hidden');
+        historyToggleBtn.classList.remove('active');
+        batchPanel.classList.add('hidden');
+        showcasePanel.classList.add('hidden');
+        renderDetection(proj);
+        btnRow.classList.remove('hidden');
+        setStatus('success', `Reloaded "${proj.title}" from history — no re-upload needed.`);
+      } catch (err) {
+        setStatus('error', `Could not reload from history: ${err.message}`);
+      }
+    });
+    list.appendChild(row);
+  });
+  historyBody.appendChild(list);
+  const clearBtn = document.createElement('button');
+  clearBtn.className = 'btn btn-secondary history-clear';
+  clearBtn.textContent = 'Clear history';
+  clearBtn.addEventListener('click', () => {
+    historyEntries = [];
+    saveHistory();
+    renderHistoryList();
+  });
+  historyBody.appendChild(clearBtn);
+}
+renderHistoryList();
+
+function getExportProj() {
+  const tempoOv = parseFloat(settings.tempoOverride);
+  const ppqOv = parseInt(settings.ppqOverride, 10);
+  const hasTempo = !isNaN(tempoOv) && tempoOv > 0;
+  const hasPpq = !isNaN(ppqOv) && ppqOv > 0;
+  if (!hasTempo && !hasPpq) return currentProj;
+  const clone = { ...currentProj };
+  if (hasTempo) clone.tempo = tempoOv;
+  if (hasPpq) {
+    const scale = ppqOv / (currentProj.ppq || 96);
+    clone.ppq = ppqOv;
+    clone.patterns = currentProj.patterns.map(pat => ({
+      ...pat,
+      notes: pat.notes.map(n => ({ ...n, position: Math.round(n.position * scale), length: Math.max(1, Math.round(n.length * scale)) })),
+    }));
+  }
+  return clone;
+}
 
 [modeConvertBtn, modeShowcaseBtn].forEach(btn => {
   btn.addEventListener('click', () => {
@@ -1338,29 +1664,48 @@ function hideProgress() { progressWrap.classList.add('hidden'); }
 ['dragover','dragenter'].forEach(evt => dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.add('over'); }));
 ['dragleave','dragend','drop'].forEach(evt => dropZone.addEventListener(evt, e => { e.preventDefault(); dropZone.classList.remove('over'); }));
 dropZone.addEventListener('drop', e => {
-  const f = e.dataTransfer.files && e.dataTransfer.files[0];
-  if (f) handleFile(f);
+  const files = e.dataTransfer.files;
+  if (files && files.length) handleFiles(files);
 });
 fileInput.addEventListener('change', e => {
-  const f = e.target.files && e.target.files[0];
-  if (f) handleFile(f);
+  const files = e.target.files;
+  if (files && files.length) handleFiles(files);
+  fileInput.value = '';
 });
 
-function handleFile(file) {
+function readFileAsArrayBuffer(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Could not read the file.'));
+    reader.onload = () => resolve(reader.result);
+    reader.readAsArrayBuffer(file);
+  });
+}
+
+function handleFiles(fileList) {
+  const files = Array.from(fileList).filter(f => /\.flp$/i.test(f.name) || f.name.indexOf('.') === -1);
+  if (!files.length) return;
   clearStatus();
   detPanel.classList.add('hidden');
   showcasePanel.classList.add('hidden');
+  batchPanel.classList.add('hidden');
   btnRow.classList.add('hidden');
+
+  if (files.length === 1) {
+    handleSingleFile(files[0]);
+  } else {
+    handleBatchFiles(files);
+  }
+}
+
+function handleSingleFile(file) {
   currentFileBase = file.name.replace(/\.flp$/i, '') || 'project';
   setProgress(10, 'Reading file…');
-
-  const reader = new FileReader();
-  reader.onerror = () => { hideProgress(); setStatus('error', 'Could not read the file.'); };
-  reader.onload = () => {
+  readFileAsArrayBuffer(file).then(buf => {
     setProgress(55, 'Parsing FLP events…');
     setTimeout(() => {
       try {
-        currentBuf = reader.result;
+        currentBuf = buf;
         const parser = new FLPParser(currentBuf);
         const proj = parser.parse();
         currentProj = proj;
@@ -1368,6 +1713,7 @@ function handleFile(file) {
         setTimeout(hideProgress, 350);
         activePatternIdx = 0;
         activeArrIdx = 0;
+        pushHistory(file, buf, proj);
 
         if (currentMode === 'showcase') {
           renderShowcase(proj, currentBuf, file);
@@ -1386,8 +1732,97 @@ function handleFile(file) {
         setStatus('error', `Failed to parse: ${err.message}`);
       }
     }, 30);
+  }).catch(err => { hideProgress(); setStatus('error', err.message); });
+}
+
+function handleBatchFiles(files) {
+  setProgress(10, `Parsing ${files.length} files…`);
+  const results = [];
+  let done = 0;
+  const processNext = () => {
+    if (done >= files.length) {
+      hideProgress();
+      renderBatch(results);
+      const okCount = results.filter(r => !r.error).length;
+      setStatus(okCount === results.length ? 'success' : 'info', `Batch done — ${okCount}/${results.length} file(s) parsed successfully.`);
+      return;
+    }
+    const file = files[done];
+    readFileAsArrayBuffer(file).then(buf => {
+      try {
+        const parser = new FLPParser(buf);
+        const proj = parser.parse();
+        pushHistory(file, buf, proj);
+        results.push({ file, buf, proj, base: file.name.replace(/\.flp$/i, '') || 'project' });
+      } catch (err) {
+        results.push({ file, error: err.message });
+      }
+      done++;
+      setProgress(10 + Math.round((done / files.length) * 85), `Parsing ${done}/${files.length}…`);
+      setTimeout(processNext, 10);
+    }).catch(err => {
+      results.push({ file, error: err.message });
+      done++;
+      setTimeout(processNext, 10);
+    });
   };
-  reader.readAsArrayBuffer(file);
+  processNext();
+}
+
+function renderBatch(results) {
+  batchBody.innerHTML = '';
+  const list = document.createElement('div');
+  list.className = 'batch-list';
+  results.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'batch-item';
+    if (r.error) {
+      item.innerHTML = `
+        <div class="batch-item-head">
+          <div class="batch-item-title">${escapeHtml(r.file.name)}</div>
+          <div class="batch-item-meta">${(r.file.size / 1024).toFixed(0)} KB</div>
+        </div>
+        <div class="batch-error">Failed: ${escapeHtml(r.error)}</div>`;
+      list.appendChild(item);
+      return;
+    }
+    const totalNotes = r.proj.patterns.reduce((s, p) => s + p.notes.length, 0);
+    item.innerHTML = `
+      <div class="batch-item-head">
+        <div class="batch-item-title">${escapeHtml(r.proj.title)}</div>
+        <div class="batch-item-meta">${r.proj.channels.length} ch · ${r.proj.patterns.length} pat · ${totalNotes} notes</div>
+      </div>
+      <div class="batch-item-actions">
+        <button class="batch-mini-btn" data-act="open">↗ Open full view</button>
+        <button class="batch-mini-btn" data-act="mid">⬇ .mid</button>
+        <button class="batch-mini-btn" data-act="json">⬇ .json</button>
+        <button class="batch-mini-btn" data-act="flm">⬇ .flm (A)</button>
+      </div>`;
+    item.querySelector('[data-act="open"]').addEventListener('click', () => {
+      currentBuf = r.buf;
+      currentProj = r.proj;
+      currentFileBase = r.base;
+      activePatternIdx = 0;
+      activeArrIdx = 0;
+      batchPanel.classList.add('hidden');
+      renderDetection(r.proj);
+      btnRow.classList.remove('hidden');
+    });
+    item.querySelector('[data-act="mid"]').addEventListener('click', () => {
+      const bytes = new MidiWriter(r.proj).build();
+      downloadBlob(new Blob([bytes], { type: 'audio/midi' }), `${r.base}.mid`);
+    });
+    item.querySelector('[data-act="json"]').addEventListener('click', () => {
+      downloadBlob(new Blob([JSON.stringify(r.proj, null, 2)], { type: 'application/json' }), `${r.base}.analysis.json`);
+    });
+    item.querySelector('[data-act="flm"]').addEventListener('click', () => {
+      const bytes = new FLMWriter(r.proj).build();
+      downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${r.base}.variantA.flm`);
+    });
+    list.appendChild(item);
+  });
+  batchBody.appendChild(list);
+  batchPanel.classList.remove('hidden');
 }
 
 function scanRawEvents(buf) {
@@ -1531,7 +1966,7 @@ function renderDetection(proj) {
     ['Arrangements', proj.arrangements.length],
     ['Inserts', proj.inserts.length],
     ['Markers', proj.timeMarkers.length],
-    ['Est. length', formatDuration(durationSec)],
+    ['Est. length', settings.timeUnits === 'seconds' ? formatDuration(durationSec) : `${(lastTick / (proj.ppq || 96)).toFixed(1)}<span class="info-unit"> beats</span>`],
   ];
   cards.forEach(([label, value]) => {
     const card = document.createElement('div');
@@ -1552,10 +1987,17 @@ function renderDetection(proj) {
     detBody.appendChild(meta);
   }
 
+  selectedChannels = new Set(proj.channels.map((c, i) => i));
+
   const chLabel = document.createElement('div');
   chLabel.className = 'section-label';
   chLabel.textContent = `Channels (${proj.channels.length})`;
   detBody.appendChild(chLabel);
+
+  const chSelectRow = document.createElement('div');
+  chSelectRow.className = 'select-row';
+  chSelectRow.innerHTML = '<button class="select-link" id="chSelectAll">select all</button><button class="select-link" id="chSelectNone">select none</button>';
+  detBody.appendChild(chSelectRow);
 
   const chList = document.createElement('div');
   chList.className = 'channel-list';
@@ -1564,6 +2006,7 @@ function renderDetection(proj) {
     row.className = 'channel-item';
     const swatchColor = rgbFromFlpColor(ch.color) || colorForIndex(i);
     row.innerHTML = `
+      <input type="checkbox" class="item-check" id="chCheck${i}" checked>
       <div class="channel-swatch" style="background:${swatchColor}"></div>
       <div class="channel-name">${escapeHtml(ch.name)}</div>
       <div class="channel-meta">
@@ -1574,9 +2017,12 @@ function renderDetection(proj) {
         ${ch.enabled === false ? '<span class="off">disabled</span>' : ''}
       </div>
       <button class="channel-midi-btn" data-channel-idx="${i}">↓ .mid</button>`;
+    row.querySelector('.item-check').addEventListener('change', e => {
+      if (e.target.checked) selectedChannels.add(i); else selectedChannels.delete(i);
+    });
     row.querySelector('.channel-midi-btn').addEventListener('click', () => {
       if (!currentProj) return;
-      const bytes = new MidiWriter(currentProj).build(i);
+      const bytes = new MidiWriter(getExportProj()).build({ onlyChannelIndex: i });
       const safeName = ch.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 24) || `channel_${i+1}`;
       downloadBlob(new Blob([bytes], { type: 'audio/midi' }), `${currentFileBase}_${safeName}.mid`);
       setStatus('success', `Generated a single-channel .mid for "${ch.name}". Select that channel/track in FL Studio Mobile, then Channel Menu → Import MIDI Tracks.`);
@@ -1584,11 +2030,26 @@ function renderDetection(proj) {
     chList.appendChild(row);
   });
   detBody.appendChild(chList);
+  chSelectRow.querySelector('#chSelectAll').addEventListener('click', () => {
+    selectedChannels = new Set(proj.channels.map((c, i) => i));
+    chList.querySelectorAll('.item-check').forEach(cb => cb.checked = true);
+  });
+  chSelectRow.querySelector('#chSelectNone').addEventListener('click', () => {
+    selectedChannels = new Set();
+    chList.querySelectorAll('.item-check').forEach(cb => cb.checked = false);
+  });
+
+  selectedPatterns = new Set(proj.patterns.map((p, i) => i));
 
   const patLabel = document.createElement('div');
   patLabel.className = 'section-label';
   patLabel.textContent = `Patterns (${proj.patterns.length})`;
   detBody.appendChild(patLabel);
+
+  const patSelectRow = document.createElement('div');
+  patSelectRow.className = 'select-row';
+  patSelectRow.innerHTML = '<button class="select-link" id="patSelectAll">select all</button><button class="select-link" id="patSelectNone">select none</button>';
+  detBody.appendChild(patSelectRow);
 
   const tagList = document.createElement('div');
   tagList.className = 'tag-list';
@@ -1598,8 +2059,12 @@ function renderDetection(proj) {
     const tag = document.createElement('div');
     tag.className = 'tag' + (i === activePatternIdx ? ' active' : '') + (pat.notes.length ? '' : ' muted');
     const swatchColor = rgbFromFlpColor(pat.color) || colorForIndex(i);
-    tag.innerHTML = `<span class="tag-swatch" style="background:${swatchColor}"></span>${escapeHtml(pat.name)} <span class="tag-count">${pat.notes.length}</span>`;
+    tag.innerHTML = `<input type="checkbox" class="item-check" checked><span class="tag-swatch" style="background:${swatchColor}"></span>${escapeHtml(pat.name)} <span class="tag-count">${pat.notes.length}</span>`;
     tag.style.cursor = 'pointer';
+    tag.querySelector('.item-check').addEventListener('click', e => e.stopPropagation());
+    tag.querySelector('.item-check').addEventListener('change', e => {
+      if (e.target.checked) selectedPatterns.add(i); else selectedPatterns.delete(i);
+    });
     tag.addEventListener('click', () => {
       activePatternIdx = i;
       tagList.querySelectorAll('.tag').forEach(t => t.classList.remove('active'));
@@ -1609,6 +2074,14 @@ function renderDetection(proj) {
     tagList.appendChild(tag);
   });
   detBody.appendChild(tagList);
+  patSelectRow.querySelector('#patSelectAll').addEventListener('click', () => {
+    selectedPatterns = new Set(proj.patterns.map((p, i) => i));
+    tagList.querySelectorAll('.item-check').forEach(cb => cb.checked = true);
+  });
+  patSelectRow.querySelector('#patSelectNone').addEventListener('click', () => {
+    selectedPatterns = new Set();
+    tagList.querySelectorAll('.item-check').forEach(cb => cb.checked = false);
+  });
 
   const rollWrap = document.createElement('div');
   rollWrap.className = 'piano-roll';
@@ -1724,14 +2197,14 @@ function renderDetection(proj) {
     </div>`;
   detBody.appendChild(labRow);
   labRow.querySelector('#labA').addEventListener('click', () => {
-    const bytes = new FLMWriter(currentProj).build();
+    const bytes = new FLMWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: proj.arrangements.length ? activeArrIdx : null });
     downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.variantA.flm`);
-    setStatus('info', `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB). Test in FL Studio Mobile and tell me what happens.`);
+    setStatus('info', `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
   });
   labRow.querySelector('#labB').addEventListener('click', () => {
-    const bytes = new FLMWriterJSON(currentProj).build();
+    const bytes = new FLMWriterJSON(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: proj.arrangements.length ? activeArrIdx : null });
     downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.variantB.flm`);
-    setStatus('info', `Generated Variant B (${(bytes.length/1024).toFixed(1)} KB). Test in FL Studio Mobile and tell me what happens.`);
+    setStatus('info', `Generated Variant B (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
   });
 
   detPanel.classList.remove('hidden');
@@ -1812,11 +2285,11 @@ function drawPianoRoll(pattern) {
 midiBtn.addEventListener('click', () => {
   if (!currentProj) return;
   try {
-    const writer = new MidiWriter(currentProj);
-    const bytes = writer.build();
+    const writer = new MidiWriter(getExportProj());
+    const bytes = writer.build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
     const blob = new Blob([bytes], { type: 'audio/midi' });
     downloadBlob(blob, `${currentFileBase}.mid`);
-    setStatus('success', `Generated ${currentFileBase}.mid (${(bytes.length / 1024).toFixed(1)} KB) with all channels combined on separate MIDI channels. For the documented Channel Menu → Import MIDI Tracks flow, prefer the per-channel ↓ .mid buttons below instead.`);
+    setStatus('success', `Generated ${currentFileBase}.mid (${(bytes.length / 1024).toFixed(1)} KB) from the selected channels/patterns, combined on separate MIDI channels. For the documented Channel Menu → Import MIDI Tracks flow, prefer the per-channel ↓ .mid buttons below instead.`);
   } catch (err) {
     setStatus('error', `Could not build the .mid file: ${err.message}`);
   }
@@ -1824,7 +2297,13 @@ midiBtn.addEventListener('click', () => {
 
 jsonBtn.addEventListener('click', () => {
   if (!currentProj) return;
-  const blob = new Blob([JSON.stringify(currentProj, null, 2)], { type: 'application/json' });
+  const exportProj = getExportProj();
+  const filtered = {
+    ...exportProj,
+    channels: exportProj.channels.filter((c, i) => selectedChannels.has(i)),
+    patterns: exportProj.patterns.filter((p, i) => selectedPatterns.has(i)),
+  };
+  const blob = new Blob([JSON.stringify(filtered, null, 2)], { type: 'application/json' });
   downloadBlob(blob, `${currentFileBase}.analysis.json`);
 });
 
