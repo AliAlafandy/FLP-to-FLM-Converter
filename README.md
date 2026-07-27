@@ -52,7 +52,11 @@ If you test either `.flm` variant against a real device, feedback on what happen
 
 ## Supported FLP versions
 
-The parser targets the common event layout used from **FL Studio 11 through 21+**. It degrades gracefully on older or unusual files: unrecognized or malformed events are skipped individually (with a warning) rather than aborting the whole parse, so a handful of unknown events won't leave you with nothing.
+The parser targets the common event layout used from **FL Studio 10 through the current 25 / 2026 releases** (Image-Line moved to year-based version numbers in 2025). It degrades gracefully on older or unusual files: unrecognized or malformed events are skipped individually (with a warning) rather than aborting the whole parse, so a handful of unknown events won't leave you with nothing. Playlist items auto-detect the pre-FL21 (32-byte) vs FL21+ (60-byte) struct size.
+
+## Reading real .flm files
+
+This tool can also open genuine FL Studio Mobile project files (not just desktop `.flp`), based on reverse-engineering an actual sample: the `10LFHEAD` magic header, its recursive `TAG+length+payload` chunk container, and the exact 20-byte note-event layout inside each clip (position, length, key, velocity, release). Drop a `.flm` file the same way as a `.flp` — Showcase mode shows the raw chunk tree for it. Writing a fully valid `.flm` (the reverse direction) is not solved yet — see "What's not covered" below.
 
 ## What's *not* covered
 
