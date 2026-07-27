@@ -592,10 +592,10 @@ body.theme-light .note-box       { background: #EAF4FF; }
     <div class="drop-title">Drop your .flp or .flm file(s) here</div>
     <div class="drop-sub">or click to browse files · multiple files run in batch mode</div>
     <div class="drop-formats">
-      <span class="fmt-tag">FL Studio 11</span>
-      <span class="fmt-tag">FL Studio 12</span>
-      <span class="fmt-tag">FL Studio 20</span>
-      <span class="fmt-tag">FL Studio 21+</span>
+      <span class="fmt-tag">FL Studio 10+</span>
+      <span class="fmt-tag">FL Studio 12.9+</span>
+      <span class="fmt-tag">FL Studio 20-21</span>
+      <span class="fmt-tag">FL Studio 25 / 2026</span>
       <span class="fmt-tag">FL Studio Mobile</span>
     </div>
   </div>
@@ -1948,7 +1948,10 @@ function handleSingleFile(file) {
         activeArrIdx = 0;
         pushHistory(file, buf, proj);
 
-        if (currentMode === 'showcase' && !isFlm) {
+        if (currentMode === 'showcase' && isFlm) {
+          renderFlmShowcase(proj, currentBuf, file);
+          setStatus('info', `Previewing "${proj.title}" — hit Convert now when ready.`);
+        } else if (currentMode === 'showcase') {
           renderShowcase(proj, currentBuf, file);
           setStatus('info', `Previewing "${proj.title}" — hit Convert now when ready.`);
         } else {
@@ -2101,6 +2104,109 @@ function hexDump(buf, maxBytes) {
     lines.push(`${row.toString(16).padStart(6, '0')}  ${hex} <span class="hex-ascii">${escapeHtml(ascii)}</span>`);
   }
   return lines.join('\n');
+}
+
+function scanFlmChunkTree(buf, maxNodes) {
+  const bytes = new Uint8Array(buf);
+  const dv = new DataView(buf);
+  const nodes = [];
+  function isUpperTag(off) {
+    if (off + 4 > bytes.length) return false;
+    for (let i = 0; i < 4; i++) {
+      const c = bytes[off + i];
+      if (!((c >= 65 && c <= 90) || (c >= 48 && c <= 57))) return false;
+    }
+    return true;
+  }
+  function walk(offset, end, depth) {
+    let safety = 0;
+    while (offset + 8 <= end && ++safety < 20000 && nodes.length < maxNodes) {
+      if (!isUpperTag(offset)) { offset++; continue; }
+      const tag = new TextDecoder('ascii').decode(bytes.subarray(offset, offset + 4));
+      let length;
+      try { length = dv.getUint32(offset + 4, true); } catch (e) { offset++; continue; }
+      const payloadStart = offset + 8, payloadEnd = payloadStart + length;
+      if (length < 0 || payloadEnd > end || payloadEnd > bytes.length || payloadEnd <= payloadStart) { offset++; continue; }
+      nodes.push({ tag, length, depth, offset });
+      if (['CHNL', 'CLIP', 'RACK', 'TRKH'].includes(tag)) walk(payloadStart, payloadEnd, depth + 1);
+      offset = payloadEnd;
+    }
+  }
+  let scanStart = 284;
+  let chunkStart = -1;
+  for (let i = scanStart; i < bytes.length - 4; i++) { if (isUpperTag(i)) { chunkStart = i; break; } }
+  if (chunkStart >= 0) walk(chunkStart, bytes.length, 0);
+  return nodes;
+}
+
+function renderFlmShowcase(proj, buf, file) {
+  showcaseBody.innerHTML = '';
+
+  const grid = document.createElement('div');
+  grid.className = 'info-grid';
+  const cards = [
+    ['File size', `${(file.size / 1024).toFixed(1)}<span class="info-unit"> KB</span>`],
+    ['Title', escapeHtml(proj.title)],
+    ['Tempo', `${proj.tempo.toFixed(1)}<span class="info-unit"> BPM</span>`],
+    ['Channels', proj.channels.length],
+    ['Clips', proj.patterns.length],
+    ['Notes', proj.patterns.reduce((s, p) => s + p.notes.length, 0)],
+  ];
+  cards.forEach(([label, value]) => {
+    const card = document.createElement('div');
+    card.className = 'info-card';
+    card.innerHTML = `<div class="info-label">${label}</div><div class="info-value">${value}</div>`;
+    grid.appendChild(card);
+  });
+  showcaseBody.appendChild(grid);
+
+  const note = document.createElement('div');
+  note.className = 'note-box';
+  note.innerHTML = 'This is a reverse-engineered reading of the real FL Studio Mobile container format (magic <strong>"10LFHEAD"</strong>, chunk-based <strong>TAG+length+payload</strong> framing). The tree below is every chunk this scanner could walk into — useful for spotting chunk types this tool doesn\'t decode yet (effect racks, samplers, mixer params).';
+  showcaseBody.appendChild(note);
+
+  const treeLabel = document.createElement('div');
+  treeLabel.className = 'section-label';
+  treeLabel.textContent = 'Chunk tree';
+  showcaseBody.appendChild(treeLabel);
+
+  const nodes = scanFlmChunkTree(buf, 400);
+  const treeBox = document.createElement('div');
+  treeBox.className = 'hex-dump';
+  treeBox.style.maxHeight = '260px';
+  treeBox.style.overflowY = 'auto';
+  treeBox.innerHTML = nodes.map(n => {
+    const indent = '  '.repeat(n.depth);
+    return `${indent}<span class="hex-ascii">${n.tag}</span>  len=${n.length}  @${n.offset}`;
+  }).join('\n') || 'no chunks found';
+  showcaseBody.appendChild(treeBox);
+
+  const hexLabel = document.createElement('div');
+  hexLabel.className = 'section-label';
+  hexLabel.textContent = 'First 128 bytes';
+  showcaseBody.appendChild(hexLabel);
+
+  const hexBox = document.createElement('div');
+  hexBox.className = 'hex-dump';
+  hexBox.innerHTML = hexDump(buf, 128);
+  showcaseBody.appendChild(hexBox);
+
+  const convertRow = document.createElement('div');
+  convertRow.className = 'btn-row';
+  convertRow.innerHTML = '<button class="btn btn-primary" id="convertNowBtnFlm">▶ Convert now</button>';
+  showcaseBody.appendChild(convertRow);
+  convertRow.querySelector('#convertNowBtnFlm').addEventListener('click', () => {
+    showcasePanel.classList.add('hidden');
+    renderDetection(proj);
+    btnRow.classList.remove('hidden');
+    if (proj.warnings.length) {
+      setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+    } else {
+      setStatus('success', `Parsed "${proj.title}" successfully.`);
+    }
+  });
+
+  showcasePanel.classList.remove('hidden');
 }
 
 function renderShowcase(proj, buf, file) {
