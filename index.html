@@ -2287,6 +2287,7 @@ function renderShowcase(proj, buf, file) {
 function renderDetection(proj) {
   const totalNotes = proj.patterns.reduce((s, p) => s + p.notes.length, 0);
   const totalSlides = proj.patterns.reduce((s, p) => s + p.notes.filter(n => n.slide).length, 0);
+  const patternsWithNotes = proj.patterns.filter(p => p.notes.length > 0).length;
   let lastTick = 0;
   proj.patterns.forEach(p => p.notes.forEach(n => { lastTick = Math.max(lastTick, n.position + n.length); }));
   const secondsPerTick = 60 / (proj.tempo || 140) / (proj.ppq || 96);
@@ -2302,7 +2303,7 @@ function renderDetection(proj) {
     ['Time Sig', `${proj.timeSigNum}/${proj.timeSigDen}`],
     ['PPQ', proj.ppq],
     ['Channels', proj.channels.length],
-    ['Patterns', proj.patterns.length],
+    ['Patterns', patternsWithNotes < proj.patterns.length ? `${proj.patterns.length}<span class="info-unit"> (${patternsWithNotes} w/ notes)</span>` : proj.patterns.length],
     ['Notes', totalNotes],
     ['Slides', totalSlides],
     ['Arrangements', proj.arrangements.length],
@@ -2403,7 +2404,7 @@ function renderDetection(proj) {
 
   const patSelectRow = document.createElement('div');
   patSelectRow.className = 'select-row';
-  patSelectRow.innerHTML = '<button class="select-link" id="patSelectAll">select all</button><button class="select-link" id="patSelectNone">select none</button>';
+  patSelectRow.innerHTML = '<button class="select-link" id="patSelectAll">select all</button><button class="select-link" id="patSelectNone">select none</button><button class="select-link" id="patHideEmpty">hide empty</button>';
   detBody.appendChild(patSelectRow);
 
   const patSearch = document.createElement('input');
@@ -2448,13 +2449,23 @@ function renderDetection(proj) {
     selectedPatterns = new Set();
     tagList.querySelectorAll('.item-check').forEach(cb => cb.checked = false);
   });
-  patSearch.addEventListener('input', () => {
+  let hideEmptyPatterns = false;
+  const hideEmptyBtn = patSelectRow.querySelector('#patHideEmpty');
+  function applyPatternFilters() {
     const q = patSearch.value.trim().toLowerCase();
     Array.from(tagList.children).forEach((tag, i) => {
-      const match = !q || proj.patterns[i].name.toLowerCase().includes(q);
-      tag.classList.toggle('hidden', !match);
+      const pat = proj.patterns[i];
+      const matchesSearch = !q || pat.name.toLowerCase().includes(q);
+      const matchesEmpty = !hideEmptyPatterns || pat.notes.length > 0;
+      tag.classList.toggle('hidden', !(matchesSearch && matchesEmpty));
     });
+  }
+  hideEmptyBtn.addEventListener('click', () => {
+    hideEmptyPatterns = !hideEmptyPatterns;
+    hideEmptyBtn.textContent = hideEmptyPatterns ? 'show empty' : 'hide empty';
+    applyPatternFilters();
   });
+  patSearch.addEventListener('input', applyPatternFilters);
 
   const rollWrap = document.createElement('div');
   rollWrap.className = 'piano-roll';
