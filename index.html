@@ -130,6 +130,8 @@ h1 {
   border-radius: 20px;
   overflow: hidden;
   animation: fadeUp 0.4s ease both;
+  box-shadow: 0 12px 32px -16px rgba(0,0,0,0.45);
+  backdrop-filter: blur(6px);
 }
 .panel-header {
   padding: 13px 20px;
@@ -142,6 +144,19 @@ h1 {
 }
 .panel-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 6px var(--accent); }
 .panel-body { padding: 20px; }
+.kind-badge {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.62rem; font-weight: 600;
+  padding: 2px 7px; border-radius: 999px; letter-spacing: 0.3px;
+  border: 1px solid transparent;
+}
+.kind-sampler     { background: rgba(255,122,0,0.14); color: #FFA24D; border-color: rgba(255,122,0,0.35); }
+.kind-native      { background: rgba(79,163,255,0.14); color: #7FBBFF; border-color: rgba(79,163,255,0.35); }
+.kind-layer       { background: rgba(0,217,126,0.14); color: #4DE0A6; border-color: rgba(0,217,126,0.35); }
+.kind-instrument  { background: rgba(176,106,255,0.16); color: #C79BFF; border-color: rgba(176,106,255,0.4); }
+.kind-automation  { background: rgba(255,208,0,0.16); color: #FFDE4D; border-color: rgba(255,208,0,0.4); }
+.kind-flm         { background: rgba(255,106,194,0.16); color: #FF9BD6; border-color: rgba(255,106,194,0.4); }
+.kind-master      { background: rgba(226,226,240,0.14); color: #E2E2F0; border-color: rgba(226,226,240,0.35); }
+.kind-audio       { background: rgba(0,194,217,0.14); color: #4DDCEF; border-color: rgba(0,194,217,0.4); }
 
 .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 18px; }
 @media (max-width: 460px) { .info-grid { grid-template-columns: repeat(2, 1fr); } }
@@ -1255,6 +1270,14 @@ class FLMParser {
     const ctx = { channel: null, pattern: null };
     this.walkChunks(chunkStart, this.bytes.length, ctx, 0);
 
+    this.proj.channels.forEach(ch => {
+      if (ch.name === 'MASTER') { ch.kind = 'Master'; return; }
+      const ownPatterns = this.proj.patterns.filter(p => p.channelIid === ch.iid);
+      const hasNotes = ownPatterns.some(p => p.notes.length > 0);
+      const hasAudio = ownPatterns.some(p => p.audioPath);
+      ch.kind = hasNotes ? 'Instrument' : hasAudio ? 'Audio' : 'FLM';
+    });
+
     if (!this.proj.channels.length) this.proj.warnings.push('No channels were decoded — this FLM revision may differ from the one this parser was built from.');
     return this.proj;
   }
@@ -1304,7 +1327,7 @@ class FLMParser {
       case 'CLIP': {
         const idx = this.proj.patterns.length;
         const chName = ctx.channel ? ctx.channel.name : 'Clip';
-        const pat = { id: idx, name: `${chName} #${idx + 1}`, color: 0, notes: [] };
+        const pat = { id: idx, name: `${chName} #${idx + 1}`, color: 0, notes: [], channelIid: ctx.channel ? ctx.channel.iid : null };
         this.proj.patterns.push(pat);
         ctx.pattern = pat;
         break;
@@ -1312,6 +1335,16 @@ class FLMParser {
       case 'EVN2': {
         if (!ctx.pattern) break;
         this.parseEvn2(bytes, ctx.pattern, ctx.channel ? ctx.channel.iid : 0);
+        break;
+      }
+      case 'PTH1': {
+        if (!ctx.pattern || bytes.length <= 6) break;
+        const decoded = this.decodeAscii(bytes.subarray(6));
+        if (decoded && /^[\x20-\x7E]+$/.test(decoded) && decoded.length > 2) {
+          ctx.pattern.audioPath = decoded;
+          const base = decoded.split(/[\\/]/).pop();
+          if (base) ctx.pattern.name = base;
+        }
         break;
       }
     }
@@ -2350,16 +2383,19 @@ function renderDetection(proj) {
 
   const chList = document.createElement('div');
   chList.className = 'channel-list';
+  const KIND_CLASS = { Sampler: 'kind-sampler', Native: 'kind-native', Layer: 'kind-layer', Instrument: 'kind-instrument', Automation: 'kind-automation', FLM: 'kind-flm', Master: 'kind-master', Audio: 'kind-audio' };
   proj.channels.forEach((ch, i) => {
     const row = document.createElement('div');
     row.className = 'channel-item';
     const swatchColor = rgbFromFlpColor(ch.color) || colorForIndex(i);
+    const kind = ch.kind || 'Sampler';
+    const kindClass = KIND_CLASS[kind] || 'kind-sampler';
     row.innerHTML = `
       <input type="checkbox" class="item-check" id="chCheck${i}" checked>
       <div class="channel-swatch" style="background:${swatchColor}"></div>
       <div class="channel-name">${escapeHtml(ch.name)}</div>
       <div class="channel-meta">
-        <span>${escapeHtml(ch.kind || 'Sampler')}</span>
+        <span class="kind-badge ${kindClass}">${escapeHtml(kind)}</span>
         <span>vol ${ch.volume}</span>
         <span>pan ${ch.pan}</span>
         ${ch.muted ? '<span class="off">muted</span>' : ''}
@@ -2421,7 +2457,8 @@ function renderDetection(proj) {
     const tag = document.createElement('div');
     tag.className = 'tag' + (i === activePatternIdx ? ' active' : '') + (pat.notes.length ? '' : ' muted');
     const swatchColor = rgbFromFlpColor(pat.color) || colorForIndex(i);
-    tag.innerHTML = `<input type="checkbox" class="item-check" checked><span class="tag-swatch" style="background:${swatchColor}"></span>${escapeHtml(pat.name)} <span class="tag-count">${pat.notes.length}</span>`;
+    tag.innerHTML = `<input type="checkbox" class="item-check" checked><span class="tag-swatch" style="background:${swatchColor}"></span>${escapeHtml(pat.name)} <span class="tag-count">${pat.audioPath ? '🔊' : pat.notes.length}</span>`;
+    if (pat.audioPath) tag.title = pat.audioPath;
     tag.style.cursor = 'pointer';
     tag.querySelector('.item-check').addEventListener('click', e => e.stopPropagation());
     tag.querySelector('.item-check').addEventListener('change', e => {
@@ -2663,7 +2700,14 @@ function drawPianoRoll(pattern, playheadFrac) {
   ctx.scale(dpr, dpr);
   ctx.clearRect(0, 0, w, h);
 
-  if (!pattern || !pattern.notes.length) return;
+  if (!pattern || !pattern.notes.length) {
+    if (pattern && pattern.audioPath) {
+      ctx.fillStyle = '#4FA3FF';
+      ctx.font = '12px monospace';
+      ctx.fillText(`🔊 ${pattern.audioPath.split(/[\\/]/).pop()}`, 10, h / 2 + 4);
+    }
+    return;
+  }
 
   let minKey = 127, maxKey = 0, minPos = Infinity, maxPos = 0;
   pattern.notes.forEach(n => {
