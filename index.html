@@ -555,57 +555,63 @@ body.theme-light .note-box       { background: #EAF4FF; }
         <path d="M46 22 C54 24 55 34 47 40 C43 43 43 47 47 50" stroke="url(#heroGrad)" stroke-width="3.4" fill="none" stroke-linecap="round" class="hero-curve"/>
       </svg>
     </div>
-    <div class="logo-badge"><div class="logo-dot"></div> BEST-EFFORT CONVERTER</div>
+    <div class="logo-badge"><div class="logo-dot"></div> <span data-i18n="badge">BEST-EFFORT CONVERTER</span></div>
     <h1>FLP → FLM</h1>
-    <p class="header-sub">FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction</p>
+    <p class="header-sub" data-i18n="headerSub">FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction</p>
   </div>
 
   <div class="mode-tabs" id="modeTabs">
-    <button class="mode-tab active" data-mode="convert" id="modeConvertBtn">⚙ Converter</button>
-    <button class="mode-tab" data-mode="showcase" id="modeShowcaseBtn">🔍 Showcase</button>
+    <button class="mode-tab active" data-mode="convert" id="modeConvertBtn">⚙ <span data-i18n="modeConvert">Converter</span></button>
+    <button class="mode-tab" data-mode="showcase" id="modeShowcaseBtn">🔍 <span data-i18n="modeShowcase">Showcase</span></button>
   </div>
-  <p class="mode-hint" id="modeHint">Drop a file to parse it straight into channels, patterns and downloads.</p>
+  <p class="mode-hint" id="modeHint" data-i18n="modeHintConvert">Drop a file to parse it straight into channels, patterns and downloads.</p>
 
   <div class="toolbar">
-    <button class="toolbar-btn" id="settingsToggleBtn">⚙ Settings</button>
-    <button class="toolbar-btn" id="historyToggleBtn">🕘 History <span class="toolbar-count hidden" id="historyCount">0</span></button>
-    <button class="toolbar-btn hidden" id="installBtn">📲 Install app</button>
+    <button class="toolbar-btn" id="settingsToggleBtn">⚙ <span data-i18n="settings">Settings</span></button>
+    <button class="toolbar-btn" id="historyToggleBtn">🕘 <span data-i18n="history">History</span> <span class="toolbar-count hidden" id="historyCount">0</span></button>
+    <button class="toolbar-btn hidden" id="installBtn">📲 <span data-i18n="installApp">Install app</span></button>
   </div>
 
   <div class="panel hidden" id="settingsPanel">
-    <div class="panel-header"><div class="panel-dot"></div> SETTINGS</div>
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="settingsTitle">SETTINGS</span></div>
     <div class="panel-body">
-      <div class="section-label" style="margin-top:0">Theme</div>
+      <div class="section-label" style="margin-top:0" data-i18n="language">Language</div>
       <div class="seg-row">
-        <button class="seg-btn active" data-theme="dark" id="themeDarkBtn">🌙 Dark</button>
-        <button class="seg-btn" data-theme="light" id="themeLightBtn">☀ Light</button>
+        <button class="seg-btn" data-lang="en" id="langEnBtn">🇬🇧 English</button>
+        <button class="seg-btn" data-lang="pt" id="langPtBtn">🇧🇷 Português</button>
       </div>
 
-      <div class="section-label">Export overrides</div>
+      <div class="section-label" data-i18n="theme">Theme</div>
+      <div class="seg-row">
+        <button class="seg-btn active" data-theme="dark" id="themeDarkBtn">🌙 <span data-i18n="dark">Dark</span></button>
+        <button class="seg-btn" data-theme="light" id="themeLightBtn">☀ <span data-i18n="light">Light</span></button>
+      </div>
+
+      <div class="section-label" data-i18n="exportOverrides">Export overrides</div>
       <div class="field-row">
-        <label class="field-label">Tempo (BPM)<input type="number" id="tempoOverrideInput" placeholder="detected" min="1" max="999"></label>
-        <label class="field-label">PPQ<input type="number" id="ppqOverrideInput" placeholder="detected" min="24" max="1920"></label>
+        <label class="field-label"><span data-i18n="tempoBpm">Tempo (BPM)</span><input type="number" id="tempoOverrideInput" placeholder="detected" data-i18n-placeholder="detected" min="1" max="999"></label>
+        <label class="field-label">PPQ<input type="number" id="ppqOverrideInput" placeholder="detected" data-i18n-placeholder="detected" min="24" max="1920"></label>
       </div>
-      <div class="field-hint">Leave blank to use the values detected from the file. PPQ changes rescale note positions/lengths accordingly.</div>
+      <div class="field-hint" data-i18n="overrideHint">Leave blank to use the values detected from the file. PPQ changes rescale note positions/lengths accordingly.</div>
 
-      <div class="section-label">Time units</div>
+      <div class="section-label" data-i18n="timeUnits">Time units</div>
       <div class="seg-row">
-        <button class="seg-btn active" data-units="beats" id="unitsBeatsBtn">Beats</button>
-        <button class="seg-btn" data-units="seconds" id="unitsSecondsBtn">Seconds</button>
+        <button class="seg-btn active" data-units="beats" id="unitsBeatsBtn" data-i18n="beats">Beats</button>
+        <button class="seg-btn" data-units="seconds" id="unitsSecondsBtn" data-i18n="seconds">Seconds</button>
       </div>
     </div>
   </div>
 
   <div class="panel hidden" id="historyPanel">
-    <div class="panel-header"><div class="panel-dot"></div> RECENT CONVERSIONS</div>
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="recentConversions">RECENT CONVERSIONS</span></div>
     <div class="panel-body" id="historyBody"></div>
   </div>
 
   <div class="drop-zone" id="dropZone">
     <input type="file" id="fileInput" accept=".flp,.flm,application/octet-stream" multiple>
     <span class="drop-icon">🎹</span>
-    <div class="drop-title">Drop your .flp or .flm file(s) here</div>
-    <div class="drop-sub">or click to browse files · multiple files run in batch mode</div>
+    <div class="drop-title" data-i18n="dropTitle">Drop your .flp or .flm file(s) here</div>
+    <div class="drop-sub" data-i18n="dropSub">or click to browse files · multiple files run in batch mode</div>
     <div class="drop-formats">
       <span class="fmt-tag">FL Studio 10+</span>
       <span class="fmt-tag">FL Studio 12.9+</span>
@@ -617,7 +623,7 @@ body.theme-light .note-box       { background: #EAF4FF; }
 
   <div class="progress-wrap hidden" id="progressWrap">
     <div class="progress-header">
-      <span id="progressLabel">Reading…</span>
+      <span id="progressLabel" data-i18n="reading">Reading…</span>
       <span id="progressPct">0%</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -626,29 +632,29 @@ body.theme-light .note-box       { background: #EAF4FF; }
   <div class="status" id="status"></div>
 
   <div class="panel hidden" id="batchPanel">
-    <div class="panel-header"><div class="panel-dot"></div> BATCH RESULTS</div>
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="batchResults">BATCH RESULTS</span></div>
     <div class="panel-body" id="batchBody"></div>
   </div>
 
   <div class="panel hidden" id="showcasePanel">
-    <div class="panel-header"><div class="panel-dot"></div> RAW FLP PREVIEW</div>
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="rawPreview">RAW FLP PREVIEW</span></div>
     <div class="panel-body" id="showcaseBody"></div>
   </div>
 
   <div class="panel hidden" id="detPanel">
-    <div class="panel-header"><div class="panel-dot"></div> DETECTED PROJECT DATA</div>
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="detectedData">DETECTED PROJECT DATA</span></div>
     <div class="panel-body" id="detBody"></div>
   </div>
 
   <div class="btn-row hidden" id="btnRow">
-    <button class="btn btn-primary" id="midiBtn">⬇ Download .mid (all)</button>
+    <button class="btn btn-primary" id="midiBtn">⬇ <span data-i18n="downloadMidAll">Download .mid (all)</span></button>
     <button class="btn btn-secondary" id="jsonBtn">⬇ .json</button>
-    <button class="btn btn-secondary hidden" id="shareBtn">📤 Share .mid</button>
+    <button class="btn btn-secondary hidden" id="shareBtn">📤 <span data-i18n="shareMid">Share .mid</span></button>
   </div>
 
   <footer>
     FLP → FLM Converter · Apache 2.0 · github.com/Brenninho123/FLP-to-FLM-Converter<br>
-    Best-effort binary parser/writer · plugin samples not included · the .flm output is experimental
+    <span data-i18n="footerNote">Best-effort binary parser/writer · plugin samples not included · the .flm output is experimental</span>
   </footer>
 </div>
 
@@ -1709,6 +1715,8 @@ const settingsPanel = document.getElementById('settingsPanel');
 const historyPanel  = document.getElementById('historyPanel');
 const historyBody   = document.getElementById('historyBody');
 const historyCount  = document.getElementById('historyCount');
+const langEnBtn = document.getElementById('langEnBtn');
+const langPtBtn = document.getElementById('langPtBtn');
 const themeDarkBtn   = document.getElementById('themeDarkBtn');
 const themeLightBtn  = document.getElementById('themeLightBtn');
 const unitsBeatsBtn   = document.getElementById('unitsBeatsBtn');
@@ -1716,9 +1724,249 @@ const unitsSecondsBtn = document.getElementById('unitsSecondsBtn');
 const tempoOverrideInput = document.getElementById('tempoOverrideInput');
 const ppqOverrideInput   = document.getElementById('ppqOverrideInput');
 
+const I18N = {
+  en: {
+    badge: 'BEST-EFFORT CONVERTER',
+    headerSub: 'FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction',
+    modeConvert: 'Converter',
+    modeShowcase: 'Showcase',
+    modeHintConvert: 'Drop a file to parse it straight into channels, patterns and downloads.',
+    modeHintShowcase: 'Drop a file to preview its raw event structure first, then convert on demand.',
+    settings: 'Settings',
+    history: 'History',
+    installApp: 'Install app',
+    addToHomeScreen: 'Add to Home Screen',
+    settingsTitle: 'SETTINGS',
+    language: 'Language',
+    theme: 'Theme',
+    dark: 'Dark',
+    light: 'Light',
+    exportOverrides: 'Export overrides',
+    tempoBpm: 'Tempo (BPM)',
+    detected: 'detected',
+    overrideHint: 'Leave blank to use the values detected from the file. PPQ changes rescale note positions/lengths accordingly.',
+    timeUnits: 'Time units',
+    beats: 'Beats',
+    seconds: 'Seconds',
+    recentConversions: 'RECENT CONVERSIONS',
+    dropTitle: 'Drop your .flp or .flm file(s) here',
+    dropSub: 'or click to browse files · multiple files run in batch mode',
+    reading: 'Reading…',
+    batchResults: 'BATCH RESULTS',
+    rawPreview: 'RAW FLP PREVIEW',
+    detectedData: 'DETECTED PROJECT DATA',
+    downloadMidAll: 'Download .mid (all)',
+    shareMid: 'Share .mid',
+    footerNote: 'Best-effort binary parser/writer · plugin samples not included · the .flm output is experimental',
+    noRecentConversions: 'no recent conversions yet',
+    clearHistory: 'Clear history',
+    selectAll: 'select all',
+    selectNone: 'select none',
+    hideEmpty: 'hide empty',
+    showEmpty: 'show empty',
+    filterChannels: '🔎 filter channels by name…',
+    filterPatterns: '🔎 filter patterns by name…',
+    channels: 'Channels',
+    patterns: 'Patterns',
+    withNotes: 'w/ notes',
+    timeMarkers: 'Time markers',
+    arrangementPlaylist: 'Arrangement / playlist',
+    mixer: 'Mixer',
+    inserts: 'inserts',
+    warnings: 'Warnings',
+    flmLab: '.flm lab (experimental, unverified)',
+    variantA: 'Variant A — FLP container',
+    variantASub: "Reuses FL Studio's own FLhd/FLdt event-chunk format with a .flm extension, now including tracks/playlist/inserts/markers.",
+    variantB: 'Variant B — JSON envelope',
+    variantBSub: '4-byte tag + length-prefixed JSON. A guess for a from-scratch v3+ rewrite.',
+    playPattern: '▶ Play pattern',
+    stopPattern: '■ Stop',
+    playingPattern: 'playing "{name}"…',
+    noNotesInPattern: 'no notes in this pattern',
+    noPatternsDetected: 'no patterns detected',
+    noTracksDetected: 'no tracks/playlist items detected in this arrangement',
+    convertNow: '▶ Convert now',
+    fileSize: 'File size',
+    title: 'Title',
+    format: 'Format',
+    headerChannels: 'Header channels',
+    totalEvents: 'Total events',
+    byteEvents: 'Byte events',
+    wordEvents: 'Word events',
+    dwordEvents: 'Dword events',
+    varLengthEvents: 'Var-length events',
+    uniqueEventIds: 'Unique event IDs',
+    mostFrequentIds: 'Most frequent event IDs',
+    first128Bytes: 'First 128 bytes',
+    chunkTree: 'Chunk tree',
+    author: 'Author',
+    genre: 'Genre',
+    flVersion: 'FL version',
+    created: 'Created',
+    timeSpent: 'Time spent',
+    tempo: 'Tempo',
+    timeSig: 'Time Sig',
+    notesLabel: 'Notes',
+    slides: 'Slides',
+    arrangements: 'Arrangements',
+    markers: 'Markers',
+    estLength: 'Est. length',
+    clips: 'Clips',
+    reloadedFromHistory: 'Reloaded "{title}" from history — no re-upload needed.',
+    couldNotReload: 'Could not reload from history: {err}',
+    previewingHitConvert: 'Previewing "{title}" — hit Convert now when ready.',
+    parsedWithWarnings: 'Parsed with {n} warning(s) — see below.',
+    parsedSuccessfully: 'Parsed "{title}" successfully.',
+    failedToParse: 'Failed to parse: {err}',
+    batchDone: 'Batch done — {ok}/{total} file(s) parsed successfully.',
+    noChunksFound: 'no chunks found',
+    flmShowcaseNote: 'This is a reverse-engineered reading of the real FL Studio Mobile container format (magic <strong>"10LFHEAD"</strong>, chunk-based <strong>TAG+length+payload</strong> framing). The tree below is every chunk this scanner could walk into — useful for spotting chunk types this tool doesn\'t decode yet (effect racks, samplers, mixer params).',
+    batchFailed: 'Failed: {err}',
+    openFullView: '↗ Open full view',
+    chAbbr: 'ch', patAbbr: 'pat', notesAbbr: 'notes',
+    readingFile: 'Reading file…',
+    parsingFlmChunks: 'Parsing FLM chunks…',
+    parsingFlpEvents: 'Parsing FLP events…',
+    done: 'Done',
+    parsingNFiles: 'Parsing {n} files…',
+    parsingProgress: 'Parsing {done}/{total}…',
+    generatedSingleChannelMid: 'Generated a single-channel .mid for "{name}". Select that channel/track in FL Studio Mobile, then Channel Menu → Import MIDI Tracks.',
+    generatedCombinedMid: 'Generated {name}.mid ({kb} KB) from the selected channels/patterns, combined on separate MIDI channels. For the documented Channel Menu → Import MIDI Tracks flow, prefer the per-channel ↓ .mid buttons below instead.',
+    couldNotBuildMid: 'Could not build the .mid file: {err}',
+    noteBoxHtml: 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br><strong>Reading real .flm files now works</strong> — this tool can open actual FL Studio Mobile projects (not just .flp), based on reverse-engineering a real sample file: the "10LFHEAD" header, its chunk-based container, and the exact note-event byte layout inside each clip. <strong>Writing</strong> a valid .flm is a separate, much bigger problem — the two guesses in the lab below still don\'t use the real format and are unlikely to open in the app. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.',
+  },
+  pt: {
+    badge: 'CONVERSOR BEST-EFFORT',
+    headerSub: 'Projetos do FL Studio Desktop → FL Studio Mobile · detecção binária + reconstrução',
+    modeConvert: 'Converter',
+    modeShowcase: 'Showcase',
+    modeHintConvert: 'Solte um arquivo para converter direto em canais, patterns e downloads.',
+    modeHintShowcase: 'Solte um arquivo para ver a estrutura bruta primeiro, e converta quando quiser.',
+    settings: 'Configurações',
+    history: 'Histórico',
+    installApp: 'Instalar app',
+    addToHomeScreen: 'Adicionar à tela inicial',
+    settingsTitle: 'CONFIGURAÇÕES',
+    language: 'Idioma',
+    theme: 'Tema',
+    dark: 'Escuro',
+    light: 'Claro',
+    exportOverrides: 'Substituições de exportação',
+    tempoBpm: 'Tempo (BPM)',
+    detected: 'detectado',
+    overrideHint: 'Deixe em branco pra usar os valores detectados do arquivo. Mudar o PPQ reescala posições/durações das notas.',
+    timeUnits: 'Unidade de tempo',
+    beats: 'Beats',
+    seconds: 'Segundos',
+    recentConversions: 'CONVERSÕES RECENTES',
+    dropTitle: 'Solte seu arquivo .flp ou .flm aqui',
+    dropSub: 'ou clique para procurar arquivos · vários arquivos rodam em modo lote',
+    reading: 'Lendo…',
+    batchResults: 'RESULTADOS DO LOTE',
+    rawPreview: 'PRÉVIA BRUTA DO FLP',
+    detectedData: 'DADOS DETECTADOS DO PROJETO',
+    downloadMidAll: 'Baixar .mid (tudo)',
+    shareMid: 'Compartilhar .mid',
+    footerNote: 'Parser/writer binário best-effort · samples de plugin não incluídos · a saída .flm é experimental',
+    noRecentConversions: 'nenhuma conversão recente ainda',
+    clearHistory: 'Limpar histórico',
+    selectAll: 'selecionar tudo',
+    selectNone: 'desmarcar tudo',
+    hideEmpty: 'ocultar vazios',
+    showEmpty: 'mostrar vazios',
+    filterChannels: '🔎 filtrar canais por nome…',
+    filterPatterns: '🔎 filtrar patterns por nome…',
+    channels: 'Canais',
+    patterns: 'Patterns',
+    withNotes: 'c/ notas',
+    timeMarkers: 'Marcadores de tempo',
+    arrangementPlaylist: 'Arranjo / playlist',
+    mixer: 'Mixer',
+    inserts: 'inserts',
+    warnings: 'Avisos',
+    flmLab: 'laboratório .flm (experimental, não verificado)',
+    variantA: 'Variante A — container FLP',
+    variantASub: 'Reaproveita o formato de eventos FLhd/FLdt do próprio FL Studio com extensão .flm, agora incluindo tracks/playlist/inserts/marcadores.',
+    variantB: 'Variante B — envelope JSON',
+    variantBSub: 'Tag de 4 bytes + JSON prefixado por tamanho. Um chute pra uma reescrita v3+ do zero.',
+    playPattern: '▶ Tocar pattern',
+    stopPattern: '■ Parar',
+    playingPattern: 'tocando "{name}"…',
+    noNotesInPattern: 'sem notas nesse pattern',
+    noPatternsDetected: 'nenhum pattern detectado',
+    noTracksDetected: 'nenhuma track/item de playlist detectado nesse arrangement',
+    convertNow: '▶ Converter agora',
+    fileSize: 'Tamanho do arquivo',
+    title: 'Título',
+    format: 'Formato',
+    headerChannels: 'Canais no header',
+    totalEvents: 'Total de eventos',
+    byteEvents: 'Eventos byte',
+    wordEvents: 'Eventos word',
+    dwordEvents: 'Eventos dword',
+    varLengthEvents: 'Eventos de tamanho variável',
+    uniqueEventIds: 'IDs de evento únicos',
+    mostFrequentIds: 'IDs de evento mais frequentes',
+    first128Bytes: 'Primeiros 128 bytes',
+    chunkTree: 'Árvore de chunks',
+    author: 'Autor',
+    genre: 'Gênero',
+    flVersion: 'Versão do FL',
+    created: 'Criado',
+    timeSpent: 'Tempo gasto',
+    tempo: 'Tempo',
+    timeSig: 'Fórmula de compasso',
+    notesLabel: 'Notas',
+    slides: 'Slides',
+    arrangements: 'Arranjos',
+    markers: 'Marcadores',
+    estLength: 'Duração est.',
+    clips: 'Clipes',
+    reloadedFromHistory: '"{title}" recarregado do histórico — sem precisar reenviar.',
+    couldNotReload: 'Não deu pra recarregar do histórico: {err}',
+    previewingHitConvert: 'Vendo prévia de "{title}" — aperte Converter agora quando quiser.',
+    parsedWithWarnings: 'Convertido com {n} aviso(s) — veja abaixo.',
+    parsedSuccessfully: '"{title}" convertido com sucesso.',
+    failedToParse: 'Falha ao converter: {err}',
+    batchDone: 'Lote concluído — {ok}/{total} arquivo(s) convertido(s) com sucesso.',
+    noChunksFound: 'nenhum chunk encontrado',
+    flmShowcaseNote: 'Essa é uma leitura reverso-engenheirada do formato de container real do FL Studio Mobile (magic <strong>"10LFHEAD"</strong>, framing baseado em chunks <strong>TAG+tamanho+payload</strong>). A árvore abaixo é todo chunk que esse scanner conseguiu percorrer — útil pra identificar tipos de chunk que essa ferramenta ainda não decodifica (racks de efeito, samplers, parâmetros do mixer).',
+    batchFailed: 'Falhou: {err}',
+    openFullView: '↗ Abrir visão completa',
+    chAbbr: 'ca', patAbbr: 'pat', notesAbbr: 'notas',
+    readingFile: 'Lendo arquivo…',
+    parsingFlmChunks: 'Convertendo chunks do FLM…',
+    parsingFlpEvents: 'Convertendo eventos do FLP…',
+    done: 'Pronto',
+    parsingNFiles: 'Convertendo {n} arquivos…',
+    parsingProgress: 'Convertendo {done}/{total}…',
+    generatedSingleChannelMid: '.mid de canal único gerado para "{name}". Selecione esse canal/track no FL Studio Mobile, depois Channel Menu → Import MIDI Tracks.',
+    generatedCombinedMid: '{name}.mid gerado ({kb} KB) a partir dos canais/patterns selecionados, combinados em canais MIDI separados. Pro fluxo documentado Channel Menu → Import MIDI Tracks, prefira os botões ↓ .mid por canal abaixo.',
+    couldNotBuildMid: 'Não deu pra gerar o arquivo .mid: {err}',
+    noteBoxHtml: 'O FL Studio Mobile tem um recurso documentado de <strong>"Import MIDI Tracks"</strong> no <strong>Channel Menu</strong> — ele importa notas pro canal/track que estiver selecionado no momento, um de cada vez. Por isso cada canal abaixo tem seu próprio botão ↓ .mid: selecione o canal certo no app primeiro, depois importe.<br><br>Notas com contorno branco no piano roll acima são <strong>notas slide</strong> (portamento) — a flag de slide agora é lida e reescrita nos dados da nota, então elas não viram mais notas normais na exportação.<br><br><strong>Ler arquivos .flm reais agora funciona</strong> — essa ferramenta consegue abrir projetos reais do FL Studio Mobile (não só .flp), baseado em engenharia reversa de um arquivo real: o header "10LFHEAD", o container baseado em chunks, e o layout exato dos bytes de nota dentro de cada clipe. <strong>Escrever</strong> um .flm válido é um problema separado e bem maior — os dois chutes no laboratório abaixo ainda não usam o formato real e dificilmente vão abrir no app. As linhas de track na playlist acima são agrupadas pelo índice reverso bruto guardado por item, já que o mapeamento exato pra uma track nomeada não está confirmado em toda versão do FL — trate os números de linha como um agrupamento best-effort, não como verdade absoluta.',
+  },
+};
+
+function t(key, vars) {
+  let s = (I18N[currentLang] && I18N[currentLang][key]) || I18N.en[key] || key;
+  if (vars) for (const k in vars) s = s.split(`{${k}}`).join(vars[k]);
+  return s;
+}
+
+function applyStaticI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+  document.documentElement.lang = currentLang;
+  modeHint.textContent = currentMode === 'showcase' ? t('modeHintShowcase') : t('modeHintConvert');
+}
+
 const MODE_HINTS = {
-  convert: 'Drop a file to parse it straight into channels, patterns and downloads.',
-  showcase: 'Drop a file to preview its raw event structure first, then convert on demand.',
+  get convert() { return t('modeHintConvert'); },
+  get showcase() { return t('modeHintShowcase'); },
 };
 
 const SETTINGS_KEY = 'flpflm_settings_v1';
@@ -1727,7 +1975,8 @@ const HISTORY_MAX  = 6;
 const HISTORY_MAX_FILE_BYTES = 1500000;
 
 function loadSettings() {
-  const defaults = { theme: 'dark', tempoOverride: '', ppqOverride: '', timeUnits: 'beats' };
+  const browserLang = (navigator.language || 'en').toLowerCase().startsWith('pt') ? 'pt' : 'en';
+  const defaults = { theme: 'dark', tempoOverride: '', ppqOverride: '', timeUnits: 'beats', language: browserLang };
   try {
     const raw = localStorage.getItem(SETTINGS_KEY);
     if (raw) return Object.assign(defaults, JSON.parse(raw));
@@ -1786,6 +2035,7 @@ let selectedChannels = new Set();
 let selectedPatterns = new Set();
 let settings = loadSettings();
 let historyEntries = loadHistory();
+let currentLang = settings.language || 'en';
 
 function applyTheme() {
   document.body.classList.toggle('theme-light', settings.theme === 'light');
@@ -1796,9 +2046,15 @@ function applyUnitsButtons() {
   unitsBeatsBtn.classList.toggle('active', settings.timeUnits !== 'seconds');
   unitsSecondsBtn.classList.toggle('active', settings.timeUnits === 'seconds');
 }
+function applyLang() {
+  langEnBtn.classList.toggle('active', currentLang !== 'pt');
+  langPtBtn.classList.toggle('active', currentLang === 'pt');
+  applyStaticI18n();
+}
 
 applyTheme();
 applyUnitsButtons();
+applyLang();
 tempoOverrideInput.value = settings.tempoOverride || '';
 ppqOverrideInput.value = settings.ppqOverride || '';
 
@@ -1808,6 +2064,14 @@ unitsBeatsBtn.addEventListener('click', () => { settings.timeUnits = 'beats'; ap
 unitsSecondsBtn.addEventListener('click', () => { settings.timeUnits = 'seconds'; applyUnitsButtons(); saveSettings(); if (currentProj) renderDetection(currentProj); });
 tempoOverrideInput.addEventListener('change', () => { settings.tempoOverride = tempoOverrideInput.value; saveSettings(); });
 ppqOverrideInput.addEventListener('change', () => { settings.ppqOverride = ppqOverrideInput.value; saveSettings(); });
+langEnBtn.addEventListener('click', () => {
+  currentLang = 'en'; settings.language = 'en'; applyLang(); saveSettings();
+  if (currentProj && !detPanel.classList.contains('hidden')) renderDetection(currentProj);
+});
+langPtBtn.addEventListener('click', () => {
+  currentLang = 'pt'; settings.language = 'pt'; applyLang(); saveSettings();
+  if (currentProj && !detPanel.classList.contains('hidden')) renderDetection(currentProj);
+});
 
 settingsToggleBtn.addEventListener('click', () => {
   historyPanel.classList.add('hidden');
@@ -1828,7 +2092,7 @@ function renderHistoryList() {
   historyCount.classList.toggle('hidden', historyEntries.length === 0);
   historyBody.innerHTML = '';
   if (!historyEntries.length) {
-    historyBody.innerHTML = '<div class="history-empty">no recent conversions yet</div>';
+    historyBody.innerHTML = `<div class="history-empty">${t('noRecentConversions')}</div>`;
     return;
   }
   const list = document.createElement('div');
@@ -1857,9 +2121,9 @@ function renderHistoryList() {
         showcasePanel.classList.add('hidden');
         renderDetection(proj);
         btnRow.classList.remove('hidden');
-        setStatus('success', `Reloaded "${proj.title}" from history — no re-upload needed.`);
+        setStatus('success', t('reloadedFromHistory', { title: proj.title }));
       } catch (err) {
-        setStatus('error', `Could not reload from history: ${err.message}`);
+        setStatus('error', t('couldNotReload', { err: err.message }));
       }
     });
     list.appendChild(row);
@@ -1867,7 +2131,7 @@ function renderHistoryList() {
   historyBody.appendChild(list);
   const clearBtn = document.createElement('button');
   clearBtn.className = 'btn btn-secondary history-clear';
-  clearBtn.textContent = 'Clear history';
+  clearBtn.textContent = t('clearHistory');
   clearBtn.addEventListener('click', () => {
     historyEntries = [];
     saveHistory();
@@ -1965,9 +2229,9 @@ function pickParserClass(filename) {
 function handleSingleFile(file) {
   currentFileBase = file.name.replace(/\.(flp|flm)$/i, '') || 'project';
   const isFlm = /\.flm$/i.test(file.name);
-  setProgress(10, 'Reading file…');
+  setProgress(10, t('readingFile'));
   readFileAsArrayBuffer(file).then(buf => {
-    setProgress(55, isFlm ? 'Parsing FLM chunks…' : 'Parsing FLP events…');
+    setProgress(55, isFlm ? t('parsingFlmChunks') : t('parsingFlpEvents'));
     setTimeout(() => {
       try {
         currentBuf = buf;
@@ -1975,7 +2239,7 @@ function handleSingleFile(file) {
         const parser = new ParserClass(currentBuf);
         const proj = parser.parse();
         currentProj = proj;
-        setProgress(100, 'Done');
+        setProgress(100, t('done'));
         setTimeout(hideProgress, 350);
         activePatternIdx = 0;
         activeArrIdx = 0;
@@ -1983,29 +2247,29 @@ function handleSingleFile(file) {
 
         if (currentMode === 'showcase' && isFlm) {
           renderFlmShowcase(proj, currentBuf, file);
-          setStatus('info', `Previewing "${proj.title}" — hit Convert now when ready.`);
+          setStatus('info', t('previewingHitConvert', { title: proj.title }));
         } else if (currentMode === 'showcase') {
           renderShowcase(proj, currentBuf, file);
-          setStatus('info', `Previewing "${proj.title}" — hit Convert now when ready.`);
+          setStatus('info', t('previewingHitConvert', { title: proj.title }));
         } else {
           renderDetection(proj);
           if (proj.warnings.length) {
-            setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+            setStatus('info', t('parsedWithWarnings', { n: proj.warnings.length }));
           } else {
-            setStatus('success', `Parsed "${proj.title}" successfully.`);
+            setStatus('success', t('parsedSuccessfully', { title: proj.title }));
           }
           btnRow.classList.remove('hidden');
         }
       } catch (err) {
         hideProgress();
-        setStatus('error', `Failed to parse: ${err.message}`);
+        setStatus('error', t('failedToParse', { err: err.message }));
       }
     }, 30);
   }).catch(err => { hideProgress(); setStatus('error', err.message); });
 }
 
 function handleBatchFiles(files) {
-  setProgress(10, `Parsing ${files.length} files…`);
+  setProgress(10, t('parsingNFiles', { n: files.length }));
   const results = [];
   let done = 0;
   const processNext = () => {
@@ -2013,7 +2277,7 @@ function handleBatchFiles(files) {
       hideProgress();
       renderBatch(results);
       const okCount = results.filter(r => !r.error).length;
-      setStatus(okCount === results.length ? 'success' : 'info', `Batch done — ${okCount}/${results.length} file(s) parsed successfully.`);
+      setStatus(okCount === results.length ? 'success' : 'info', t('batchDone', { ok: okCount, total: results.length }));
       return;
     }
     const file = files[done];
@@ -2028,7 +2292,7 @@ function handleBatchFiles(files) {
         results.push({ file, error: err.message });
       }
       done++;
-      setProgress(10 + Math.round((done / files.length) * 85), `Parsing ${done}/${files.length}…`);
+      setProgress(10 + Math.round((done / files.length) * 85), t('parsingProgress', { done, total: files.length }));
       setTimeout(processNext, 10);
     }).catch(err => {
       results.push({ file, error: err.message });
@@ -2052,7 +2316,7 @@ function renderBatch(results) {
           <div class="batch-item-title">${escapeHtml(r.file.name)}</div>
           <div class="batch-item-meta">${(r.file.size / 1024).toFixed(0)} KB</div>
         </div>
-        <div class="batch-error">Failed: ${escapeHtml(r.error)}</div>`;
+        <div class="batch-error">${t('batchFailed', { err: escapeHtml(r.error) })}</div>`;
       list.appendChild(item);
       return;
     }
@@ -2060,10 +2324,10 @@ function renderBatch(results) {
     item.innerHTML = `
       <div class="batch-item-head">
         <div class="batch-item-title">${escapeHtml(r.proj.title)}</div>
-        <div class="batch-item-meta">${r.proj.channels.length} ch · ${r.proj.patterns.length} pat · ${totalNotes} notes</div>
+        <div class="batch-item-meta">${r.proj.channels.length} ${t('chAbbr')} · ${r.proj.patterns.length} ${t('patAbbr')} · ${totalNotes} ${t('notesAbbr')}</div>
       </div>
       <div class="batch-item-actions">
-        <button class="batch-mini-btn" data-act="open">↗ Open full view</button>
+        <button class="batch-mini-btn" data-act="open">${t('openFullView')}</button>
         <button class="batch-mini-btn" data-act="mid">⬇ .mid</button>
         <button class="batch-mini-btn" data-act="json">⬇ .json</button>
         <button class="batch-mini-btn" data-act="flm">⬇ .flm (A)</button>
@@ -2178,12 +2442,12 @@ function renderFlmShowcase(proj, buf, file) {
   const grid = document.createElement('div');
   grid.className = 'info-grid';
   const cards = [
-    ['File size', `${(file.size / 1024).toFixed(1)}<span class="info-unit"> KB</span>`],
-    ['Title', escapeHtml(proj.title)],
-    ['Tempo', `${proj.tempo.toFixed(1)}<span class="info-unit"> BPM</span>`],
-    ['Channels', proj.channels.length],
-    ['Clips', proj.patterns.length],
-    ['Notes', proj.patterns.reduce((s, p) => s + p.notes.length, 0)],
+    [t('fileSize'), `${(file.size / 1024).toFixed(1)}<span class="info-unit"> KB</span>`],
+    [t('title'), escapeHtml(proj.title)],
+    [t('tempo'), `${proj.tempo.toFixed(1)}<span class="info-unit"> BPM</span>`],
+    [t('channels'), proj.channels.length],
+    [t('clips'), proj.patterns.length],
+    [t('notesLabel'), proj.patterns.reduce((s, p) => s + p.notes.length, 0)],
   ];
   cards.forEach(([label, value]) => {
     const card = document.createElement('div');
@@ -2195,12 +2459,12 @@ function renderFlmShowcase(proj, buf, file) {
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = 'This is a reverse-engineered reading of the real FL Studio Mobile container format (magic <strong>"10LFHEAD"</strong>, chunk-based <strong>TAG+length+payload</strong> framing). The tree below is every chunk this scanner could walk into — useful for spotting chunk types this tool doesn\'t decode yet (effect racks, samplers, mixer params).';
+  note.innerHTML = t('flmShowcaseNote');
   showcaseBody.appendChild(note);
 
   const treeLabel = document.createElement('div');
   treeLabel.className = 'section-label';
-  treeLabel.textContent = 'Chunk tree';
+  treeLabel.textContent = t('chunkTree');
   showcaseBody.appendChild(treeLabel);
 
   const nodes = scanFlmChunkTree(buf, 400);
@@ -2211,12 +2475,12 @@ function renderFlmShowcase(proj, buf, file) {
   treeBox.innerHTML = nodes.map(n => {
     const indent = '  '.repeat(n.depth);
     return `${indent}<span class="hex-ascii">${n.tag}</span>  len=${n.length}  @${n.offset}`;
-  }).join('\n') || 'no chunks found';
+  }).join('\n') || t('noChunksFound');
   showcaseBody.appendChild(treeBox);
 
   const hexLabel = document.createElement('div');
   hexLabel.className = 'section-label';
-  hexLabel.textContent = 'First 128 bytes';
+  hexLabel.textContent = t('first128Bytes');
   showcaseBody.appendChild(hexLabel);
 
   const hexBox = document.createElement('div');
@@ -2226,16 +2490,16 @@ function renderFlmShowcase(proj, buf, file) {
 
   const convertRow = document.createElement('div');
   convertRow.className = 'btn-row';
-  convertRow.innerHTML = '<button class="btn btn-primary" id="convertNowBtnFlm">▶ Convert now</button>';
+  convertRow.innerHTML = `<button class="btn btn-primary" id="convertNowBtnFlm">${t('convertNow')}</button>`;
   showcaseBody.appendChild(convertRow);
   convertRow.querySelector('#convertNowBtnFlm').addEventListener('click', () => {
     showcasePanel.classList.add('hidden');
     renderDetection(proj);
     btnRow.classList.remove('hidden');
     if (proj.warnings.length) {
-      setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+      setStatus('info', t('parsedWithWarnings', { n: proj.warnings.length }));
     } else {
-      setStatus('success', `Parsed "${proj.title}" successfully.`);
+      setStatus('success', t('parsedSuccessfully', { title: proj.title }));
     }
   });
 
@@ -2249,16 +2513,16 @@ function renderShowcase(proj, buf, file) {
   const grid = document.createElement('div');
   grid.className = 'info-grid';
   const cards = [
-    ['File size', `${(file.size / 1024).toFixed(1)}<span class="info-unit"> KB</span>`],
-    ['Format', proj.format],
+    [t('fileSize'), `${(file.size / 1024).toFixed(1)}<span class="info-unit"> KB</span>`],
+    [t('format'), proj.format],
     ['PPQ', proj.ppq],
-    ['Header channels', proj.numChannelsHeader],
-    ['Total events', rawStats.total],
-    ['Byte events', rawStats.byte],
-    ['Word events', rawStats.word],
-    ['Dword events', rawStats.dword],
-    ['Var-length events', rawStats.data],
-    ['Unique event IDs', Object.keys(rawStats.byId).length],
+    [t('headerChannels'), proj.numChannelsHeader],
+    [t('totalEvents'), rawStats.total],
+    [t('byteEvents'), rawStats.byte],
+    [t('wordEvents'), rawStats.word],
+    [t('dwordEvents'), rawStats.dword],
+    [t('varLengthEvents'), rawStats.data],
+    [t('uniqueEventIds'), Object.keys(rawStats.byId).length],
   ];
   cards.forEach(([label, value]) => {
     const card = document.createElement('div');
@@ -2270,7 +2534,7 @@ function renderShowcase(proj, buf, file) {
 
   const histLabel = document.createElement('div');
   histLabel.className = 'section-label';
-  histLabel.textContent = 'Most frequent event IDs';
+  histLabel.textContent = t('mostFrequentIds');
   showcaseBody.appendChild(histLabel);
 
   const histList = document.createElement('div');
@@ -2291,7 +2555,7 @@ function renderShowcase(proj, buf, file) {
 
   const hexLabel = document.createElement('div');
   hexLabel.className = 'section-label';
-  hexLabel.textContent = 'First 128 bytes';
+  hexLabel.textContent = t('first128Bytes');
   showcaseBody.appendChild(hexLabel);
 
   const hexBox = document.createElement('div');
@@ -2301,16 +2565,16 @@ function renderShowcase(proj, buf, file) {
 
   const convertRow = document.createElement('div');
   convertRow.className = 'btn-row';
-  convertRow.innerHTML = '<button class="btn btn-primary" id="convertNowBtn">▶ Convert now</button>';
+  convertRow.innerHTML = `<button class="btn btn-primary" id="convertNowBtn">${t('convertNow')}</button>`;
   showcaseBody.appendChild(convertRow);
   convertRow.querySelector('#convertNowBtn').addEventListener('click', () => {
     showcasePanel.classList.add('hidden');
     renderDetection(proj);
     btnRow.classList.remove('hidden');
     if (proj.warnings.length) {
-      setStatus('info', `Parsed with ${proj.warnings.length} warning(s) — see below.`);
+      setStatus('info', t('parsedWithWarnings', { n: proj.warnings.length }));
     } else {
-      setStatus('success', `Parsed "${proj.title}" successfully.`);
+      setStatus('success', t('parsedSuccessfully', { title: proj.title }));
     }
   });
 
@@ -2331,18 +2595,18 @@ function renderDetection(proj) {
   const grid = document.createElement('div');
   grid.className = 'info-grid';
   const cards = [
-    ['Title', escapeHtml(proj.title) || 'Untitled'],
-    ['Tempo', `${proj.tempo.toFixed(2)}<span class="info-unit"> BPM</span>`],
-    ['Time Sig', `${proj.timeSigNum}/${proj.timeSigDen}`],
+    [t('title'), escapeHtml(proj.title) || 'Untitled'],
+    [t('tempo'), `${proj.tempo.toFixed(2)}<span class="info-unit"> BPM</span>`],
+    [t('timeSig'), `${proj.timeSigNum}/${proj.timeSigDen}`],
     ['PPQ', proj.ppq],
-    ['Channels', proj.channels.length],
-    ['Patterns', patternsWithNotes < proj.patterns.length ? `${proj.patterns.length}<span class="info-unit"> (${patternsWithNotes} w/ notes)</span>` : proj.patterns.length],
-    ['Notes', totalNotes],
-    ['Slides', totalSlides],
-    ['Arrangements', proj.arrangements.length],
-    ['Inserts', proj.inserts.length],
-    ['Markers', proj.timeMarkers.length],
-    ['Est. length', settings.timeUnits === 'seconds' ? formatDuration(durationSec) : `${(lastTick / (proj.ppq || 96)).toFixed(1)}<span class="info-unit"> beats</span>`],
+    [t('channels'), proj.channels.length],
+    [t('patterns'), patternsWithNotes < proj.patterns.length ? `${proj.patterns.length}<span class="info-unit"> (${patternsWithNotes} ${t('withNotes')})</span>` : proj.patterns.length],
+    [t('notesLabel'), totalNotes],
+    [t('slides'), totalSlides],
+    [t('arrangements'), proj.arrangements.length],
+    [t('inserts'), proj.inserts.length],
+    [t('markers'), proj.timeMarkers.length],
+    [t('estLength'), settings.timeUnits === 'seconds' ? formatDuration(durationSec) : `${(lastTick / (proj.ppq || 96)).toFixed(1)}<span class="info-unit"> beats</span>`],
   ];
   cards.forEach(([label, value]) => {
     const card = document.createElement('div');
@@ -2355,11 +2619,11 @@ function renderDetection(proj) {
   if (proj.author || proj.genre || proj.comment || proj.version) {
     const meta = document.createElement('div');
     meta.className = 'stat-row';
-    if (proj.author)  meta.innerHTML += `<div class="stat"><strong>Author:</strong> ${escapeHtml(proj.author)}</div>`;
-    if (proj.genre)   meta.innerHTML += `<div class="stat"><strong>Genre:</strong> ${escapeHtml(proj.genre)}</div>`;
-    if (proj.version) meta.innerHTML += `<div class="stat"><strong>FL version:</strong> ${escapeHtml(proj.version)}</div>`;
-    if (proj.createdOn) meta.innerHTML += `<div class="stat"><strong>Created:</strong> ${proj.createdOn.toISOString().slice(0,10)}</div>`;
-    if (proj.timeSpentHours) meta.innerHTML += `<div class="stat"><strong>Time spent:</strong> ${proj.timeSpentHours.toFixed(1)}h</div>`;
+    if (proj.author)  meta.innerHTML += `<div class="stat"><strong>${t('author')}:</strong> ${escapeHtml(proj.author)}</div>`;
+    if (proj.genre)   meta.innerHTML += `<div class="stat"><strong>${t('genre')}:</strong> ${escapeHtml(proj.genre)}</div>`;
+    if (proj.version) meta.innerHTML += `<div class="stat"><strong>${t('flVersion')}:</strong> ${escapeHtml(proj.version)}</div>`;
+    if (proj.createdOn) meta.innerHTML += `<div class="stat"><strong>${t('created')}:</strong> ${proj.createdOn.toISOString().slice(0,10)}</div>`;
+    if (proj.timeSpentHours) meta.innerHTML += `<div class="stat"><strong>${t('timeSpent')}:</strong> ${proj.timeSpentHours.toFixed(1)}h</div>`;
     detBody.appendChild(meta);
   }
 
@@ -2367,18 +2631,18 @@ function renderDetection(proj) {
 
   const chLabel = document.createElement('div');
   chLabel.className = 'section-label';
-  chLabel.textContent = `Channels (${proj.channels.length})`;
+  chLabel.textContent = `${t('channels')} (${proj.channels.length})`;
   detBody.appendChild(chLabel);
 
   const chSelectRow = document.createElement('div');
   chSelectRow.className = 'select-row';
-  chSelectRow.innerHTML = '<button class="select-link" id="chSelectAll">select all</button><button class="select-link" id="chSelectNone">select none</button>';
+  chSelectRow.innerHTML = `<button class="select-link" id="chSelectAll">${t('selectAll')}</button><button class="select-link" id="chSelectNone">${t('selectNone')}</button>`;
   detBody.appendChild(chSelectRow);
 
   const chSearch = document.createElement('input');
   chSearch.type = 'text';
   chSearch.className = 'search-input';
-  chSearch.placeholder = '🔎 filter channels by name…';
+  chSearch.placeholder = t('filterChannels');
   detBody.appendChild(chSearch);
 
   const chList = document.createElement('div');
@@ -2410,7 +2674,7 @@ function renderDetection(proj) {
       const bytes = new MidiWriter(getExportProj()).build({ onlyChannelIndex: i });
       const safeName = ch.name.replace(/[^a-z0-9]+/gi, '_').slice(0, 24) || `channel_${i+1}`;
       downloadBlob(new Blob([bytes], { type: 'audio/midi' }), `${currentFileBase}_${safeName}.mid`);
-      setStatus('success', `Generated a single-channel .mid for "${ch.name}". Select that channel/track in FL Studio Mobile, then Channel Menu → Import MIDI Tracks.`);
+      setStatus('success', t('generatedSingleChannelMid', { name: ch.name }));
     });
     chList.appendChild(row);
   });
@@ -2435,18 +2699,18 @@ function renderDetection(proj) {
 
   const patLabel = document.createElement('div');
   patLabel.className = 'section-label';
-  patLabel.textContent = `Patterns (${proj.patterns.length})`;
+  patLabel.textContent = `${t('patterns')} (${proj.patterns.length})`;
   detBody.appendChild(patLabel);
 
   const patSelectRow = document.createElement('div');
   patSelectRow.className = 'select-row';
-  patSelectRow.innerHTML = '<button class="select-link" id="patSelectAll">select all</button><button class="select-link" id="patSelectNone">select none</button><button class="select-link" id="patHideEmpty">hide empty</button>';
+  patSelectRow.innerHTML = `<button class="select-link" id="patSelectAll">${t('selectAll')}</button><button class="select-link" id="patSelectNone">${t('selectNone')}</button><button class="select-link" id="patHideEmpty">${t('hideEmpty')}</button>`;
   detBody.appendChild(patSelectRow);
 
   const patSearch = document.createElement('input');
   patSearch.type = 'text';
   patSearch.className = 'search-input';
-  patSearch.placeholder = '🔎 filter patterns by name…';
+  patSearch.placeholder = t('filterPatterns');
   detBody.appendChild(patSearch);
 
   const tagList = document.createElement('div');
@@ -2472,7 +2736,7 @@ function renderDetection(proj) {
       stopPlayback();
       const btn = document.getElementById('playPatternBtn');
       const st = document.getElementById('playStatus');
-      if (btn) btn.textContent = '▶ Play pattern';
+      if (btn) btn.textContent = t('playPattern');
       if (st) st.textContent = '';
     });
     tagList.appendChild(tag);
@@ -2499,7 +2763,7 @@ function renderDetection(proj) {
   }
   hideEmptyBtn.addEventListener('click', () => {
     hideEmptyPatterns = !hideEmptyPatterns;
-    hideEmptyBtn.textContent = hideEmptyPatterns ? 'show empty' : 'hide empty';
+    hideEmptyBtn.textContent = hideEmptyPatterns ? t('showEmpty') : t('hideEmpty');
     applyPatternFilters();
   });
   patSearch.addEventListener('input', applyPatternFilters);
@@ -2511,34 +2775,34 @@ function renderDetection(proj) {
 
   const playRow = document.createElement('div');
   playRow.className = 'play-row';
-  playRow.innerHTML = '<button class="play-btn" id="playPatternBtn">▶ Play pattern</button><span class="play-status" id="playStatus"></span>';
+  playRow.innerHTML = `<button class="play-btn" id="playPatternBtn">${t('playPattern')}</button><span class="play-status" id="playStatus"></span>`;
   detBody.appendChild(playRow);
   const playBtn = playRow.querySelector('#playPatternBtn');
   const playStatus = playRow.querySelector('#playStatus');
   playBtn.addEventListener('click', () => {
     if (isPlaying()) {
       stopPlayback();
-      playBtn.textContent = '▶ Play pattern';
+      playBtn.textContent = t('playPattern');
       playStatus.textContent = '';
     } else {
       const pat = proj.patterns[activePatternIdx];
-      if (!pat || !pat.notes.length) { playStatus.textContent = 'no notes in this pattern'; return; }
-      playPattern(pat, proj, () => { playBtn.textContent = '▶ Play pattern'; playStatus.textContent = ''; });
-      playBtn.textContent = '■ Stop';
-      playStatus.textContent = `playing "${pat.name}"…`;
+      if (!pat || !pat.notes.length) { playStatus.textContent = t('noNotesInPattern'); return; }
+      playPattern(pat, proj, () => { playBtn.textContent = t('playPattern'); playStatus.textContent = ''; });
+      playBtn.textContent = t('stopPattern');
+      playStatus.textContent = t('playingPattern', { name: pat.name });
     }
   });
 
   if (proj.patterns.length) {
     requestAnimationFrame(() => drawPianoRoll(proj.patterns[activePatternIdx]));
   } else {
-    rollWrap.innerHTML = '<div class="empty-hint">no patterns detected</div>';
+    rollWrap.innerHTML = `<div class="empty-hint">${t('noPatternsDetected')}</div>`;
   }
 
   if (proj.timeMarkers.length) {
     const tmLabel = document.createElement('div');
     tmLabel.className = 'section-label';
-    tmLabel.textContent = `Time markers (${proj.timeMarkers.length})`;
+    tmLabel.textContent = `${t('timeMarkers')} (${proj.timeMarkers.length})`;
     detBody.appendChild(tmLabel);
     const tmList = document.createElement('div');
     tmList.className = 'tag-list';
@@ -2555,7 +2819,7 @@ function renderDetection(proj) {
   if (proj.arrangements.length) {
     const arrLabel = document.createElement('div');
     arrLabel.className = 'section-label';
-    arrLabel.textContent = `Arrangement / playlist`;
+    arrLabel.textContent = t('arrangementPlaylist');
     detBody.appendChild(arrLabel);
 
     if (proj.arrangements.length > 1) {
@@ -2585,7 +2849,7 @@ function renderDetection(proj) {
   if (proj.inserts.length) {
     const mixLabel = document.createElement('div');
     mixLabel.className = 'section-label';
-    mixLabel.textContent = `Mixer (${proj.inserts.length} inserts)`;
+    mixLabel.textContent = `${t('mixer')} (${proj.inserts.length} ${t('inserts')})`;
     detBody.appendChild(mixLabel);
     const mixList = document.createElement('div');
     mixList.className = 'channel-list';
@@ -2612,41 +2876,45 @@ function renderDetection(proj) {
   if (proj.warnings.length) {
     const box = document.createElement('div');
     box.className = 'warning-box';
-    box.innerHTML = `<strong>Warnings</strong><ul>${proj.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>`;
+    box.innerHTML = `<strong>${t('warnings')}</strong><ul>${proj.warnings.map(w => `<li>${escapeHtml(w)}</li>`).join('')}</ul>`;
     detBody.appendChild(box);
   }
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br><strong>Reading real .flm files now works</strong> — this tool can open actual FL Studio Mobile projects (not just .flp), based on reverse-engineering a real sample file: the "10LFHEAD" header, its chunk-based container, and the exact note-event byte layout inside each clip. <strong>Writing</strong> a valid .flm is a separate, much bigger problem — the two guesses in the lab below still don\'t use the real format and are unlikely to open in the app. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.';
+  note.innerHTML = t('noteBoxHtml');
   detBody.appendChild(note);
 
   const labLabel = document.createElement('div');
   labLabel.className = 'section-label';
-  labLabel.textContent = '.flm lab (experimental, unverified)';
+  labLabel.textContent = t('flmLab');
   detBody.appendChild(labLabel);
 
   const labRow = document.createElement('div');
   labRow.className = 'lab-row';
   labRow.innerHTML = `
     <div class="lab-btn" id="labA">
-      <div class="lab-title">Variant A — FLP container</div>
-      <div class="lab-sub">Reuses FL Studio's own FLhd/FLdt event-chunk format with a .flm extension, now including tracks/playlist/inserts/markers.</div>
+      <div class="lab-title">${t('variantA')}</div>
+      <div class="lab-sub">${t('variantASub')}</div>
     </div>
     <div class="lab-btn" id="labB">
-      <div class="lab-title">Variant B — JSON envelope</div>
-      <div class="lab-sub">4-byte tag + length-prefixed JSON. A guess for a from-scratch v3+ rewrite.</div>
+      <div class="lab-title">${t('variantB')}</div>
+      <div class="lab-sub">${t('variantBSub')}</div>
     </div>`;
   detBody.appendChild(labRow);
   labRow.querySelector('#labA').addEventListener('click', () => {
     const bytes = new FLMWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: proj.arrangements.length ? activeArrIdx : null });
     downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.variantA.flm`);
-    setStatus('info', `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
+    setStatus('info', currentLang === 'pt'
+      ? `Variante A gerada (${(bytes.length/1024).toFixed(1)} KB) a partir da seleção atual. Teste no FL Studio Mobile e me conta o que rolou.`
+      : `Generated Variant A (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
   });
   labRow.querySelector('#labB').addEventListener('click', () => {
     const bytes = new FLMWriterJSON(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: proj.arrangements.length ? activeArrIdx : null });
     downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.variantB.flm`);
-    setStatus('info', `Generated Variant B (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
+    setStatus('info', currentLang === 'pt'
+      ? `Variante B gerada (${(bytes.length/1024).toFixed(1)} KB) a partir da seleção atual. Teste no FL Studio Mobile e me conta o que rolou.`
+      : `Generated Variant B (${(bytes.length/1024).toFixed(1)} KB) from the current selection. Test in FL Studio Mobile and tell me what happens.`);
   });
 
   detPanel.classList.remove('hidden');
@@ -2657,7 +2925,7 @@ function drawTracks(arr) {
   if (!wrap) return;
   wrap.innerHTML = '';
   if (!arr || !arr.tracks.length) {
-    wrap.innerHTML = '<div class="track-empty-hint">no tracks/playlist items detected in this arrangement</div>';
+    wrap.innerHTML = `<div class="track-empty-hint">${t('noTracksDetected')}</div>`;
     return;
   }
 
@@ -2832,9 +3100,9 @@ midiBtn.addEventListener('click', () => {
     const bytes = writer.build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
     const blob = new Blob([bytes], { type: 'audio/midi' });
     downloadBlob(blob, `${currentFileBase}.mid`);
-    setStatus('success', `Generated ${currentFileBase}.mid (${(bytes.length / 1024).toFixed(1)} KB) from the selected channels/patterns, combined on separate MIDI channels. For the documented Channel Menu → Import MIDI Tracks flow, prefer the per-channel ↓ .mid buttons below instead.`);
+    setStatus('success', t('generatedCombinedMid', { name: currentFileBase, kb: (bytes.length / 1024).toFixed(1) }));
   } catch (err) {
-    setStatus('error', `Could not build the .mid file: ${err.message}`);
+    setStatus('error', t('couldNotBuildMid', { err: err.message }));
   }
 });
 
@@ -2884,7 +3152,7 @@ if (navigator.share) {
       const bytes = new MidiWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
       shareFile(new Blob([bytes], { type: 'audio/midi' }), `${currentFileBase}.mid`, 'audio/midi');
     } catch (err) {
-      setStatus('error', `Could not build the .mid file: ${err.message}`);
+      setStatus('error', t('couldNotBuildMid', { err: err.message }));
     }
   });
 }
@@ -2902,7 +3170,7 @@ if (!isStandalone) {
   });
   if (isIos) {
     installBtn.classList.remove('hidden');
-    installBtn.textContent = '📲 Add to Home Screen';
+    installBtn.textContent = '📲 ' + t('addToHomeScreen');
   }
 }
 
@@ -2912,9 +3180,11 @@ installBtn.addEventListener('click', async () => {
     const choice = await deferredInstallPrompt.userChoice;
     deferredInstallPrompt = null;
     installBtn.classList.add('hidden');
-    setStatus(choice.outcome === 'accepted' ? 'success' : 'info', choice.outcome === 'accepted' ? 'Installed! You can now launch it from your home screen.' : 'Install dismissed — you can try again anytime from this button.');
+    setStatus(choice.outcome === 'accepted' ? 'success' : 'info', choice.outcome === 'accepted'
+      ? (currentLang === 'pt' ? 'Instalado! Agora dá pra abrir direto da tela inicial.' : 'Installed! You can now launch it from your home screen.')
+      : (currentLang === 'pt' ? 'Instalação cancelada — pode tentar de novo quando quiser, nesse mesmo botão.' : 'Install dismissed — you can try again anytime from this button.'));
   } else if (isIos) {
-    setStatus('info', 'On iOS: tap the Share icon in Safari, then "Add to Home Screen".');
+    setStatus('info', currentLang === 'pt' ? 'No iOS: toque no ícone de compartilhar no Safari, depois em "Adicionar à Tela de Início".' : 'On iOS: tap the Share icon in Safari, then "Add to Home Screen".');
   }
 });
 
