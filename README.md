@@ -27,7 +27,9 @@ Drop a file and get an immediate breakdown:
 - **Channels** — name, color, volume, pan, enabled state, and kind (Sampler / Native / Layer / Instrument / Automation), plus channel-level extras (root note, fine tune, reverb, group, sample path) when present.
 - **Patterns** — name, color, and a real note list per pattern (position, length, key, velocity, pan, fine pitch, release) rendered as an interactive piano roll.
 - **Arrangements & playlist** — every arrangement's tracks, with pattern blocks / audio clips placed on a proportional timeline per track.
-- **Mixer** — inserts with name, color, icon, routing, and (where available) volume/pan decoded from the global mixer-parameters block.
+- **Mixer** — inserts with name, color, icon, routing, and (where available) volume/pan decoded from the global mixer-parameters block, plus the detected effect chain (plugin names per slot) when present.
+- **Instruments & effects** — the generator plugin on each channel (e.g. "Sytrus", "FLEX") and the effect plugins on each mixer insert are decoded from the project and shown as labels — useful context even though the actual plugin processing can never carry over to MIDI/FLM.
+- **Slide notes** — portamento notes are read from the real flag bit (not just guessed), preserved on `.flm` export, and exported to `.mid` as real MIDI Portamento (CC5 + CC65) so a portamento-capable synth actually glides between them instead of playing two disconnected notes.
 - **Time markers** — tempo/signature markers with position and name.
 - **Automation** — automation-type channels get their point curve (position, value, tension) decoded.
 
@@ -42,6 +44,7 @@ Toggle to **🔍 Showcase** before dropping a file to preview the *raw* structur
 A **▶ Convert now** button then runs the same full parse used by Converter mode, so you can inspect before committing.
 
 ### Exports
+- **Download format toggle** — a `.mid` / `.flm` switch above the main download button picks what the primary "⬇ Download" and "📤 Share" buttons produce, so you don't have to dig into the lab section for a quick `.flm`.
 - **Per-channel `.mid`** — one clean single-track MIDI file per channel, matching the documented *Channel Menu → Import MIDI Tracks* workflow in FL Studio Mobile.
 - **Combined `.mid`** — every channel on its own MIDI channel in one file, useful for a quick listen in any DAW.
 - **`.analysis.json`** — the full parsed project model, for scripting or debugging.
@@ -74,6 +77,24 @@ This tool can also open genuine FL Studio Mobile project files (not just desktop
 5. Download whichever export you need — per-channel `.mid` is the safest bet for actually getting notes into FL Studio Mobile today.
 
 No server, no network request, no account. The file never leaves your device.
+
+## Google Sign-In (optional)
+
+There's an optional "Sign in with Google" button in Settings → Account. It's purely cosmetic — it decodes your name/email/photo client-side (via [Google Identity Services](https://developers.google.com/identity/gsi/web)) to show a small account badge, and stores that locally in the browser. **Nothing is uploaded anywhere; there's no server, no Drive access, no gating of features.**
+
+It ships with a placeholder and does nothing until you configure your own OAuth Client ID:
+
+1. Go to the [Google Cloud Console credentials page](https://console.cloud.google.com/apis/credentials) and create (or pick) a project.
+2. Create an **OAuth 2.0 Client ID** of type **Web application**.
+3. Under **Authorized JavaScript origins**, add the exact origin(s) you'll host the site on (e.g. `https://yourname.github.io` — no path, no trailing slash). `http://localhost:PORT` works too for local testing, but `file://` does not; Google Identity Services requires a real HTTP(S) origin.
+4. Copy the generated Client ID (ends in `.apps.googleusercontent.com`).
+5. In `index.html`, find the line near the top of the `<script>` block:
+   ```js
+   const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com';
+   ```
+   and replace it with your own Client ID.
+
+Until you do that, the sign-in area just shows a note pointing back here instead of a broken button.
 
 ## Installing as an app
 
