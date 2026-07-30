@@ -1456,6 +1456,143 @@ class FLMParser {
   }
 }
 
+class RealFlmWriter {
+  constructor(proj) {
+    this.proj = proj;
+    this.bytes = [];
+  }
+
+  u8(v) { this.bytes.push(v & 0xFF); }
+  u16(v) { this.bytes.push(v & 0xFF, (v >> 8) & 0xFF); }
+  u32(v) { this.bytes.push(v & 0xFF, (v >> 8) & 0xFF, (v >> 16) & 0xFF, (v >> 24) & 0xFF); }
+  f32(v) { const b = new Uint8Array(4); new DataView(b.buffer).setFloat32(0, v, true); this.bytes.push(...b); }
+  f64(v) { const b = new Uint8Array(8); new DataView(b.buffer).setFloat64(0, v, true); this.bytes.push(...b); }
+  ascii(s) { for (const ch of String(s)) this.u8(Math.min(255, ch.codePointAt(0))); }
+  zeros(n) { for (let i = 0; i < n; i++) this.u8(0); }
+
+  buildChunk(tag, payloadBytes) {
+    const out = [];
+    for (const ch of tag) out.push(ch.charCodeAt(0));
+    const len = payloadBytes.length;
+    out.push(len & 0xFF, (len >> 8) & 0xFF, (len >> 16) & 0xFF, (len >> 24) & 0xFF);
+    return out.concat(payloadBytes);
+  }
+
+  buildEvn2(notes, ppq) {
+    const w = new RealFlmWriter(this.proj);
+    w.u32(20);
+    notes.forEach(n => {
+      const start = w.bytes.length;
+      w.zeros(6);
+      w.f32(Math.max(0.001, n.length / (ppq || 96)));
+      w.u8(Math.max(0, Math.min(127, n.key)));
+      w.u8(0);
+      const vel = Math.round((Math.max(1, Math.min(127, n.velocity || 100)) / 127) * 32767);
+      const rel = Math.round((Math.max(0, Math.min(127, n.release ?? 64)) / 127) * 32767);
+      w.u16(vel);
+      w.u16(rel);
+      w.u8(n.slide ? 0x08 : 0);
+      const posRaw = Math.max(0, Math.round((n.position / (ppq || 96)) * 16384)) & 0xFFFFFF;
+      w.u8(posRaw & 0xFF); w.u8((posRaw >> 8) & 0xFF); w.u8((posRaw >> 16) & 0xFF);
+      if (w.bytes.length - start !== 20) { /* unreachable if fields above stay 20 bytes total */ }
+    });
+    w.zeros(18);
+    return this.buildChunk('EVN2', w.bytes);
+  }
+
+  buildClip(pattern, ppq) {
+    const w = new RealFlmWriter(this.proj);
+    let maxEnd = 0;
+    pattern.notes.forEach(n => { maxEnd = Math.max(maxEnd, n.position + n.length); });
+    const durQ14 = Math.max(1, Math.round((maxEnd / (ppq || 96)) * 16384));
+    w.u32(durQ14);
+    w.bytes.push(...this.buildEvn2(pattern.notes, ppq));
+    return this.buildChunk('CLIP', w.bytes);
+  }
+
+  buildChnl(name, isMaster, patterns, ppq) {
+    const w = new RealFlmWriter(this.proj);
+    w.u32(isMaster ? 0 : 0x00010000);
+    w.ascii('20HCCHHD');
+    w.u8(0x64);
+    w.u8(0x04); w.u8(0x00); w.u8(0x00);
+    w.ascii(name || 'Channel');
+    w.u8(0);
+    const trkW = new RealFlmWriter(this.proj);
+    patterns.forEach(pat => {
+      if (!pat.notes.length) return;
+      trkW.bytes.push(...trkW.buildClip(pat, ppq));
+    });
+    w.bytes.push(...this.buildChunk('TRKH', trkW.bytes));
+    return this.buildChunk('CHNL', w.bytes);
+  }
+
+  build(options = {}) {
+    const { channelFilter = null, patternFilter = null } = options;
+    const p = this.proj;
+    const ppq = p.ppq || 96;
+
+    this.ascii('10LFHEAD');
+    this.u32(369);
+    this.u32(2);
+    this.u32(0);
+
+    const titleBytes = [];
+    for (const ch of String(p.title || 'Untitled')) titleBytes.push(Math.min(255, ch.codePointAt(0)));
+    this.bytes.push(...titleBytes.slice(0, 255));
+    this.zeros(256 - Math.min(255, titleBytes.length));
+
+    this.f64(p.tempo || 140);
+    this.zeros(16);
+    this.zeros(56);
+    this.u32(0);
+    this.u32(0);
+    this.u8(1); this.u8(1); this.u8(0); this.u8(0);
+    const ver = '4.10.15';
+    this.u32(ver.length);
+    this.ascii(ver);
+    this.u8(0);
+    this.u8(0);
+    this.u8(0);
+
+    this.bytes.push(...this.buildChunk('TDIV', [4, 4]));
+
+    const channels = p.channels.filter((c, i) => !channelFilter || channelFilter.has(i));
+    const includedPatternIdx = p.patterns.map((pat, i) => (!patternFilter || patternFilter.has(i)) ? i : -1).filter(i => i >= 0);
+
+    let offset = 0;
+    const patternOffsets = p.patterns.map(pat => {
+      const start = offset;
+      let maxEnd = 0;
+      pat.notes.forEach(n => { maxEnd = Math.max(maxEnd, n.position + n.length); });
+      offset += maxEnd || ppq * 4;
+      return start;
+    });
+
+    const notesByChannelIdx = new Map();
+    includedPatternIdx.forEach(pi => {
+      p.patterns[pi].notes.forEach(n => {
+        const idx = resolveChannelIndex(p.channels, n.channel ?? 0);
+        if (!channelFilter || channelFilter.has(idx)) {
+          if (!notesByChannelIdx.has(idx)) notesByChannelIdx.set(idx, []);
+          notesByChannelIdx.get(idx).push({ ...n, position: n.position + patternOffsets[pi] });
+        }
+      });
+    });
+
+    const hasMaster = channels.some(ch => ch.name === 'MASTER');
+    if (!hasMaster) this.bytes.push(...this.buildChnl('MASTER', true, [], ppq));
+    channels.forEach(ch => {
+      const idx = p.channels.indexOf(ch);
+      const notes = notesByChannelIdx.get(idx) || [];
+      const pats = notes.length ? [{ notes }] : [];
+      this.bytes.push(...this.buildChnl(ch.name, ch.name === 'MASTER', pats, ppq));
+    });
+
+    return new Uint8Array(this.bytes);
+  }
+}
+
 class FLMWriter {
   constructor(proj) {
     this.proj = proj;
@@ -1867,9 +2004,9 @@ const I18N = {
     warnings: 'Warnings',
     flmLab: '.flm lab (experimental, unverified)',
     variantA: 'Variant A — FLP container',
-    variantASub: "Reuses FL Studio's own FLhd/FLdt event-chunk format with a .flm extension, now including tracks/playlist/inserts/markers.",
+    variantASub: "Older guess: reuses FL Studio Desktop's own FLhd/FLdt event-chunk format with a .flm extension. Superseded by the \"⬇ Download .flm\" button above, which now uses the real reverse-engineered format — try that first.",
     variantB: 'Variant B — JSON envelope',
-    variantBSub: '4-byte tag + length-prefixed JSON. A guess for a from-scratch v3+ rewrite.',
+    variantBSub: 'Older guess: 4-byte tag + length-prefixed JSON, not based on any real sample. Kept for reference only.',
     playPattern: '▶ Play pattern',
     stopPattern: '■ Stop',
     playingPattern: 'playing "{name}"…',
@@ -1924,7 +2061,7 @@ const I18N = {
     generatedSingleChannelMid: 'Generated a single-channel .mid for "{name}". Select that channel/track in FL Studio Mobile, then Channel Menu → Import MIDI Tracks.',
     generatedCombinedMid: 'Generated {name}.mid ({kb} KB) from the selected channels/patterns, combined on separate MIDI channels. For the documented Channel Menu → Import MIDI Tracks flow, prefer the per-channel ↓ .mid buttons below instead.',
     couldNotBuildMid: 'Could not build the .mid file: {err}',
-    noteBoxHtml: 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br><strong>Reading real .flm files now works</strong> — this tool can open actual FL Studio Mobile projects (not just .flp), based on reverse-engineering a real sample file: the "10LFHEAD" header, its chunk-based container, and the exact note-event byte layout inside each clip. <strong>Writing</strong> a valid .flm is a separate, much bigger problem — the two guesses in the lab below still don\'t use the real format and are unlikely to open in the app. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.',
+    noteBoxHtml: 'FL Studio Mobile has a documented <strong>"Import MIDI Tracks"</strong> feature on the <strong>Channel Menu</strong> — it imports notes into whichever channel/track is currently selected, one at a time. That\'s why each channel below has its own ↓ .mid button: select the matching channel in the app first, then import.<br><br>Notes outlined in white on the piano roll above are <strong>slide notes</strong> (portamento) — their slide flag is now read from and written back to the note data, so they no longer collapse into normal notes on export.<br><br><strong>Reading real .flm files now works</strong> — this tool can open actual FL Studio Mobile projects (not just .flp), based on reverse-engineering a real sample file: the "10LFHEAD" header, its chunk-based container, and the exact note-event byte layout inside each clip. <strong>Writing</strong> a .flm now uses that same real format too (the "⬇ Download .flm" button above) — channels, notes and slides should carry over, though effect racks and chord-pad metadata aren\'t reconstructed yet, so treat it as a strong best-effort rather than a guaranteed-perfect import. Track rows in the playlist above are grouped by the raw reversed-index stored per item, since the exact mapping to a named track isn\'t confirmed across every FL version — treat row numbers as a best-effort grouping, not ground truth.',
   },
   pt: {
     badge: 'CONVERSOR BEST-EFFORT',
@@ -1985,9 +2122,9 @@ const I18N = {
     warnings: 'Avisos',
     flmLab: 'laboratório .flm (experimental, não verificado)',
     variantA: 'Variante A — container FLP',
-    variantASub: 'Reaproveita o formato de eventos FLhd/FLdt do próprio FL Studio com extensão .flm, agora incluindo tracks/playlist/inserts/marcadores.',
+    variantASub: 'Chute antigo: reaproveita o formato de eventos FLhd/FLdt do FL Studio Desktop com extensão .flm. Foi superado pelo botão "⬇ Baixar .flm" acima, que agora usa o formato real reverso-engenheirado — tenta esse primeiro.',
     variantB: 'Variante B — envelope JSON',
-    variantBSub: 'Tag de 4 bytes + JSON prefixado por tamanho. Um chute pra uma reescrita v3+ do zero.',
+    variantBSub: 'Chute antigo: tag de 4 bytes + JSON prefixado por tamanho, sem base em nenhum arquivo real. Mantido só de referência.',
     playPattern: '▶ Tocar pattern',
     stopPattern: '■ Parar',
     playingPattern: 'tocando "{name}"…',
@@ -2042,7 +2179,7 @@ const I18N = {
     generatedSingleChannelMid: '.mid de canal único gerado para "{name}". Selecione esse canal/track no FL Studio Mobile, depois Channel Menu → Import MIDI Tracks.',
     generatedCombinedMid: '{name}.mid gerado ({kb} KB) a partir dos canais/patterns selecionados, combinados em canais MIDI separados. Pro fluxo documentado Channel Menu → Import MIDI Tracks, prefira os botões ↓ .mid por canal abaixo.',
     couldNotBuildMid: 'Não deu pra gerar o arquivo .mid: {err}',
-    noteBoxHtml: 'O FL Studio Mobile tem um recurso documentado de <strong>"Import MIDI Tracks"</strong> no <strong>Channel Menu</strong> — ele importa notas pro canal/track que estiver selecionado no momento, um de cada vez. Por isso cada canal abaixo tem seu próprio botão ↓ .mid: selecione o canal certo no app primeiro, depois importe.<br><br>Notas com contorno branco no piano roll acima são <strong>notas slide</strong> (portamento) — a flag de slide agora é lida e reescrita nos dados da nota, então elas não viram mais notas normais na exportação.<br><br><strong>Ler arquivos .flm reais agora funciona</strong> — essa ferramenta consegue abrir projetos reais do FL Studio Mobile (não só .flp), baseado em engenharia reversa de um arquivo real: o header "10LFHEAD", o container baseado em chunks, e o layout exato dos bytes de nota dentro de cada clipe. <strong>Escrever</strong> um .flm válido é um problema separado e bem maior — os dois chutes no laboratório abaixo ainda não usam o formato real e dificilmente vão abrir no app. As linhas de track na playlist acima são agrupadas pelo índice reverso bruto guardado por item, já que o mapeamento exato pra uma track nomeada não está confirmado em toda versão do FL — trate os números de linha como um agrupamento best-effort, não como verdade absoluta.',
+    noteBoxHtml: 'O FL Studio Mobile tem um recurso documentado de <strong>"Import MIDI Tracks"</strong> no <strong>Channel Menu</strong> — ele importa notas pro canal/track que estiver selecionado no momento, um de cada vez. Por isso cada canal abaixo tem seu próprio botão ↓ .mid: selecione o canal certo no app primeiro, depois importe.<br><br>Notas com contorno branco no piano roll acima são <strong>notas slide</strong> (portamento) — a flag de slide agora é lida e reescrita nos dados da nota, então elas não viram mais notas normais na exportação.<br><br><strong>Ler arquivos .flm reais agora funciona</strong> — essa ferramenta consegue abrir projetos reais do FL Studio Mobile (não só .flp), baseado em engenharia reversa de um arquivo real: o header "10LFHEAD", o container baseado em chunks, e o layout exato dos bytes de nota dentro de cada clipe. <strong>Escrever</strong> um .flm agora também usa esse mesmo formato real (botão "⬇ Baixar .flm" acima) — canais, notas e slides devem ser preservados, mas racks de efeito e metadados de acorde ainda não são reconstruídos, então trate como um best-effort forte, não como uma importação perfeita garantida. As linhas de track na playlist acima são agrupadas pelo índice reverso bruto guardado por item, já que o mapeamento exato pra uma track nomeada não está confirmado em toda versão do FL — trate os números de linha como um agrupamento best-effort, não como verdade absoluta.',
   },
 };
 
@@ -3305,11 +3442,11 @@ primaryDownloadBtn.addEventListener('click', () => {
   if (!currentProj) return;
   try {
     if (downloadFormat === 'flm') {
-      const bytes = new FLMWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: currentProj.arrangements.length ? activeArrIdx : null });
+      const bytes = new RealFlmWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
       downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.flm`);
       setStatus('success', currentLang === 'pt'
-        ? `${currentFileBase}.flm gerado (${(bytes.length / 1024).toFixed(1)} KB) — lembrete: esse .flm ainda usa o formato experimental, não o real do FL Studio Mobile.`
-        : `Generated ${currentFileBase}.flm (${(bytes.length / 1024).toFixed(1)} KB) — reminder: this .flm still uses the experimental format guess, not the real FL Studio Mobile one.`);
+        ? `${currentFileBase}.flm gerado (${(bytes.length / 1024).toFixed(1)} KB) usando o formato real reverso-engenheirado (header "10LFHEAD" + chunks). Ainda é best-effort — racks de efeito e metadados de acorde não são reconstruídos. Testa no FL Studio Mobile e me conta o que rolou.`
+        : `Generated ${currentFileBase}.flm (${(bytes.length / 1024).toFixed(1)} KB) using the real reverse-engineered format ("10LFHEAD" header + chunks). Still best-effort — effect racks and chord metadata aren't reconstructed. Test it in FL Studio Mobile and let me know what happens.`);
     } else {
       const writer = new MidiWriter(getExportProj());
       const bytes = writer.build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
@@ -3366,7 +3503,7 @@ if (navigator.share) {
     if (!currentProj) return;
     try {
       if (downloadFormat === 'flm') {
-        const bytes = new FLMWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns, arrangementIndex: currentProj.arrangements.length ? activeArrIdx : null });
+        const bytes = new RealFlmWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
         shareFile(new Blob([bytes], { type: 'application/octet-stream' }), `${currentFileBase}.flm`, 'application/octet-stream');
       } else {
         const bytes = new MidiWriter(getExportProj()).build({ channelFilter: selectedChannels, patternFilter: selectedPatterns });
