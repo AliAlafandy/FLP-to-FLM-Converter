@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>FLP → FLM Converter</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAD10lEQVRYhcWWT2hcRRzHP7/ZzW6abiPNRvOHBEubGv+0Fq2HRhFbEAyIIHiQgrZUchCjNwWl6F3IsVhQURAhPdXeehF6aKL2oLWHUIut1poeNt1ul2T/vX3zZjy8fbtv/yTptut24O28N29mPt/fv3kr1Dc1OT56VOAwYvcJJIEIFvB//GZD99i6V/XPFgFtLClr5Sci9uSVm+lz4dkS3OwcG9sdE3taxO6ph907PNwFGxkj8/lU78wyy8WqAB9ufhYh+T/Cq50xsuisJF6+zvWSApRveXfgAErZF+JDuRMAMjk+ekwJ33QLHmrGczmgBDn8AOBgURLhA4WYfQ8ADoASDqpKqd03fO7ICEufPsTCOw5PbNebwgEERhT3WedBN723F/E0AzGXQ6PupvDKY1R1yu3KaPBc0BqxLcxv5REL0Y7FXPtwPA22hw9fH2JHv8epxSwLV/W6glRH4FCBu+D5QxHxOPhYhC/fjPHRi7Z25NatDQS0AZ87MszS8f5Ksrm1DT1dEQEY+PyHNNNzaX772+HY0yVe3eU0wX0BbVo+/VQc0WUGoo6fbMH7IASmMtXC8h2P9097rBZcZp4stsyDWgju0u1Kl8H1LzGhBeEQmNpwtgS//CNMJDz6os0KVDtwAFzHF6DrQUEFNAoAKLuCMmAa+RZU2wlXsR5N/bowPHzYWHg26ZJaU5S8UCpWq6DdbA8ENFoaxN8LrbHw2i6H0V7D2RuxJrgvYB343FuPsPRJgoWjhfpsd8s+LBwCSy3+IS/seVhz/Lk8mbzi6ytbmuAhAS2yfVKQUo4BKXBoOJTtgfsDAdUq0DUBFqbGDd9OrxIDPr6QIFNWLasgum62F/NQyIMDokMrwwK80E5BCAwk+4UvDuRw8/DuuW1cWOnZ4CheL+bFHJSK4DSAgvg35oCx1fH9E0LMuMz82M+vG8ArHmgBx0Kh4MOdirVVS019CILm1a7tfZrUmtoUDkEZNsIBUyxWBVhdKx/jUhVgrVSXmECQgUzGYyhm2J9s8VluTEIB3SoMZy7HMSXI5oXzd3pq43/GMS5kHeF8tmbhmatxjPbHv/q9l7IrnJxaY2ciFL9mb3jy+MjgvwJjzZ7YWPlmc6eGXGZ3F/jsYoK/8pF15kpKJocHv1Ni3+4k/G7nGiNnlcWeAEy34VhQok5FbueKN5Nb+x4V4Zluwq2VS39kbs0qACe1bdYYWewiPK099QZgIgBZsnpLfmC+Z6u3Q4S9NPyD6jD8kqvllWurt64BzaCJwcGXIsJ7IvZ5JQzXn5b3BPdA0sZwUYmav3x75XtCR9h/gdGtNppf85QAAAAASUVORK5CYII=">
 <link rel="icon" type="image/png" sizes="48x48" href="data:image/png;base64,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">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+CjxkZWZzPjxsaW5lYXJHcmFkaWVudCBpZD0iZyIgeDE9IjAiIHkxPSIwIiB4Mj0iMSIgeTI9IjEiPgo8c3RvcCBvZmZzZXQ9IjAlIiBzdG9wLWNvbG9yPSIjRkZCNTQ3Ii8+PHN0b3Agb2Zmc2V0PSI0NSUiIHN0b3AtY29sb3I9IiNGRjdBMDAiLz48c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNGRjQ1MDAiLz4KPC9saW5lYXJHcmFkaWVudD48L2RlZnM+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSIjMEIwQjE2Ii8+CjxyZWN0IHdpZHRoPSI2NCIgaGVpZ2h0PSI2NCIgcng9IjE1IiBmaWxsPSJ1cmwoI2cpIiBvcGFjaXR5PSIwLjEyIi8+CjxyZWN0IHg9IjEyIiB5PSIzNiIgd2lkdGg9IjciIGhlaWdodD0iMTQiIHJ4PSIyLjUiIGZpbGw9InVybCgjZykiLz4KPHJlY3QgeD0iMjQiIHk9IjI0IiB3aWR0aD0iNyIgaGVpZ2h0PSIyNiIgcng9IjIuNSIgZmlsbD0idXJsKCNnKSIvPgo8cmVjdCB4PSIzNiIgeT0iMTQiIHdpZHRoPSI3IiBoZWlnaHQ9IjM2IiByeD0iMi41IiBmaWxsPSJ1cmwoI2cpIi8+CjxwYXRoIGQ9Ik00NiAyMiBDNTQgMjQgNTUgMzQgNDcgNDAgQzQzIDQzIDQzIDQ3IDQ3IDUwIiBzdHJva2U9InVybCgjZykiIHN0cm9rZS13aWR0aD0iMy40IiBmaWxsPSJub25lIiBzdHJva2UtbGluZWNhcD0icm91bmQiLz4KPC9zdmc+">
@@ -85,16 +85,42 @@ body::after {
 }
 .logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
 h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Unbounded', 'Syne', sans-serif;
   font-size: clamp(2rem, 6vw, 2.8rem);
   font-weight: 800;
   line-height: 1.1;
+  letter-spacing: -0.01em;
   margin-bottom: 10px;
   background: linear-gradient(140deg, #FFB547 0%, var(--accent) 40%, var(--accent2) 100%);
   -webkit-background-clip: text; -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 .header-sub { color: var(--muted); font-size: 0.92rem; font-weight: 300; letter-spacing: 0.2px; }
+.eq-strip {
+  display: flex; align-items: flex-end; justify-content: center;
+  gap: 3px; height: 22px; margin-top: 16px; opacity: 0.75;
+}
+.eq-strip span {
+  width: 3px; border-radius: 2px;
+  background: linear-gradient(180deg, var(--accent) 0%, var(--accent2) 100%);
+  animation: eqBounce 1.1s ease-in-out infinite;
+}
+.eq-strip span:nth-child(1)  { height: 30%; animation-delay: -0.9s; }
+.eq-strip span:nth-child(2)  { height: 70%; animation-delay: -0.5s; }
+.eq-strip span:nth-child(3)  { height: 45%; animation-delay: -1.1s; }
+.eq-strip span:nth-child(4)  { height: 90%; animation-delay: -0.2s; }
+.eq-strip span:nth-child(5)  { height: 55%; animation-delay: -0.7s; }
+.eq-strip span:nth-child(6)  { height: 100%; animation-delay: 0s; }
+.eq-strip span:nth-child(7)  { height: 60%; animation-delay: -0.4s; }
+.eq-strip span:nth-child(8)  { height: 85%; animation-delay: -0.85s; }
+.eq-strip span:nth-child(9)  { height: 40%; animation-delay: -0.15s; }
+.eq-strip span:nth-child(10) { height: 75%; animation-delay: -0.6s; }
+.eq-strip span:nth-child(11) { height: 35%; animation-delay: -1s; }
+.eq-strip span:nth-child(12) { height: 65%; animation-delay: -0.3s; }
+@keyframes eqBounce {
+  0%, 100% { transform: scaleY(0.35); opacity: 0.6; }
+  50% { transform: scaleY(1); opacity: 1; }
+}
 
 .drop-zone {
   border: 1.5px dashed var(--border2);
@@ -114,7 +140,7 @@ h1 {
 }
 .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
 .drop-icon { font-size: 2.8rem; margin-bottom: 14px; filter: drop-shadow(0 0 12px rgba(255,122,0,0.4)); display: block; }
-.drop-title { font-family: 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
+.drop-title { font-family: 'Unbounded', 'Syne', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 6px; }
 .drop-sub { font-size: 0.82rem; color: var(--muted); line-height: 1.5; }
 .drop-formats { display: inline-flex; gap: 6px; margin-top: 14px; flex-wrap: wrap; justify-content: center; }
 .fmt-tag {
@@ -164,7 +190,7 @@ h1 {
 .info-card { background: var(--surface2); border: 1px solid var(--border); border-radius: 12px; padding: 12px 14px; transition: border-color 0.2s; }
 .info-card:hover { border-color: var(--border2); }
 .info-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-.info-value { font-family: 'Syne', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--accent); line-height: 1.1; word-break: break-word; }
+.info-value { font-family: 'Unbounded', 'Syne', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--accent); line-height: 1.1; word-break: break-word; }
 .info-unit { font-size: 0.6em; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 300; }
 
 .section-label {
@@ -466,7 +492,7 @@ footer {
   border-radius: 12px; padding: 10px 14px;
 }
 .batch-item-head { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-.batch-item-title { flex: 1; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.86rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.batch-item-title { flex: 1; font-family: 'Unbounded', 'Syne', sans-serif; font-weight: 700; font-size: 0.86rem; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .batch-item-meta { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted); flex-shrink: 0; }
 .batch-item-actions { display: flex; gap: 6px; margin-top: 8px; flex-wrap: wrap; }
 .batch-mini-btn {
@@ -559,6 +585,23 @@ body.theme-light .note-box       { background: #EAF4FF; }
   .toolbar { flex-wrap: wrap; }
 }
 
+.eq-strip-progress { height: 26px; margin-top: 12px; opacity: 0.85; }
+.eq-strip-progress span { width: 4px; }
+
+.test-banner {
+  display: flex; align-items: center; gap: 12px;
+  background: linear-gradient(135deg, #0F1420 0%, var(--surface) 100%);
+  border: 1px solid var(--accent); border-radius: 16px;
+  padding: 14px 16px; margin-top: 12px;
+  animation: fadeUp 0.4s ease both;
+}
+.test-banner-icon { font-size: 1.8rem; flex-shrink: 0; }
+.test-banner-icon.testing { animation: testPulse 0.6s ease-in-out infinite; }
+.test-banner-body { flex: 1; min-width: 0; }
+.test-banner-title { font-family: 'Unbounded', 'Syne', sans-serif; font-size: 0.86rem; font-weight: 700; color: var(--text); }
+.test-banner-sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+@keyframes testPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+
 .hidden { display: none !important; }
 </style>
 </head>
@@ -582,6 +625,9 @@ body.theme-light .note-box       { background: #EAF4FF; }
     <div class="logo-badge"><div class="logo-dot"></div> <span data-i18n="badge">BEST-EFFORT CONVERTER</span></div>
     <h1>FLP → FLM</h1>
     <p class="header-sub" data-i18n="headerSub">FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction</p>
+    <div class="eq-strip" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
   </div>
 
   <div class="mode-tabs" id="modeTabs">
@@ -662,6 +708,18 @@ body.theme-light .note-box       { background: #EAF4FF; }
       <span id="progressPct">0%</span>
     </div>
     <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+    <div class="eq-strip eq-strip-progress" aria-hidden="true">
+      <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
+    </div>
+  </div>
+
+  <div class="test-banner hidden" id="testBanner">
+    <div class="test-banner-icon" id="testBannerIcon">🎧</div>
+    <div class="test-banner-body">
+      <div class="test-banner-title" id="testBannerTitle" data-i18n="testBannerReady">Conversion looks good — want to hear it?</div>
+      <div class="test-banner-sub" id="testBannerSub" data-i18n="testBannerSub">Plays a quick preview of the busiest pattern to sanity-check the notes.</div>
+    </div>
+    <button class="btn btn-secondary" id="testBannerBtn" data-i18n="testBannerBtn">▶ Test it</button>
   </div>
 
   <div class="status" id="status"></div>
@@ -899,6 +957,8 @@ class FLPParser {
       case EV.PAN_LAW:       this.proj.panLaw = v; return;
       case EV.TM_NUMERATOR:  this.curMarker = this.curMarker || {}; this.curMarker.numerator = v; return;
       case EV.TM_DENOMINATOR:this.curMarker = this.curMarker || {}; this.curMarker.denominator = v; return;
+      case EV.PAT_LOOPED:    if (this.curPat) this.curPat.looped = v !== 0; return;
+      case EV.PLAY_TRUNCATED: this.proj.playTruncatedNotes = v !== 0; return;
     }
     const ch = this.curCh;
     if (!ch) return;
@@ -931,6 +991,14 @@ class FLPParser {
           this.curIns.slots.push(this.curSlot);
         }
         break;
+      case EV.CUTOFF:       if (this.curCh) this.curCh.cutoff = v; break;
+      case EV.RESONANCE:    if (this.curCh) this.curCh.resonance = v; break;
+      case EV.PREAMP:       if (this.curCh) this.curCh.preamp = v; break;
+      case EV.FADE_IN:      if (this.curCh) this.curCh.fadeIn = v; break;
+      case EV.FADE_OUT:     if (this.curCh) this.curCh.fadeOut = v; break;
+      case EV.STEREO_DELAY: if (this.curCh) this.curCh.stereoDelay = v; break;
+      case EV.TIME_SHIFT:   if (this.curCh) this.curCh.timeShift = v; break;
+      case EV.SWING:        this.proj.swing = v; break;
       case EV.CHAN_NEW:
         this.curCh = { iid: v, name: `Channel ${this.proj.channels.length + 1}`, volume: 100, pan: 0, enabled: true, muted: false, type: 0, kind: 'Sampler', color: 0, pluginName: null };
         this.proj.channels.push(this.curCh);
@@ -961,6 +1029,24 @@ class FLPParser {
         break;
       case EV.GROUP_NUM:
         if (this.curCh) this.curCh.groupNum = v;
+        break;
+      case EV.RING_MOD:
+        if (this.curCh) this.curCh.ringMod = v;
+        break;
+      case EV.CUT_GROUP:
+        if (this.curCh) { this.curCh.cutGroupIn = v & 0xFFFF; this.curCh.cutGroupOut = (v >>> 16) & 0xFFFF; }
+        break;
+      case EV.DELAY_MOD_XY:
+        if (this.curCh) this.curCh.delayModXY = v;
+        break;
+      case EV.STRETCH_TIME:
+        if (this.curCh) this.curCh.stretchTime = v;
+        break;
+      case EV.SAMPLER_FLAGS:
+        if (this.curCh) this.curCh.samplerFlags = v;
+        break;
+      case EV.LAYER_FLAGS:
+        if (this.curCh) this.curCh.layerFlags = v;
         break;
       case EV.FL_BUILD:
         this.proj.flBuild = v;
@@ -1875,6 +1961,8 @@ class FLMWriterJSON {
         name: c.name, volume: c.volume, pan: c.pan, color: c.color, kind: c.kind,
         muted: !!c.muted, enabled: c.enabled !== false, rootNote: c.rootNote,
         fineTune: c.fineTune, reverb: c.reverb, groupNum: c.groupNum, samplePath: c.samplePath,
+        cutoff: c.cutoff, resonance: c.resonance, preamp: c.preamp, fadeIn: c.fadeIn, fadeOut: c.fadeOut,
+        stereoDelay: c.stereoDelay, timeShift: c.timeShift, ringMod: c.ringMod, stretchTime: c.stretchTime,
         pluginName: c.pluginName || null,
         automation: c.automation || null,
       })),
@@ -1977,6 +2065,13 @@ const I18N = {
     dropTitle: 'Drop your .flp or .flm file(s) here',
     dropSub: 'or click to browse files · multiple files run in batch mode',
     reading: 'Reading…',
+    testBannerReady: 'Conversion looks good — want to hear it?',
+    testBannerSub: 'Plays a quick preview of the busiest pattern to sanity-check the notes.',
+    testBannerBtn: '▶ Test it',
+    testBannerTesting: 'Testing the conversion…',
+    testBannerTestingSub: 'Playing "{name}" to check the notes came through right.',
+    testBannerDone: 'Sounds right — all good!',
+    testBannerDoneSub: 'That\'s the pattern with the most notes in this project.',
     batchResults: 'BATCH RESULTS',
     rawPreview: 'RAW FLP PREVIEW',
     detectedData: 'DETECTED PROJECT DATA',
@@ -2095,6 +2190,13 @@ const I18N = {
     dropTitle: 'Solte seu arquivo .flp ou .flm aqui',
     dropSub: 'ou clique para procurar arquivos · vários arquivos rodam em modo lote',
     reading: 'Lendo…',
+    testBannerReady: 'A conversão parece boa — quer ouvir?',
+    testBannerSub: 'Toca uma prévia rápida do pattern com mais notas pra conferir se tá tudo certo.',
+    testBannerBtn: '▶ Testar',
+    testBannerTesting: 'Testando a conversão…',
+    testBannerTestingSub: 'Tocando "{name}" pra conferir se as notas vieram certinhas.',
+    testBannerDone: 'Som certinho — tudo certo!',
+    testBannerDoneSub: 'Esse é o pattern com mais notas do projeto.',
     batchResults: 'RESULTADOS DO LOTE',
     rawPreview: 'PRÉVIA BRUTA DO FLP',
     detectedData: 'DADOS DETECTADOS DO PROJETO',
@@ -2538,6 +2640,9 @@ function handleFiles(fileList) {
   showcasePanel.classList.add('hidden');
   batchPanel.classList.add('hidden');
   btnRow.classList.add('hidden'); formatRow.classList.add('hidden');
+  const tb = document.getElementById('testBanner');
+  if (tb) tb.classList.add('hidden');
+  if (typeof stopPlayback === 'function') stopPlayback();
 
   if (files.length === 1) {
     handleSingleFile(files[0]);
@@ -2583,6 +2688,7 @@ function handleSingleFile(file) {
             setStatus('success', t('parsedSuccessfully', { title: proj.title }));
           }
           btnRow.classList.remove('hidden'); formatRow.classList.remove('hidden');
+          showTestBanner(proj);
         }
       } catch (err) {
         hideProgress();
@@ -2825,6 +2931,7 @@ function renderFlmShowcase(proj, buf, file) {
     } else {
       setStatus('success', t('parsedSuccessfully', { title: proj.title }));
     }
+    showTestBanner(proj);
   });
 
   showcasePanel.classList.remove('hidden');
@@ -2900,9 +3007,54 @@ function renderShowcase(proj, buf, file) {
     } else {
       setStatus('success', t('parsedSuccessfully', { title: proj.title }));
     }
+    showTestBanner(proj);
   });
 
   showcasePanel.classList.remove('hidden');
+}
+
+function showTestBanner(proj) {
+  const banner = document.getElementById('testBanner');
+  const icon = document.getElementById('testBannerIcon');
+  const title = document.getElementById('testBannerTitle');
+  const sub = document.getElementById('testBannerSub');
+  const btn = document.getElementById('testBannerBtn');
+  if (!banner) return;
+
+  const best = proj.patterns.reduce((a, b) => (b.notes.length > (a ? a.notes.length : 0) ? b : a), null);
+  if (!best || !best.notes.length) { banner.classList.add('hidden'); return; }
+
+  icon.textContent = '🎧';
+  icon.classList.remove('testing');
+  title.textContent = t('testBannerReady');
+  title.removeAttribute('data-i18n');
+  title.setAttribute('data-i18n', 'testBannerReady');
+  sub.textContent = t('testBannerSub');
+  sub.setAttribute('data-i18n', 'testBannerSub');
+  btn.textContent = t('testBannerBtn');
+  btn.setAttribute('data-i18n', 'testBannerBtn');
+  banner.classList.remove('hidden');
+
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+  newBtn.addEventListener('click', () => {
+    if (isPlaying()) { stopPlayback(); }
+    icon.textContent = '🎵';
+    icon.classList.add('testing');
+    title.textContent = t('testBannerTesting');
+    title.removeAttribute('data-i18n');
+    sub.textContent = t('testBannerTestingSub', { name: best.name });
+    sub.removeAttribute('data-i18n');
+    newBtn.disabled = true;
+    playPattern(best, proj, () => {
+      icon.textContent = '✅';
+      icon.classList.remove('testing');
+      title.textContent = t('testBannerDone');
+      sub.textContent = t('testBannerDoneSub');
+      newBtn.disabled = false;
+      newBtn.textContent = t('testBannerBtn');
+    });
+  });
 }
 
 function renderDetection(proj) {
@@ -2986,6 +3138,8 @@ function renderDetection(proj) {
         <span class="kind-badge ${kindClass}">${escapeHtml(kind)}</span>
         <span>vol ${ch.volume}</span>
         <span>pan ${ch.pan}</span>
+        ${ch.cutoff !== undefined && ch.cutoff !== 128 ? `<span>cutoff ${ch.cutoff}</span>` : ''}
+        ${ch.resonance !== undefined && ch.resonance !== 0 ? `<span>reso ${ch.resonance}</span>` : ''}
         ${ch.muted ? '<span class="off">muted</span>' : ''}
         ${ch.enabled === false ? '<span class="off">disabled</span>' : ''}
       </div>
