@@ -72,11 +72,11 @@ This tool can also open genuine FL Studio Mobile project files (not just desktop
 
 1. Open `index.html` in any modern desktop or mobile browser.
 2. Pick **Converter** (parse immediately) or **Showcase** (preview raw structure first).
-3. Drop a `.flp` file onto the drop zone, or tap it to browse.
+3. Drop a `.flp`, `.flm`, or `.zip` file onto the drop zone, or tap it to browse. Zipped projects are extracted in the browser (via [JSZip](https://stuk.github.io/jszip/)) and any `.flp`/`.flm` files found inside — including in subfolders — are picked up automatically; one match converts immediately, more than one runs as a batch. Non-project files in the zip are ignored.
 4. Review the detected project data.
 5. Download whichever export you need — per-channel `.mid` is the safest bet for actually getting notes into FL Studio Mobile today.
 
-No server, no network request, no account. The file never leaves your device.
+No server, no network request, no account. The file never leaves your device. (The Community tab is the one exception — see below — and it's entirely optional.)
 
 ## Community tab (optional, needs a server)
 
