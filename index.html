@@ -897,7 +897,7 @@ class FLPParser {
       ppq: 96, tempo: 140, timeSigNum: 4, timeSigDen: 4,
       mainVolume: 100, mainPitch: 0, format: 0, numChannelsHeader: 0,
       channels: [], patterns: [], timeMarkers: [], arrangements: [], inserts: [],
-      mixerParams: {}, warnings: []
+      mixerParams: {}, effectsUsed: [], warnings: []
     };
     this.curCh      = null;
     this.curPat     = null;
@@ -1161,6 +1161,7 @@ class FLPParser {
         if (!name) break;
         if (this.curSlot) this.curSlot.pluginName = name;
         else if (this.curCh) this.curCh.pluginName = name;
+        if (!this.proj.effectsUsed.includes(name)) this.proj.effectsUsed.push(name);
         break;
       }
       case EV.INTERNAL_NAME: {
@@ -1168,6 +1169,7 @@ class FLPParser {
         if (!name) break;
         if (this.curSlot && !this.curSlot.pluginName) this.curSlot.pluginName = name;
         else if (this.curCh && !this.curCh.pluginName) this.curCh.pluginName = name;
+        if (!this.proj.effectsUsed.includes(name)) this.proj.effectsUsed.push(name);
         break;
       }
       case EV.TM_NAME:
@@ -1428,7 +1430,7 @@ class FLMParser {
       ppq: 96, tempo: 140, timeSigNum: 4, timeSigDen: 4,
       mainVolume: 100, mainPitch: 0, format: 0, numChannelsHeader: 0,
       channels: [], patterns: [], timeMarkers: [], arrangements: [], inserts: [],
-      mixerParams: {}, warnings: []
+      mixerParams: {}, effectsUsed: [], warnings: []
     };
   }
 
@@ -1514,7 +1516,8 @@ class FLMParser {
         const childCtx = tag === 'CHNL' ? { channel: ctx.channel, pattern: null }
           : tag === 'CLIP' ? { channel: ctx.channel, pattern: ctx.pattern }
           : ctx;
-        this.walkChunks(payloadStart, payloadEnd, childCtx, depth + 1);
+        const recurseStart = tag === 'RACK' ? Math.min(payloadEnd, payloadStart + 8) : payloadStart;
+        this.walkChunks(recurseStart, payloadEnd, childCtx, depth + 1);
       }
 
       offset = payloadEnd;
@@ -1555,6 +1558,22 @@ class FLMParser {
           ctx.pattern.audioPath = decoded;
           const base = decoded.split(/[\\/]/).pop();
           if (base) ctx.pattern.name = base;
+        }
+        break;
+      }
+      case 'PRST': {
+        if (bytes.length < 4) break;
+        const pdv = new DataView(bytes.buffer, bytes.byteOffset, bytes.length);
+        const len1 = pdv.getUint32(0, true);
+        let off2 = 4 + len1;
+        if (len1 < 0 || off2 + 4 > bytes.length) break;
+        const len2 = pdv.getUint32(off2, true);
+        off2 += 4;
+        if (len2 <= 0 || len2 > 300 || off2 + len2 > bytes.length) break;
+        const decoded = this.decodeAscii(bytes.subarray(off2, off2 + len2));
+        if (decoded && /^[\x20-\x7E]+$/.test(decoded)) {
+          const base = decoded.split(/[\\/]/).pop().replace(/\.(dwp|flmpst)$/i, '');
+          if (base && base !== '<empty>' && base.length > 1 && !this.proj.effectsUsed.includes(base)) this.proj.effectsUsed.push(base);
         }
         break;
       }
@@ -2027,6 +2046,7 @@ class FLMWriterJSON {
         effects: (i.slots || []).filter(s => s.pluginName).map(s => s.pluginName),
       })),
       mixerParams: p.mixerParams,
+      effectsUsed: p.effectsUsed || [],
       arrangements: arrangements.map(a => ({
         name: a.name,
         tracks: a.tracks.map(t => ({
@@ -2168,6 +2188,7 @@ const I18N = {
     arrangementPlaylist: 'Arrangement / playlist',
     mixer: 'Mixer',
     inserts: 'inserts',
+    instrumentsEffects: 'Instruments & effects detected',
     warnings: 'Warnings',
     flmLab: '.flm lab (experimental, unverified)',
     variantA: 'Variant A — FLP container',
@@ -2316,6 +2337,7 @@ const I18N = {
     arrangementPlaylist: 'Arranjo / playlist',
     mixer: 'Mixer',
     inserts: 'inserts',
+    instrumentsEffects: 'Instrumentos e efeitos detectados',
     warnings: 'Avisos',
     flmLab: 'laboratório .flm (experimental, não verificado)',
     variantA: 'Variante A — container FLP',
@@ -3650,6 +3672,22 @@ function renderDetection(proj) {
       mixList.appendChild(row);
     });
     detBody.appendChild(mixList);
+  }
+
+  if (proj.effectsUsed && proj.effectsUsed.length) {
+    const fxLabel = document.createElement('div');
+    fxLabel.className = 'section-label';
+    fxLabel.textContent = `${t('instrumentsEffects')} (${proj.effectsUsed.length})`;
+    detBody.appendChild(fxLabel);
+    const fxList = document.createElement('div');
+    fxList.className = 'tag-list';
+    proj.effectsUsed.forEach(name => {
+      const tag = document.createElement('div');
+      tag.className = 'tag';
+      tag.textContent = name;
+      fxList.appendChild(tag);
+    });
+    detBody.appendChild(fxList);
   }
 
   if (proj.warnings.length) {
