@@ -602,6 +602,25 @@ body.theme-light .note-box       { background: #EAF4FF; }
 .test-banner-sub { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
 @keyframes testPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
 
+.community-feed { display: flex; flex-direction: column; gap: 8px; }
+.community-post {
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 12px; padding: 12px 14px;
+}
+.community-post-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+.community-post-author { font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--accent); font-weight: 600; }
+.community-post-time { font-family: 'JetBrains Mono', monospace; font-size: 0.64rem; color: var(--dim); margin-left: auto; flex-shrink: 0; }
+.community-post-title { font-family: 'Unbounded', 'Syne', sans-serif; font-size: 0.86rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.community-post-message { font-size: 0.82rem; color: #C0C0DC; line-height: 1.5; white-space: pre-wrap; word-break: break-word; }
+.community-post-actions { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.like-btn {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.72rem;
+  background: var(--surface3); border: 1px solid var(--border); color: var(--muted);
+  border-radius: 999px; padding: 4px 10px; cursor: pointer; transition: border-color 0.15s, color 0.15s;
+}
+.like-btn:hover, .like-btn.liked { border-color: var(--accent); color: var(--accent); }
+.community-empty { font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; color: var(--dim); padding: 12px 0; text-align: center; }
+
 .hidden { display: none !important; }
 </style>
 </head>
@@ -633,6 +652,7 @@ body.theme-light .note-box       { background: #EAF4FF; }
   <div class="mode-tabs" id="modeTabs">
     <button class="mode-tab active" data-mode="convert" id="modeConvertBtn">⚙ <span data-i18n="modeConvert">Converter</span></button>
     <button class="mode-tab" data-mode="showcase" id="modeShowcaseBtn">🔍 <span data-i18n="modeShowcase">Showcase</span></button>
+    <button class="mode-tab" data-mode="community" id="modeCommunityBtn">🌐 <span data-i18n="modeCommunity">Community</span></button>
   </div>
   <p class="mode-hint" id="modeHint" data-i18n="modeHintConvert">Drop a file to parse it straight into channels, patterns and downloads.</p>
 
@@ -699,6 +719,35 @@ body.theme-light .note-box       { background: #EAF4FF; }
       <span class="fmt-tag">FL Studio 20-21</span>
       <span class="fmt-tag">FL Studio 25 / 2026</span>
       <span class="fmt-tag">FL Studio Mobile</span>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="communityPanel">
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="communityTitle">COMMUNITY</span></div>
+    <div class="panel-body">
+      <div class="field-hint" id="communityApiHint" data-i18n="communityApiHint">Community posts are stored on a separate API server you run yourself — see the README for setup.</div>
+
+      <input type="text" class="search-input" id="communitySearch" data-i18n-placeholder="communitySearchPlaceholder" placeholder="🔎 Search posts…">
+
+      <div class="section-label" style="margin-top:0" data-i18n="communityNewPost">Share something</div>
+      <div class="field-row">
+        <label class="field-label"><span data-i18n="yourName">Your name</span><input type="text" id="communityAuthor" maxlength="40" placeholder="Anonymous"></label>
+      </div>
+      <div class="field-row">
+        <label class="field-label" style="flex:1 1 100%"><span data-i18n="postTitle">Title</span><input type="text" id="communityPostTitle" maxlength="100"></label>
+      </div>
+      <div class="field-row">
+        <label class="field-label" style="flex:1 1 100%"><span data-i18n="postMessage">Message</span><textarea id="communityPostMessage" maxlength="1000" rows="3" style="font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--text);background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 12px;resize:vertical;"></textarea></label>
+      </div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn btn-primary" id="communitySubmitBtn" data-i18n="communityPostBtn">📤 Post</button>
+      </div>
+
+      <div class="section-label" data-i18n="communityFeed">Feed</div>
+      <div id="communityFeed" class="community-feed"></div>
+      <div class="btn-row hidden" id="communityLoadMoreRow">
+        <button class="btn btn-secondary" id="communityLoadMoreBtn" data-i18n="loadMore">Load more</button>
+      </div>
     </div>
   </div>
 
@@ -2017,6 +2066,8 @@ const batchBody     = document.getElementById('batchBody');
 const modeHint      = document.getElementById('modeHint');
 const modeConvertBtn  = document.getElementById('modeConvertBtn');
 const modeShowcaseBtn = document.getElementById('modeShowcaseBtn');
+const modeCommunityBtn = document.getElementById('modeCommunityBtn');
+const communityPanel = document.getElementById('communityPanel');
 const settingsToggleBtn = document.getElementById('settingsToggleBtn');
 const historyToggleBtn  = document.getElementById('historyToggleBtn');
 const settingsPanel = document.getElementById('settingsPanel');
@@ -2038,6 +2089,25 @@ const I18N = {
     headerSub: 'FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction',
     modeConvert: 'Converter',
     modeShowcase: 'Showcase',
+    modeCommunity: 'Community',
+    modeHintCommunity: 'See what others converted, or share your own result.',
+    communityTitle: 'COMMUNITY',
+    communityApiHint: 'Community posts are stored on a separate API server you run yourself — see the README for setup.',
+    communitySearchPlaceholder: '🔎 Search posts…',
+    communityNewPost: 'Share something',
+    yourName: 'Your name',
+    postTitle: 'Title',
+    postMessage: 'Message',
+    communityPostBtn: '📤 Post',
+    communityFeed: 'Feed',
+    loadMore: 'Load more',
+    deletePost: 'Delete',
+    loadingPosts: 'Loading posts…',
+    noPostsYet: 'No posts yet — be the first to share something!',
+    communityUnreachable: 'Could not reach the Community server. Check COMMUNITY_API_URL and that server.js is running.',
+    communityFillFields: 'Please fill in both a title and a message.',
+    communityPosted: 'Posted! Thanks for sharing.',
+    communityPostFailed: 'Could not post: {err}',
     modeHintConvert: 'Drop a file to parse it straight into channels, patterns and downloads.',
     modeHintShowcase: 'Drop a file to preview its raw event structure first, then convert on demand.',
     settings: 'Settings',
@@ -2163,6 +2233,25 @@ const I18N = {
     headerSub: 'Projetos do FL Studio Desktop → FL Studio Mobile · detecção binária + reconstrução',
     modeConvert: 'Converter',
     modeShowcase: 'Showcase',
+    modeCommunity: 'Community',
+    modeHintCommunity: 'Veja o que outras pessoas converteram, ou compartilhe o seu resultado.',
+    communityTitle: 'COMMUNITY',
+    communityApiHint: 'Os posts da Community ficam guardados num servidor de API separado, que você mesmo roda — veja o README pra configurar.',
+    communitySearchPlaceholder: '🔎 Buscar posts…',
+    communityNewPost: 'Compartilhe algo',
+    yourName: 'Seu nome',
+    postTitle: 'Título',
+    postMessage: 'Mensagem',
+    communityPostBtn: '📤 Postar',
+    communityFeed: 'Feed',
+    loadMore: 'Carregar mais',
+    deletePost: 'Apagar',
+    loadingPosts: 'Carregando posts…',
+    noPostsYet: 'Nenhum post ainda — seja o primeiro a compartilhar algo!',
+    communityUnreachable: 'Não consegui acessar o servidor da Community. Confira o COMMUNITY_API_URL e se o server.js está rodando.',
+    communityFillFields: 'Preenche o título e a mensagem.',
+    communityPosted: 'Postado! Valeu por compartilhar.',
+    communityPostFailed: 'Não deu pra postar: {err}',
     modeHintConvert: 'Solte um arquivo para converter direto em canais, patterns e downloads.',
     modeHintShowcase: 'Solte um arquivo para ver a estrutura bruta primeiro, e converta quando quiser.',
     settings: 'Configurações',
@@ -2417,6 +2506,7 @@ langPtBtn.addEventListener('click', () => {
 });
 
 const GOOGLE_CLIENT_ID = 'YOUR_GOOGLE_OAUTH_CLIENT_ID.apps.googleusercontent.com';
+const COMMUNITY_API_URL = 'http://localhost:3000';
 const GOOGLE_ACCOUNT_KEY = 'flpflm_google_account_v1';
 
 function decodeJwtPayload(token) {
@@ -2586,13 +2676,174 @@ function getExportProj() {
   return clone;
 }
 
-[modeConvertBtn, modeShowcaseBtn].forEach(btn => {
+[modeConvertBtn, modeShowcaseBtn, modeCommunityBtn].forEach(btn => {
   btn.addEventListener('click', () => {
     currentMode = btn.dataset.mode;
     modeConvertBtn.classList.toggle('active', currentMode === 'convert');
     modeShowcaseBtn.classList.toggle('active', currentMode === 'showcase');
-    modeHint.textContent = MODE_HINTS[currentMode];
+    modeCommunityBtn.classList.toggle('active', currentMode === 'community');
+    modeHint.textContent = currentMode === 'community' ? t('modeHintCommunity') : MODE_HINTS[currentMode];
+
+    const isCommunity = currentMode === 'community';
+    dropZone.classList.toggle('hidden', isCommunity);
+    communityPanel.classList.toggle('hidden', !isCommunity);
+    if (isCommunity) {
+      detPanel.classList.add('hidden');
+      showcasePanel.classList.add('hidden');
+      batchPanel.classList.add('hidden');
+      btnRow.classList.add('hidden'); formatRow.classList.add('hidden');
+      const tb = document.getElementById('testBanner');
+      if (tb) tb.classList.add('hidden');
+      if (!communityLoadedOnce) { communityLoadedOnce = true; loadCommunityPosts(true); }
+    }
   });
+});
+
+let communityLoadedOnce = false;
+let communityNextBefore = null;
+let communityQuery = '';
+const COMMUNITY_OWNER_KEYS = 'flpflm_community_owner_keys_v1';
+
+function loadOwnerKeys() {
+  try { return JSON.parse(localStorage.getItem(COMMUNITY_OWNER_KEYS) || '{}'); } catch (e) { return {}; }
+}
+function saveOwnerKey(postId, ownerKey) {
+  const keys = loadOwnerKeys();
+  keys[postId] = ownerKey;
+  try { localStorage.setItem(COMMUNITY_OWNER_KEYS, JSON.stringify(keys)); } catch (e) {}
+}
+
+function formatRelativeTime(ts) {
+  const diffSec = Math.max(0, Math.floor((Date.now() - ts) / 1000));
+  if (diffSec < 60) return currentLang === 'pt' ? 'agora' : 'just now';
+  const diffMin = Math.floor(diffSec / 60);
+  if (diffMin < 60) return `${diffMin}m`;
+  const diffHr = Math.floor(diffMin / 60);
+  if (diffHr < 24) return `${diffHr}h`;
+  const diffDay = Math.floor(diffHr / 24);
+  return `${diffDay}d`;
+}
+
+function renderCommunityPost(post) {
+  const el = document.createElement('div');
+  el.className = 'community-post';
+  const ownerKeys = loadOwnerKeys();
+  const isOwner = !!ownerKeys[post.id];
+  el.innerHTML = `
+    <div class="community-post-head">
+      <span class="community-post-author">${escapeHtml(post.author)}</span>
+      <span class="community-post-time">${formatRelativeTime(post.createdAt)}</span>
+    </div>
+    <div class="community-post-title">${escapeHtml(post.title)}</div>
+    <div class="community-post-message">${escapeHtml(post.message)}</div>
+    <div class="community-post-actions">
+      <button class="like-btn" data-id="${post.id}">👍 <span class="like-count">${post.likes || 0}</span></button>
+      ${isOwner ? `<button class="select-link" data-delete="${post.id}">${t('deletePost')}</button>` : ''}
+    </div>`;
+  el.querySelector('.like-btn').addEventListener('click', async e => {
+    const btn = e.currentTarget;
+    btn.disabled = true;
+    try {
+      const res = await fetch(`${COMMUNITY_API_URL}/api/community/posts/${post.id}/like`, { method: 'POST' });
+      if (res.ok) {
+        const data = await res.json();
+        btn.querySelector('.like-count').textContent = data.post.likes;
+        btn.classList.add('liked');
+      }
+    } catch (e) {}
+    btn.disabled = false;
+  });
+  const delBtn = el.querySelector('[data-delete]');
+  if (delBtn) {
+    delBtn.addEventListener('click', async () => {
+      try {
+        const res = await fetch(`${COMMUNITY_API_URL}/api/community/posts/${post.id}`, {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ownerKey: ownerKeys[post.id] }),
+        });
+        if (res.ok) el.remove();
+      } catch (e) {}
+    });
+  }
+  return el;
+}
+
+async function loadCommunityPosts(reset) {
+  const feed = document.getElementById('communityFeed');
+  const loadMoreRow = document.getElementById('communityLoadMoreRow');
+  if (reset) {
+    communityNextBefore = null;
+    feed.innerHTML = `<div class="community-empty">${t('loadingPosts')}</div>`;
+  }
+  try {
+    const params = new URLSearchParams({ limit: '20' });
+    if (communityNextBefore) params.set('before', String(communityNextBefore));
+    if (communityQuery) params.set('q', communityQuery);
+    const res = await fetch(`${COMMUNITY_API_URL}/api/community/posts?${params.toString()}`);
+    if (!res.ok) throw new Error('bad response');
+    const data = await res.json();
+    if (reset) feed.innerHTML = '';
+    if (!data.posts.length && reset) {
+      feed.innerHTML = `<div class="community-empty">${t('noPostsYet')}</div>`;
+    } else {
+      data.posts.forEach(post => feed.appendChild(renderCommunityPost(post)));
+    }
+    communityNextBefore = data.nextBefore;
+    loadMoreRow.classList.toggle('hidden', !data.hasMore);
+  } catch (err) {
+    if (reset) {
+      feed.innerHTML = `<div class="community-empty">${t('communityUnreachable')}</div>`;
+    }
+    loadMoreRow.classList.add('hidden');
+  }
+}
+
+document.getElementById('communityLoadMoreBtn').addEventListener('click', () => loadCommunityPosts(false));
+document.getElementById('communitySearch').addEventListener('input', e => {
+  communityQuery = e.target.value.trim();
+  clearTimeout(window._communitySearchDebounce);
+  window._communitySearchDebounce = setTimeout(() => loadCommunityPosts(true), 350);
+});
+
+document.getElementById('communitySubmitBtn').addEventListener('click', async () => {
+  const authorInput = document.getElementById('communityAuthor');
+  const titleInput = document.getElementById('communityPostTitle');
+  const messageInput = document.getElementById('communityPostMessage');
+  const submitBtn = document.getElementById('communitySubmitBtn');
+
+  const title = titleInput.value.trim();
+  const message = messageInput.value.trim();
+  if (!title || !message) {
+    setStatus('error', t('communityFillFields'));
+    return;
+  }
+
+  submitBtn.disabled = true;
+  try {
+    const res = await fetch(`${COMMUNITY_API_URL}/api/community/posts`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        author: authorInput.value.trim(),
+        title, message,
+        fileName: currentFileBase || null,
+      }),
+    });
+    if (!res.ok) {
+      const errData = await res.json().catch(() => ({}));
+      throw new Error(errData.error || 'request failed');
+    }
+    const data = await res.json();
+    saveOwnerKey(data.post.id, data.ownerKey);
+    titleInput.value = '';
+    messageInput.value = '';
+    setStatus('success', t('communityPosted'));
+    loadCommunityPosts(true);
+  } catch (err) {
+    setStatus('error', t('communityPostFailed', { err: err.message }));
+  }
+  submitBtn.disabled = false;
 });
 
 function setStatus(type, msg) {
