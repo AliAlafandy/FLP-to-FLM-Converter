@@ -78,6 +78,44 @@ This tool can also open genuine FL Studio Mobile project files (not just desktop
 
 No server, no network request, no account. The file never leaves your device.
 
+## Community tab (optional, needs a server)
+
+There's a third tab — **🌐 Community** — where people can post short write-ups about their conversions and browse what others shared. Unlike everything else in this app, **this feature needs a real backend**: it's not client-side.
+
+### Running the server
+
+The server lives in `server/` — a small Express app (`server.js`) with JSON-file storage (no database to set up):
+
+```bash
+cd server
+npm install
+npm start        # or: PORT=4000 npm start
+```
+
+It exposes:
+
+| Method | Path | What it does |
+|---|---|---|
+| GET | `/api/health` | Health check |
+| GET | `/api/community/posts?limit=&before=&q=` | List posts, newest first, paginated, optional search |
+| POST | `/api/community/posts` | Create a post — `{ author, title, message, fileName }` → returns the post plus a one-time `ownerKey` |
+| POST | `/api/community/posts/:id/like` | Like a post |
+| DELETE | `/api/community/posts/:id` | Delete a post — needs `{ ownerKey }` matching the one returned at creation |
+
+Posts are stored in `server/data/community.json`, created automatically on first write. There's a simple in-memory rate limit (5 posts/minute per IP) and input-length caps (title 100 chars, message 1000, author 40) — no auth system, so treat this as a lightweight community board, not something holding sensitive data.
+
+### Pointing the site at your server
+
+In `index.html`, find:
+
+```js
+const COMMUNITY_API_URL = 'http://localhost:3000';
+```
+
+and change it to wherever you deploy `server.js` (Render, Railway, Fly.io, a VPS, etc. — anywhere that can run a Node process). It defaults to `localhost:3000` for local development. If the server isn't reachable, the Community tab shows a friendly "can't reach the server" message instead of breaking the rest of the site — the converter itself never depends on this.
+
+The server has CORS enabled for all origins by default; tighten that in `server.js` if you're deploying it publicly.
+
 ## Google Sign-In (optional)
 
 There's an optional "Sign in with Google" button in Settings → Account. It's purely cosmetic — it decodes your name/email/photo client-side (via [Google Identity Services](https://developers.google.com/identity/gsi/web)) to show a small account badge, and stores that locally in the browser. **Nothing is uploaded anywhere; there's no server, no Drive access, no gating of features.**
