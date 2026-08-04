@@ -156,6 +156,10 @@ To deploy it yourself (e.g. GitHub Pages):
 2. Keep `manifest.json`, `sw.js`, and the `icons/` folder alongside it at the same level.
 3. Serve over HTTPS — service workers and install prompts require it (GitHub Pages does this automatically).
 
+## Native desktop app (Windows / macOS / Linux)
+
+Beyond the PWA, there's a real native wrapper in `desktop/` built with Electron — same app, packaged as an actual installable `.exe`/`.dmg`/`AppImage`. See [`desktop/README.md`](desktop/README.md) for setup; app metadata and per-platform build targets live in `desktop/project.js`.
+
 ## Technical notes
 
 - Written in vanilla HTML/CSS/JS — no build step, no dependencies.
