@@ -1,16 +1,20 @@
 {
-  "name": "flp-flm-community-api",
-  "version": "1.0.0",
-  "description": "Minimal Community API server for the FLP to FLM Converter site",
-  "main": "server.js",
+  "name": "music-stuff-desktop",
+  "version": "3.0.0",
+  "description": "Music Stuff — native desktop app (Windows, macOS, Linux) wrapping the FLP/FLM Converter & Generator",
+  "main": "main.js",
+  "author": "Brenninho",
+  "license": "Apache-2.0",
+  "private": true,
   "scripts": {
-    "start": "node server.js"
+    "start": "electron .",
+    "dist": "electron-builder --config project.js",
+    "dist:win": "electron-builder --config project.js --win",
+    "dist:mac": "electron-builder --config project.js --mac",
+    "dist:linux": "electron-builder --config project.js --linux"
   },
-  "engines": {
-    "node": ">=18"
-  },
-  "dependencies": {
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
+  "devDependencies": {
+    "electron": "^31.0.0",
+    "electron-builder": "^24.13.3"
   }
 }
