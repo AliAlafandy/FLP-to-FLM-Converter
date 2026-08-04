@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>FLP → FLM Converter</title>
+<title>Music Stuff — FLP/FLM Converter & Generator</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700;800;900&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;600&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="icon" type="image/png" sizes="32x32" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAABmJLR0QA/wD/AP+gvaeTAAAESUlEQVRYhcWXXWhcRRTHfzObhGAaG5LYD5qKadMPbVqjgiVtsJH64IMP0j6oFKGoDzVQ8cUSkIiKD6IvgtiCoi9aWygURAXrZ/UhsahU0wgWrE1LalO3aZqku3tz9845Ptx7926ym7axaRxYZjh37vzm/M9/5rKGqc22tnTsTIl9XIzebdQ2qGpKATT6ATp9HD2fMo56ozhBLyDai5V9Jy/0flsMNPFg7YqO1VXWHEbNunIL/Rd4mbGqysHGi+7pPvpyhQ2sXdGxuipl+hBTfxPhySS0109XbB3kqGcBW2XN4fmDA2o2VTYEewFMa0vHU1bt+/MHL3QSaNBeYcU8oZRf6CbCAWzK2N1WDRv+BzgAxtjOiuio3TB8z+4e7ly4hcHfRtn3TTfDV05dFQ5glKX2Rs95PG5v68RNQjULWVW/8ZrwKJaycyW7TBoCDwJPUTXXhMfxirmqeQx3k6CqPPPkLhpvaeKzrz7hxKmfysJRsHNluHAD4ETDd1yKDS3tPL/tdR69bxcmuXSTdwE7W/ierh4+ePFrXn7kEEtqVhbkDTwlmFQkmvve/nd47rUd/PHXAB13bGf94gdL4AB2tpnfv76TIAtVwUJW1m8sTIoVEA03AZC+PMzez3sYH5tg8/LHSuChArOU3WUNfkbJZxUVU1gx8JTAU0RCD8Qt441zcvg49dXLqbTVTG9JCa4DjhLCM3GtE5sHk4kC012fd3lEbUn2SlyC64SjkM+Em3BCKHX0TuApooorXgcAw7IFdzHmpcmLNwVeUGA2bvezGm0gUSA+BSIg8SmI4hsWbaW2ahG///N9CRyie6Ac/IVdPayp3cKZ/lHe/aGb81dOhXJmIsNJ4vhYARcZUAjL0FS7modbupjIX+bY34dK4JSUoCjbtuYt5EYUm7mV5rrE7X5UfyeJ24kV0MgDCqtuu5edbW9gqODTk2+SC8bK3ogVM8nujRgyacF3ghS53c+EmboIlmxAEQm9UVdTz7ZVr5KZ8Dkw8BJnxvrLfws0LsE0OArZi0JuVPEDxYkUVMpHBnQy1e2xKUWV1uXrEb+S/Se6OTs+MCM8LEEZOAqZtOI7Ie/CjAtuz5cvgcQxgRpbx2gufU04xBdRGRWylxx+ECngitzuHEEktUoSdyIFBUbGLrOgspGm2nVXhQNYE5ZzqgrAz+eP4AeOickxhq78UogfH/6SwAlZf5xzcVzDuBNHLj/Bd6cP4DufbWtfob66aUY44MyaxQ8MoSwrhicfhyldaTYzPFSgue4eNi7dwZHTbzHqDZWBKxi9YNYs2vwRmtoxl/CSWDk4IOgXVpx5W0GKH8wHXAGMO5i6lDt7rqHm9magbT7hivYPXurrsgB+OvUsaO/8wWUkCGQ7IBZgkKNeQ9o9pMjHOgN/LjMPAtc+NN73JxT9O45bS2NHJ9BlDJuMmiUKqRuD4zByUVR/xciBwZEfP6TgOfgXZiEMbcSKdZMAAAAASUVORK5CYII=">
@@ -75,6 +75,15 @@ body::after {
 }
 
 .container { width: 100%; max-width: 640px; position: relative; z-index: 1; }
+@media (min-width: 900px) {
+  .container { max-width: 880px; }
+  .channel-list, .community-feed { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .track-list, #genChannelList.channel-list, #genNoteList.community-feed { display: flex; }
+  body { padding-top: 48px; }
+}
+@media (min-width: 1200px) {
+  .container { max-width: 1080px; }
+}
 
 .header { text-align: center; margin-bottom: 36px; animation: fadeDown 0.6s ease both; }
 .logo-badge {
@@ -193,6 +202,24 @@ h1 {
 .info-card:hover { border-color: var(--border2); }
 .info-label { font-family: 'JetBrains Mono', monospace; font-size: 0.65rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
 .info-value { font-family: 'Unbounded', 'Syne', sans-serif; font-size: 1.25rem; font-weight: 700; color: var(--accent); line-height: 1.1; word-break: break-word; }
+.editable-value {
+  width: 100%; font-family: 'Unbounded', 'Syne', sans-serif; font-size: 1.05rem; font-weight: 700;
+  color: var(--accent); background: transparent; border: none; border-bottom: 1px dashed var(--border2);
+  padding: 0 0 2px 0; outline: none;
+}
+.editable-value:focus { border-bottom-color: var(--accent); }
+.chan-name-input {
+  font-family: 'DM Sans', sans-serif; font-size: 0.82rem; font-weight: 500; color: var(--text);
+  background: transparent; border: none; border-bottom: 1px dashed transparent; width: 100%;
+  padding: 0; outline: none;
+}
+.chan-name-input:hover, .chan-name-input:focus { border-bottom-color: var(--border2); }
+.chan-num-input {
+  width: 38px; font-family: 'JetBrains Mono', monospace; font-size: 0.68rem; color: var(--muted);
+  background: var(--surface3); border: 1px solid var(--border); border-radius: 4px;
+  padding: 1px 2px; outline: none; text-align: center;
+}
+.chan-num-input:focus { border-color: var(--accent); color: var(--text); }
 .info-unit { font-size: 0.6em; color: var(--muted); font-family: 'DM Sans', sans-serif; font-weight: 300; }
 
 .section-label {
@@ -686,8 +713,8 @@ body.theme-light .note-box       { background: #EAF4FF; }
       </svg>
     </div>
     <div class="logo-badge"><div class="logo-dot"></div> <span data-i18n="badge">BEST-EFFORT CONVERTER</span></div>
-    <h1>FLP → FLM</h1>
-    <p class="header-sub" data-i18n="headerSub">FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction</p>
+    <h1>Music Stuff</h1>
+    <p class="header-sub" data-i18n="headerSub">FLP/FLM converter &amp; generator · FL Studio Desktop ↔ FL Studio Mobile</p>
     <div class="eq-strip" aria-hidden="true">
       <span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span>
     </div>
@@ -695,6 +722,7 @@ body.theme-light .note-box       { background: #EAF4FF; }
 
   <div class="mode-tabs" id="modeTabs">
     <button class="mode-tab active" data-mode="convert" id="modeConvertBtn">⚙ <span data-i18n="modeConvert">Converter</span></button>
+    <button class="mode-tab" data-mode="generator" id="modeGeneratorBtn">🎼 <span data-i18n="modeGenerator">Generator</span></button>
     <button class="mode-tab" data-mode="showcase" id="modeShowcaseBtn">🔍 <span data-i18n="modeShowcase">Showcase</span></button>
     <button class="mode-tab" data-mode="community" id="modeCommunityBtn">🌐 <span data-i18n="modeCommunity">Community</span></button>
   </div>
@@ -764,6 +792,57 @@ body.theme-light .note-box       { background: #EAF4FF; }
       <span class="fmt-tag">FL Studio 25 / 2026</span>
       <span class="fmt-tag">FL Studio Mobile</span>
       <span class="fmt-tag">.zip</span>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="generatorPanel">
+    <div class="panel-header"><div class="panel-dot"></div> <span data-i18n="generatorTitle">GENERATOR</span></div>
+    <div class="panel-body">
+      <div class="field-hint" data-i18n="generatorHint">Build a small project from scratch, then export it as .mid, .flm or .json using the same converter engine.</div>
+
+      <div class="section-label" style="margin-top:0" data-i18n="projectInfo">Project info</div>
+      <div class="field-row">
+        <label class="field-label" style="flex:1 1 100%"><span data-i18n="postTitle">Title</span><input type="text" id="genTitle" value="New Project" maxlength="100"></label>
+      </div>
+      <div class="field-row">
+        <label class="field-label"><span data-i18n="tempoBpm">Tempo (BPM)</span><input type="number" id="genTempo" value="140" min="20" max="999"></label>
+        <label class="field-label">PPQ<input type="number" id="genPpq" value="96" min="24" max="960"></label>
+      </div>
+      <div class="field-row">
+        <label class="field-label"><span data-i18n="timeSig">Time Sig</span><input type="number" id="genTsNum" value="4" min="1" max="32"></label>
+        <label class="field-label">/<input type="number" id="genTsDen" value="4" min="1" max="32"></label>
+      </div>
+
+      <div class="section-label" data-i18n="channels">Channels</div>
+      <div id="genChannelList" class="channel-list"></div>
+      <div class="field-row">
+        <label class="field-label" style="flex:1 1 100%"><span data-i18n="channelName">Channel name</span><input type="text" id="genNewChannelName" maxlength="40" placeholder="Lead Synth"></label>
+      </div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn btn-secondary" id="genAddChannelBtn" data-i18n="addChannel">+ Add channel</button>
+      </div>
+
+      <div class="section-label" data-i18n="notesLabel">Notes</div>
+      <div class="field-row">
+        <label class="field-label"><span data-i18n="channels">Channels</span>
+          <select id="genNoteChannel" style="font-family:'DM Sans',sans-serif;font-size:1rem;color:var(--text);background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;"></select>
+        </label>
+        <label class="field-label"><span data-i18n="noteKey">Key (60=C5)</span><input type="number" id="genNoteKey" value="60" min="0" max="131"></label>
+      </div>
+      <div class="field-row">
+        <label class="field-label"><span data-i18n="notePosition">Position (beats)</span><input type="number" id="genNotePos" value="0" min="0" step="0.25"></label>
+        <label class="field-label"><span data-i18n="noteLength">Length (beats)</span><input type="number" id="genNoteLen" value="1" min="0.1" step="0.25"></label>
+        <label class="field-label"><span data-i18n="noteVelocity">Velocity</span><input type="number" id="genNoteVel" value="100" min="1" max="127"></label>
+      </div>
+      <div class="btn-row" style="margin-top:0">
+        <button class="btn btn-secondary" id="genAddNoteBtn" data-i18n="addNote">+ Add note</button>
+      </div>
+      <div id="genNoteList" class="community-feed"></div>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="genBuildBtn" data-i18n="generateProject">🎼 Generate project</button>
+        <button class="btn btn-secondary" id="genResetBtn" data-i18n="resetGenerator">↺ Reset</button>
+      </div>
     </div>
   </div>
 
@@ -2132,6 +2211,8 @@ const modeHint      = document.getElementById('modeHint');
 const modeConvertBtn  = document.getElementById('modeConvertBtn');
 const modeShowcaseBtn = document.getElementById('modeShowcaseBtn');
 const modeCommunityBtn = document.getElementById('modeCommunityBtn');
+const modeGeneratorBtn = document.getElementById('modeGeneratorBtn');
+const generatorPanel = document.getElementById('generatorPanel');
 const communityPanel = document.getElementById('communityPanel');
 const settingsToggleBtn = document.getElementById('settingsToggleBtn');
 const historyToggleBtn  = document.getElementById('historyToggleBtn');
@@ -2151,8 +2232,27 @@ const ppqOverrideInput   = document.getElementById('ppqOverrideInput');
 const I18N = {
   en: {
     badge: 'BEST-EFFORT CONVERTER',
-    headerSub: 'FL Studio Desktop projects → FL Studio Mobile · binary detection + reconstruction',
+    headerSub: 'FLP/FLM converter &amp; generator · FL Studio Desktop ↔ FL Studio Mobile',
     modeConvert: 'Converter',
+    modeGenerator: 'Generator',
+    modeHintGenerator: 'Build a small project from scratch and export it.',
+    generatorTitle: 'GENERATOR',
+    generatorHint: 'Build a small project from scratch, then export it as .mid, .flm or .json using the same converter engine.',
+    projectInfo: 'Project info',
+    channelName: 'Channel name',
+    addChannel: '+ Add channel',
+    noteKey: 'Key (60=C5)',
+    notePosition: 'Position (beats)',
+    noteLength: 'Length (beats)',
+    noteVelocity: 'Velocity',
+    addNote: '+ Add note',
+    generateProject: '🎼 Generate project',
+    resetGenerator: '↺ Reset',
+    noChannelsYet: 'No channels yet — add one above.',
+    noNotesYetGen: 'No notes yet — add one above.',
+    generatedFromScratch: 'This project was built from scratch in the Generator — there is no original .flp/.flm to compare it against.',
+    generatorBuilt: 'Built "{title}" — review it below, then export.',
+    editedApplied: 'Edit applied — exports will use the updated value.',
     modeShowcase: 'Showcase',
     modeCommunity: 'Community',
     modeHintCommunity: 'See what others converted, or share your own result.',
@@ -2301,8 +2401,27 @@ const I18N = {
   },
   pt: {
     badge: 'CONVERSOR BEST-EFFORT',
-    headerSub: 'Projetos do FL Studio Desktop → FL Studio Mobile · detecção binária + reconstrução',
+    headerSub: 'Conversor &amp; gerador de FLP/FLM · FL Studio Desktop ↔ FL Studio Mobile',
     modeConvert: 'Converter',
+    modeGenerator: 'Generator',
+    modeHintGenerator: 'Monte um projeto do zero e exporte.',
+    generatorTitle: 'GERADOR',
+    generatorHint: 'Monte um projetinho do zero, depois exporte como .mid, .flm ou .json usando o mesmo motor do conversor.',
+    projectInfo: 'Informações do projeto',
+    channelName: 'Nome do canal',
+    addChannel: '+ Adicionar canal',
+    noteKey: 'Tecla (60=C5)',
+    notePosition: 'Posição (beats)',
+    noteLength: 'Duração (beats)',
+    noteVelocity: 'Velocity',
+    addNote: '+ Adicionar nota',
+    generateProject: '🎼 Gerar projeto',
+    resetGenerator: '↺ Resetar',
+    noChannelsYet: 'Nenhum canal ainda — adicione um acima.',
+    noNotesYetGen: 'Nenhuma nota ainda — adicione uma acima.',
+    generatedFromScratch: 'Esse projeto foi montado do zero no Generator — não tem um .flp/.flm original pra comparar.',
+    generatorBuilt: '"{title}" montado — revise abaixo e exporte.',
+    editedApplied: 'Edição aplicada — os exports vão usar o valor atualizado.',
     modeShowcase: 'Showcase',
     modeCommunity: 'Community',
     modeHintCommunity: 'Veja o que outras pessoas converteram, ou compartilhe o seu resultado.',
@@ -2753,31 +2872,168 @@ function getExportProj() {
   return clone;
 }
 
-[modeConvertBtn, modeShowcaseBtn, modeCommunityBtn].forEach(btn => {
+[modeConvertBtn, modeGeneratorBtn, modeShowcaseBtn, modeCommunityBtn].forEach(btn => {
   btn.addEventListener('click', () => {
     currentMode = btn.dataset.mode;
     modeConvertBtn.classList.toggle('active', currentMode === 'convert');
+    modeGeneratorBtn.classList.toggle('active', currentMode === 'generator');
     modeShowcaseBtn.classList.toggle('active', currentMode === 'showcase');
     modeCommunityBtn.classList.toggle('active', currentMode === 'community');
-    modeHint.textContent = currentMode === 'community' ? t('modeHintCommunity') : MODE_HINTS[currentMode];
+    modeHint.textContent = currentMode === 'community' ? t('modeHintCommunity')
+      : currentMode === 'generator' ? t('modeHintGenerator')
+      : MODE_HINTS[currentMode];
 
     const isCommunity = currentMode === 'community';
-    dropZone.classList.toggle('hidden', isCommunity);
+    const isGenerator = currentMode === 'generator';
+    dropZone.classList.toggle('hidden', isCommunity || isGenerator);
     communityPanel.classList.toggle('hidden', !isCommunity);
-    if (isCommunity) {
+    generatorPanel.classList.toggle('hidden', !isGenerator);
+    if (isGenerator) renderGeneratorChannels();
+    if (isCommunity || isGenerator) {
       detPanel.classList.add('hidden');
       showcasePanel.classList.add('hidden');
       batchPanel.classList.add('hidden');
       btnRow.classList.add('hidden'); formatRow.classList.add('hidden');
       const tb = document.getElementById('testBanner');
       if (tb) tb.classList.add('hidden');
-      if (!communityLoadedOnce) { communityLoadedOnce = true; loadCommunityPosts(true); }
+      if (isCommunity && !communityLoadedOnce) { communityLoadedOnce = true; loadCommunityPosts(true); }
     }
   });
 });
 
 let communityLoadedOnce = false;
 let communityNextBefore = null;
+
+let genChannels = [];
+let genNotes = [];
+
+function renderGeneratorChannels() {
+  const list = document.getElementById('genChannelList');
+  const select = document.getElementById('genNoteChannel');
+  list.innerHTML = '';
+  select.innerHTML = '';
+  if (!genChannels.length) {
+    list.innerHTML = `<div class="community-empty">${t('noChannelsYet')}</div>`;
+  }
+  genChannels.forEach((ch, i) => {
+    const row = document.createElement('div');
+    row.className = 'channel-item';
+    const swatchColor = colorForIndex(i);
+    row.innerHTML = `
+      <div class="channel-swatch" style="background:${swatchColor}"></div>
+      <div class="channel-name"><span>${escapeHtml(ch.name)}</span></div>
+      <button class="select-link" data-remove-ch="${i}">${t('deletePost')}</button>`;
+    row.querySelector('[data-remove-ch]').addEventListener('click', () => {
+      genNotes = genNotes.filter(n => n.channel !== ch.iid);
+      genChannels.splice(i, 1);
+      renderGeneratorChannels();
+      renderGeneratorNotes();
+    });
+    list.appendChild(row);
+
+    const opt = document.createElement('option');
+    opt.value = ch.iid;
+    opt.textContent = ch.name;
+    select.appendChild(opt);
+  });
+}
+
+function renderGeneratorNotes() {
+  const list = document.getElementById('genNoteList');
+  list.innerHTML = '';
+  if (!genNotes.length) {
+    list.innerHTML = `<div class="community-empty">${t('noNotesYetGen')}</div>`;
+    return;
+  }
+  genNotes.forEach((n, i) => {
+    const ch = genChannels.find(c => c.iid === n.channel);
+    const row = document.createElement('div');
+    row.className = 'community-post';
+    row.innerHTML = `
+      <div class="community-post-message">${escapeHtml(ch ? ch.name : '?')} · key ${n.key} · @ ${(n.position).toFixed(2)}b · len ${(n.length).toFixed(2)}b · vel ${n.velocity}</div>
+      <div class="community-post-actions"><button class="select-link" data-remove-note="${i}">${t('deletePost')}</button></div>`;
+    row.querySelector('[data-remove-note]').addEventListener('click', () => {
+      genNotes.splice(i, 1);
+      renderGeneratorNotes();
+    });
+    list.appendChild(row);
+  });
+}
+
+document.getElementById('genAddChannelBtn').addEventListener('click', () => {
+  const input = document.getElementById('genNewChannelName');
+  const name = input.value.trim();
+  if (!name) return;
+  genChannels.push({ iid: genChannels.length, name, volume: 100, pan: 0, enabled: true, muted: false, type: 0, kind: 'Sampler', color: 0 });
+  input.value = '';
+  renderGeneratorChannels();
+});
+
+document.getElementById('genAddNoteBtn').addEventListener('click', () => {
+  if (!genChannels.length) { setStatus('error', t('noChannelsYet')); return; }
+  const chIid = parseInt(document.getElementById('genNoteChannel').value, 10);
+  const key = Math.max(0, Math.min(131, parseInt(document.getElementById('genNoteKey').value, 10) || 60));
+  const position = Math.max(0, parseFloat(document.getElementById('genNotePos').value) || 0);
+  const length = Math.max(0.05, parseFloat(document.getElementById('genNoteLen').value) || 1);
+  const velocity = Math.max(1, Math.min(127, parseInt(document.getElementById('genNoteVel').value, 10) || 100));
+  genNotes.push({ channel: chIid, key, position, length, velocity });
+  renderGeneratorNotes();
+});
+
+document.getElementById('genResetBtn').addEventListener('click', () => {
+  genChannels = [];
+  genNotes = [];
+  document.getElementById('genTitle').value = 'New Project';
+  document.getElementById('genTempo').value = '140';
+  document.getElementById('genPpq').value = '96';
+  document.getElementById('genTsNum').value = '4';
+  document.getElementById('genTsDen').value = '4';
+  renderGeneratorChannels();
+  renderGeneratorNotes();
+});
+
+document.getElementById('genBuildBtn').addEventListener('click', () => {
+  if (!genChannels.length) { setStatus('error', t('noChannelsYet')); return; }
+  const ppq = Math.max(24, parseInt(document.getElementById('genPpq').value, 10) || 96);
+  const tempo = Math.max(20, parseFloat(document.getElementById('genTempo').value) || 140);
+  const timeSigNum = Math.max(1, parseInt(document.getElementById('genTsNum').value, 10) || 4);
+  const timeSigDen = Math.max(1, parseInt(document.getElementById('genTsDen').value, 10) || 4);
+  const title = document.getElementById('genTitle').value.trim() || 'New Project';
+
+  const notesByChannel = new Map();
+  genNotes.forEach(n => {
+    if (!notesByChannel.has(n.channel)) notesByChannel.set(n.channel, []);
+    notesByChannel.get(n.channel).push({
+      position: Math.round(n.position * ppq),
+      length: Math.max(1, Math.round(n.length * ppq)),
+      key: n.key, velocity: n.velocity, pan: 64, release: 64, finePitch: 120,
+      group: 0, midiChannel: 0, channel: n.channel, slide: false, flags: 0,
+    });
+  });
+
+  const proj = {
+    version: '', versionInt: 0, title, author: '', genre: '', comment: '',
+    url: '', licensee: '', dataPath: '', createdOn: new Date(), timeSpentHours: 0,
+    loopActive: false, panLaw: 0, flBuild: 0,
+    ppq, tempo, timeSigNum, timeSigDen,
+    mainVolume: 100, mainPitch: 0, format: 0, numChannelsHeader: genChannels.length,
+    channels: genChannels.map(c => ({ ...c })),
+    patterns: [{ id: 0, name: 'Pattern 1', color: 0, notes: genChannels.flatMap(c => notesByChannel.get(c.iid) || []) }],
+    timeMarkers: [], arrangements: [], inserts: [], mixerParams: {}, effectsUsed: [],
+    warnings: [t('generatedFromScratch')],
+  };
+
+  currentProj = proj;
+  currentBuf = null;
+  currentFileBase = title.replace(/[^a-z0-9]+/gi, '_') || 'project';
+  activePatternIdx = 0;
+  activeArrIdx = 0;
+  renderDetection(proj);
+  btnRow.classList.remove('hidden'); formatRow.classList.remove('hidden');
+  setStatus('success', t('generatorBuilt', { title }));
+  showTestBanner(proj);
+  celebrateConversion();
+});
 let communityQuery = '';
 const COMMUNITY_OWNER_KEYS = 'flpflm_community_owner_keys_v1';
 
@@ -3479,23 +3735,37 @@ function renderDetection(proj) {
   const grid = document.createElement('div');
   grid.className = 'info-grid';
   const cards = [
-    [t('title'), escapeHtml(proj.title) || 'Untitled'],
-    [t('tempo'), `${proj.tempo.toFixed(2)}<span class="info-unit"> BPM</span>`],
-    [t('timeSig'), `${proj.timeSigNum}/${proj.timeSigDen}`],
-    ['PPQ', proj.ppq],
-    [t('channels'), proj.channels.length],
-    [t('patterns'), patternsWithNotes < proj.patterns.length ? `${proj.patterns.length}<span class="info-unit"> (${patternsWithNotes} ${t('withNotes')})</span>` : proj.patterns.length],
-    [t('notesLabel'), totalNotes],
-    [t('slides'), totalSlides],
-    [t('arrangements'), proj.arrangements.length],
-    [t('inserts'), proj.inserts.length],
-    [t('markers'), proj.timeMarkers.length],
-    [t('estLength'), settings.timeUnits === 'seconds' ? formatDuration(durationSec) : `${(lastTick / (proj.ppq || 96)).toFixed(1)}<span class="info-unit"> beats</span>`],
+    ['title', t('title'), escapeHtml(proj.title) || 'Untitled'],
+    ['tempo', t('tempo'), `${proj.tempo.toFixed(2)}<span class="info-unit"> BPM</span>`],
+    [null, t('timeSig'), `${proj.timeSigNum}/${proj.timeSigDen}`],
+    [null, 'PPQ', proj.ppq],
+    [null, t('channels'), proj.channels.length],
+    [null, t('patterns'), patternsWithNotes < proj.patterns.length ? `${proj.patterns.length}<span class="info-unit"> (${patternsWithNotes} ${t('withNotes')})</span>` : proj.patterns.length],
+    [null, t('notesLabel'), totalNotes],
+    [null, t('slides'), totalSlides],
+    [null, t('arrangements'), proj.arrangements.length],
+    [null, t('inserts'), proj.inserts.length],
+    [null, t('markers'), proj.timeMarkers.length],
+    [null, t('estLength'), settings.timeUnits === 'seconds' ? formatDuration(durationSec) : `${(lastTick / (proj.ppq || 96)).toFixed(1)}<span class="info-unit"> beats</span>`],
   ];
-  cards.forEach(([label, value]) => {
+  cards.forEach(([field, label, value]) => {
     const card = document.createElement('div');
     card.className = 'info-card';
-    card.innerHTML = `<div class="info-label">${label}</div><div class="info-value">${value}</div>`;
+    if (field === 'title') {
+      card.innerHTML = `<div class="info-label">${label}</div><input class="editable-value" id="editTitle" value="${escapeHtml(proj.title || '')}" maxlength="150">`;
+      card.querySelector('#editTitle').addEventListener('change', e => {
+        proj.title = e.target.value.trim() || 'Untitled';
+        setStatus('info', t('editedApplied'));
+      });
+    } else if (field === 'tempo') {
+      card.innerHTML = `<div class="info-label">${label}</div><input class="editable-value" id="editTempo" type="number" min="1" max="999" step="0.01" value="${proj.tempo.toFixed(2)}">`;
+      card.querySelector('#editTempo').addEventListener('change', e => {
+        const v = parseFloat(e.target.value);
+        if (v > 0) { proj.tempo = v; setStatus('info', t('editedApplied')); }
+      });
+    } else {
+      card.innerHTML = `<div class="info-label">${label}</div><div class="info-value">${value}</div>`;
+    }
     grid.appendChild(card);
   });
   detBody.appendChild(grid);
@@ -3541,17 +3811,27 @@ function renderDetection(proj) {
     row.innerHTML = `
       <input type="checkbox" class="item-check" id="chCheck${i}" checked>
       <div class="channel-swatch" style="background:${swatchColor}"></div>
-      <div class="channel-name"><span>${escapeHtml(ch.name)}</span>${ch.pluginName ? `<span class="plugin-tag">${escapeHtml(ch.pluginName)}</span>` : ''}</div>
+      <div class="channel-name"><input class="editable-value chan-name-input" value="${escapeHtml(ch.name)}" maxlength="60">${ch.pluginName ? `<span class="plugin-tag">${escapeHtml(ch.pluginName)}</span>` : ''}</div>
       <div class="channel-meta">
         <span class="kind-badge ${kindClass}">${escapeHtml(kind)}</span>
-        <span>vol ${ch.volume}</span>
-        <span>pan ${ch.pan}</span>
+        <span>vol <input class="chan-num-input" type="number" min="0" max="255" value="${ch.volume}" data-field="volume"></span>
+        <span>pan <input class="chan-num-input" type="number" min="-64" max="64" value="${ch.pan}" data-field="pan"></span>
         ${ch.cutoff !== undefined && ch.cutoff !== 128 ? `<span>cutoff ${ch.cutoff}</span>` : ''}
         ${ch.resonance !== undefined && ch.resonance !== 0 ? `<span>reso ${ch.resonance}</span>` : ''}
         ${ch.muted ? '<span class="off">muted</span>' : ''}
         ${ch.enabled === false ? '<span class="off">disabled</span>' : ''}
       </div>
       <button class="channel-midi-btn" data-channel-idx="${i}">↓ .mid</button>`;
+    row.querySelector('.chan-name-input').addEventListener('change', e => {
+      ch.name = e.target.value.trim() || `Channel ${i + 1}`;
+      setStatus('info', t('editedApplied'));
+    });
+    row.querySelectorAll('.chan-num-input').forEach(inp => {
+      inp.addEventListener('change', e => {
+        const v = parseInt(e.target.value, 10);
+        if (!isNaN(v)) { ch[e.target.dataset.field] = v; setStatus('info', t('editedApplied')); }
+      });
+    });
     row.querySelector('.item-check').addEventListener('change', e => {
       if (e.target.checked) selectedChannels.add(i); else selectedChannels.delete(i);
     });
