@@ -1,6 +1,9 @@
-# FLP → FLM Converter
+# Music Stuff (formerly FLP → FLM Converter)
 
-Literally an FLP to FLM file converter — a feature many people have been requesting.
+Literally an FLP to FLM file converter — a feature many people have been requesting. Now it's grown into a small toolset: a **Converter** for existing `.flp`/`.flm` projects, a **Generator** for building a small project from scratch, plus Showcase and Community modes.
+
+📖 **Full user guide:** [`DOCS.md`](DOCS.md) — every tab, every setting, every export format, explained.
+🆕 **What's new in V3:** [`CHANGELOG-V3.md`](CHANGELOG-V3.md)
 
 A single-file, client-side tool that reads FL Studio Desktop project files (`.flp`), reconstructs their internal structure, and lets you export that data as MIDI, JSON, or an experimental `.flm` file for FL Studio Mobile. No install, no backend, no upload — everything runs in the browser tab.
 
@@ -19,6 +22,12 @@ FL Studio Mobile can import MIDI, but it has no supported way to open a desktop 
 Everything is labeled **best-effort**. Nothing here claims to be a verified, lossless converter.
 
 ## Features
+
+### Generator mode (new in V3)
+Build a small project from scratch — title, tempo, PPQ, time signature, channels, and notes — then export it through the exact same pipeline as a converted file. See `DOCS.md` for the full walkthrough.
+
+### Edit before you export (new in V3)
+Title, tempo, and per-channel name/volume/pan are editable directly in the results view. Fix a garbled title or an off tempo without starting over — every export downstream uses the edited values.
 
 ### Converter mode
 Drop a file and get an immediate breakdown:
