@@ -1788,12 +1788,26 @@ class RealFlmWriter {
     return this.buildChunk('CLIP', w.bytes);
   }
 
+  buildKeyb() {
+    const w = new RealFlmWriter(this.proj);
+    const json = JSON.stringify({ chords: [], rootNote: 0 }, null, 4);
+    const jsonBytes = [];
+    for (const ch of json) jsonBytes.push(ch.charCodeAt(0));
+    w.u32(jsonBytes.length);
+    w.bytes.push(...jsonBytes);
+    const scale = 'Major';
+    w.u32(scale.length);
+    w.ascii(scale);
+    w.zeros(8);
+    return this.buildChunk('KEYB', w.bytes);
+  }
+
   buildChnl(name, isMaster, patterns, ppq) {
     const w = new RealFlmWriter(this.proj);
     w.u32(isMaster ? 0 : 0x00010000);
     w.ascii('20HCCHHD');
     w.u8(0x64);
-    w.u8(0x04); w.u8(0x00); w.u8(0x00);
+    w.u8(0x04); w.u8(0x00); w.u8(0xF0);
     w.ascii(name || 'Channel');
     w.u8(0);
     const trkW = new RealFlmWriter(this.proj);
@@ -1834,6 +1848,7 @@ class RealFlmWriter {
     this.u8(0);
 
     this.bytes.push(...this.buildChunk('TDIV', [4, 4]));
+    this.bytes.push(...this.buildKeyb());
 
     const channels = p.channels.filter((c, i) => !channelFilter || channelFilter.has(i));
     const includedPatternIdx = p.patterns.map((pat, i) => (!patternFilter || patternFilter.has(i)) ? i : -1).filter(i => i >= 0);
